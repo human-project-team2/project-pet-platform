@@ -9,6 +9,6 @@ public class HomeContoroller {
 	@GetMapping(path = {"/","/home"})
 	public String home() {
 		
-		return "index"; // /resources/templates/ + index + .html
+		return "home"; // /resources/templates/ + home + .html
 	}
 }
