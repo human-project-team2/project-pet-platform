@@ -1,0 +1,55 @@
+제일 상단에 
+
+<html> 이 부분에
+<html xmlns:th="http://www.thymeleaf.org"> 이렇게 추가하시고
+
+각 페이지 상단 메뉴가 있으신 경우 
+
+예를 들면
+
+<!-- NAVBAR -->
+<nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm fixed-top">
+<div class="container">
+<a class="navbar-brand fw-bold" href="home">🐾 AnyZoo</a>
+<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+<span class="navbar-toggler-icon"></span>
+</button>
+
+<div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+<ul class="navbar-nav">
+
+<li class="nav-item"><a class="nav-link" href="market">마켓</a></li>
+<li class="nav-item"><a class="nav-link" href="/productRegister">판매등록</a></li>
+<li class="nav-item"><a class="nav-link" href="/board/boardlist">게시판</a></li>
+<li class="nav-item"><a class="nav-link" href="#">리뷰</a></li>
+<li class="nav-item"><a class="nav-link" data-bs-toggle="modal" data-bs-target="#chatModal">메시지</a></li>
+<li class="nav-item"><a class="nav-link" href="/login">로그인</a></li>
+</ul>
+</div>
+</div>
+</nav>
+
+이렇게 생긴 부분을 
+
+<!-- NAVBAR -->
+<div th:replace="fragments/fragment :: header"></div>
+
+위의 라인으로 교체하시면 됩니다.
+
+
+
+
+<footer> 이부분이 있으신 경우에는 ( 보통 페이지 제일 밑에)
+
+예를 들면 이렇게 생긴 부분
+
+<footer class="text-center py-4 bg-light">
+© 2026 AnyZoo
+</footer>
+
+을 다음 라인으로 교체하시면 됩니다.
+
+<div th:replace="fragments/fragment :: footer"></div>
+
+
+
