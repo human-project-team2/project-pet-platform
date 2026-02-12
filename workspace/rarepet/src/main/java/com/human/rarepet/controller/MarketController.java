@@ -8,6 +8,6 @@ public class MarketController {
 	
 	@GetMapping(path= {"/market"})
 	public String market() {
-		return "market";
+		return "market/marketlist";
 	}
 }
