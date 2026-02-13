@@ -11,6 +11,7 @@ public class ProductRegisterDto {
     private String category;         // 카테고리 (DB: product_category)
     private Integer price;           // 분양 가격 (DB: product_price)
     private String content;          // 상세 설명 (DB: product_content)
+    private Integer productCount; // 수량
     
     // 파일 수신용 (DB에는 파일명이 저장되겠지만, 수신은 MultipartFile로 함)
     private List<MultipartFile> petImages; 
