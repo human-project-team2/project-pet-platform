@@ -20,16 +20,20 @@ public class BoardController {
 	@GetMapping (path = {"/board/community"}) 
 	public String boardlist(Model model) {
 		
-		System.out.println("--------------------Board");
+		System.out.println("--------------------Community");
 			
 		return "board/community"; 
 		
 	}
-	/*
-	 * @GetMapping(path={"/market"}) public String market() { return
-	 * "market/marketlist"; }
-	 * 
-	 * @GetMapping(path="/market/marketdetail") public String marketDetail() {
-	 * return "market/marketdetail"; }
-	 */
+	
+	@GetMapping (path = {"/board/qna"}) 
+	public String boardqna(Model model) {
+		
+		System.out.println("--------------------QnA");
+			
+		return "board/qna"; 
+		
+	}
+
+
 }
