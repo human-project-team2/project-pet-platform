@@ -6,8 +6,13 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 public class MarketController {
 	
-	@GetMapping(path= {"/market"})
+	@GetMapping(path={"/market"})
 	public String market() {
 		return "market/marketlist";
+	}
+	
+	@GetMapping(path="/market/marketdetail")
+	public String marketDetail() {
+		return "market/marketdetail";
 	}
 }
