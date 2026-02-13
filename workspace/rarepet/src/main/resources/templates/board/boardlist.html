@@ -100,7 +100,7 @@ body{
         <div class="row g-4">
             <!-- 커뮤니티 섹션 -->
             <div class="col-md-4">
-                <a href="/community" class="text-decoration-none">
+                <a th:href="@{/board/community}" class="text-decoration-none">                
                     <div class="section-card">
                         <h4 class="mb-3">커뮤니티 게시글</h4>
                         <p class="text-muted">자유로운 소통과 정보 공유를 위한 공간입니다.</p>
@@ -112,7 +112,7 @@ body{
 
             <!-- 질의응답 섹션 -->
             <div class="col-md-4">
-                <a href="/qna" class="text-decoration-none">
+                <a th:href="@{/board/qna}" class="text-decoration-none">
                     <div class="section-card">
                         <h4 class="mb-3">질문/답변</h4>
                         <p class="text-muted">동물 관련 궁금증을 해결하는 Q&A 게시판입니다.</p>
@@ -124,7 +124,7 @@ body{
 
             <!-- 분양 리스트 섹션 -->
             <div class="col-md-4">
-                <a href="/adoption" class="text-decoration-none">
+                <a th:href="@{/board/adoption}" class="text-decoration-none">
                     <div class="section-card">
                         <h4 class="mb-3">분양 리스트</h4>
                         <p class="text-muted">소중한 가족을 만날 수 있는 분양 정보 목록입니다.</p>
