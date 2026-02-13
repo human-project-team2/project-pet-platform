@@ -21,6 +21,7 @@ public class ProductRegisterController {
         System.out.println("===== 상품 등록 데이터 수신 확인 =====");
         System.out.println("상품명: " + dto.getTitle());
         System.out.println("카테고리: " + dto.getCategory());
+        System.out.println("수량: " + dto.getProductCount());
         System.out.println("가격: " + dto.getPrice());
         System.out.println("설명: " + dto.getContent());
         
