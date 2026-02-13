@@ -19,6 +19,7 @@
 body {
 	font-family: 'Noto Sans KR', sans-serif;
 	background: #fdf6ee;
+	padding-top: 80px; /* adjust to navbar height */
 }
 
 /* Hero */
@@ -103,26 +104,6 @@ body {
 	<!-- NAVBAR -->
 	<div th:replace="fragments/fragment :: header"></div>
 
-	<!-- 
-<nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
-<div class="container">
-<a class="navbar-brand fw-bold" href="home">🐾 AnyZoo</a>
-<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#nav">
-<span class="navbar-toggler-icon"></span>
-</button>
-
-<div class="collapse navbar-collapse justify-content-end" id="nav">
-<ul class="navbar-nav">
-<li class="nav-item"><a class="nav-link active" href="market.html">마켓</a></li>
-<li class="nav-item"><a class="nav-link" href="#">판매등록</a></li>
-<li class="nav-item"><a class="nav-link" href="#">게시판</a></li>
-<li class="nav-item"><a class="nav-link" href="#">로그인</a></li>
-</ul>
-</div>
-</div>
-</nav>
--->
-
 	<!-- PAGE TITLE -->
 	<div class="container my-5">
 		<div class="d-flex justify-content-between align-items-center mb-4">
@@ -173,24 +154,24 @@ body {
 
 		<!-- MARKET GRID -->
 		<div id="marketContainer" class="row g-4">
-			
+
 			<!-- 상품 리스트 반복문 -->
-		<!-- <div id="marketContainer" class="row g-4" th:each="product:${products}" >-->	
 			<!-- 
-			<div class="col-md-4 market-item">
-				<div class="card shadow">
-					<a th:href="@{market/detail/${products}"><img
-						src="https://images.unsplash.com/photo-1583337130417-3346a1be7dee?auto=format&fit=crop&w=800&q=80"
-						class="card-img-top"></a>
-					<div class="card-body">
-						<h5 class="card-title">알비노 고슴도치</h5>
-						<p class="card-text text-muted">건강한 3개월 개체 · 예방접종 완료</p>
-						<div class="price-badge">₩150,000</div>
-					</div>
+			<div id="marketContainer" class="row g-4" th:each="product:${products}"
+				<div class="col-md-4 market-item">
+					<div class="card shadow">
+						<a th:href="@{market/detail/${product.productNo}"><img
+							src="https://images.unsplash.com/photo-1583337130417-3346a1be7dee?auto=format&fit=crop&w=800&q=80"
+							class="card-img-top"></a>
+						<div class="card-body">
+							<h5 class="card-title" th:text="${product.productName}"></h5>
+							<p class="card-text text-muted">건강한 3개월 개체 · 예방접종 완료</p>
+							<div class="price-badge">₩150,000</div>
+						</div>
 				</div>
 			</div> 
 			-->
-			
+
 			<!-- 카드 1 -->
 			<div class="col-md-4 market-item">
 				<div class="card shadow">
@@ -204,7 +185,7 @@ body {
 					</div>
 				</div>
 			</div>
-			
+
 			<!-- 카드 2 -->
 			<div class="col-md-4 market-item">
 				<div class="card shadow">
