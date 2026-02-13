@@ -1,18 +1,25 @@
 package com.human.rarepet.controller;
 
+
+
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+
+
 
 @Controller
 public class MarketController {
 	
 	@GetMapping(path={"/market"})
 	public String market() {
-		return "market/marketlist";
+		
+		
+				
+		return "market/list";
 	}
 	
-	@GetMapping(path="/market/marketdetail")
+	@GetMapping(path="/market/detail")
 	public String marketDetail() {
-		return "market/marketdetail";
+		return "market/detail";
 	}
 }
