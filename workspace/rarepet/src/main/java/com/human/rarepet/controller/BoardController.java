@@ -33,7 +33,15 @@ public class BoardController {
 			
 		return "board/qna"; 
 		
+	}		
+	
+	@GetMapping (path = {"/board/adoption"}) 
+	public String boardadoption(Model model) {
+		
+		System.out.println("--------------------Adoption");
+			
+		return "board/adoption"; 
+		
 	}
-
 
 }
