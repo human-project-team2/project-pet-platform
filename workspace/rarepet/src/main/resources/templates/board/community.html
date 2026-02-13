@@ -110,16 +110,21 @@ body{
             </tr>
         </thead>
         <tbody>
+            <!-- [변경] 행 클릭 시 해당 ID의 상세 페이지로 이동 (cursor 스타일 추가) -->
             <!-- 인기 게시글 예시 (노란색 강조) -->
-            <tr class="table-warning">
+               
+            <tr class="table-warning" style="cursor: pointer;">
                 <td>BEST</td>
-                <td><strong>우리집 고슴도치 먹방 영상입니다!</strong></td>
+                <td>
+                	<a th:href="@{/board/detail}" class="text-decoration-none">
+                	<strong>우리집 고슴도치 먹방 영상입니다!</strong>
+                </td>
                 <td>도치맘</td>
                 <td>1,240</td>
                 <td>56</td>
             </tr>
             <!-- 일반 게시글 (최신순) -->
-            <tr>
+            <tr onclick="location.href='detail.html?id=124'" style="cursor: pointer;">
                 <td>124</td>
                 <td>초보 집사를 위한 가이드 공유해요</td>
                 <td>애니멀러버</td>
@@ -127,6 +132,7 @@ body{
                 <td>12</td>
             </tr>
         </tbody>
+        
     </table>
 </div>
 

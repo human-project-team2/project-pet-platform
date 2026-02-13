@@ -43,5 +43,14 @@ public class BoardController {
 		return "board/adoption"; 
 		
 	}
+	
+	@GetMapping (path = {"/board/detail"}) 
+	public String boarddetail(Model model) {
+		
+		System.out.println("--------------------Detail");
+			
+		return "board/detail"; 
+		
+	}
 
 }
