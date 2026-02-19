@@ -1,6 +1,5 @@
 package com.human.rarepet.dto;
 
-import java.sql.Date;
 
 import lombok.Data;
 
@@ -13,8 +12,9 @@ public class ProductDto {
 	private String productContent;
 	private String productCategory;
 	private int productCount;
-	private int productPrice;
+	private int price;
 	private String imgUrl;
-	private Date productRegDate;
-	private Date productModDate;	
+	private java.util.Date productRegDate;
+	private java.util.Date productModDate;	
+    
 }

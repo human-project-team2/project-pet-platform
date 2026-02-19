@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.human.rarepet.mapper.ProductMapper">
+	
+	<insert id="insertProduct" parameterType="ProductDto">
+		insert into product_all (product_name, product_content, product_category, product_count, product_reg_date, price, shortDescription)
+		values (#{productName}, #{productContent}, #{productCategory}, #{productCount}, #{productRegDate}, #{price}, #{shortDescription})
+	</insert>
+	
+	<select id="showAllProduct" resultType="ProductDto">
+		select *
+		from product_all 
+	</select>
+	
+</mapper>

@@ -9,6 +9,5 @@ public class ProductAnimalDto extends ProductDto {
 
 	private int animalId;
 	private String gender;
-	private int animalAge;
 	
 }
