@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+
+	<!-- 공통 header -->
+	<div th:fragment="header">
+	<!-- NAVBAR -->
+	<nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm fixed-top">
+		<div class="container">
+		<a class="navbar-brand fw-bold d-flex align-items-center" th:href="@{/home}">
+    <img th:src="@{/img/AnyZooLogo.png}" alt="AnyZoo Logo" width="35" height="35" class="d-inline-block align-top me-2">
+    <span>AnyZoo</span>
+		</a>
+		<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+		<span class="navbar-toggler-icon"></span>
+		</button>
+		
+		<div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+		<ul class="navbar-nav">
+		
+		<li class="nav-item"><a class="nav-link" href="market">마켓</a></li>
+		<li class="nav-item"><a class="nav-link" href="/productRegister">판매등록</a></li>
+		<li class="nav-item"><a class="nav-link" href="/board/boardlist">게시판</a></li>
+		<li class="nav-item"><a class="nav-link" href="#">리뷰</a></li>
+		<li class="nav-item"><a class="nav-link" data-bs-toggle="modal" data-bs-target="#chatModal">메시지</a></li>
+		<li class="nav-item"><a class="nav-link" href="/login">로그인</a></li>
+		</ul>
+		</div>
+		</div>
+	</nav>
+	</div>
+	
+	<!-- 공통 footer -->
+	<div th:fragment="footer">
+		<footer class="text-center py-4 bg-light">
+		© 2026 AnyZoo
+		</footer>
+	</div>
+</body>
+</html>

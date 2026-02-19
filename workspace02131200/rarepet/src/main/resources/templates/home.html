@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AnyZoo Marketplace</title>
+
+<!-- Bootstrap 5 CSS -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<!-- Google Font -->
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+
+<style>
+body{
+    font-family:'Noto Sans KR',sans-serif;
+    background:#fdf6ee;
+}
+
+/* Hero */
+.hero{
+    background:
+    linear-gradient(rgba(230,180,150,0.45), rgba(245,210,185,0.55)),
+    url("https://images.unsplash.com/photo-1508672019048-805c876b67e2?auto=format&fit=crop&w=1600&q=80");
+    background-size:cover;
+    background-position:center;
+    height:60vh;
+}
+
+.hero-box{
+    background:rgba(255,250,245,0.92);
+    border-radius:30px;
+}
+
+/* Card */
+.card{
+    border:none;
+    border-radius:20px;
+}
+
+.card img{
+    height:200px;
+    object-fit:cover;
+    border-radius:20px 20px 0 0;
+}
+
+.heart{
+    position:absolute;
+    top:15px;
+    right:15px;
+    font-size:22px;
+    cursor:pointer;
+    color:#ccc;
+}
+
+.heart.active{color:#e76f51;}
+
+.review-section{
+    background:url("https://images.unsplash.com/photo-1518717758536-85ae29035b6d?auto=format&fit=crop&w=1600&q=80");
+    background-size:cover;
+    background-position:center;
+}
+
+.review-overlay{
+    background:rgba(90,60,50,0.75);
+    border-radius:25px;
+}
+</style>
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+<div th:replace="fragments/fragment :: header"></div>
+
+<!-- HERO -->
+<section class="hero d-flex align-items-center justify-content-center text-center text-dark mt-5">
+<div class="hero-box p-5 shadow">
+<h2 class="fw-bold">희귀 반려동물 전문 거래 플랫폼</h2>
+<p class="text-muted">자연과 사람, 그리고 소중한 생명을 연결합니다</p>
+</div>
+</section>
+
+<!-- FILTER -->
+<div class="container my-5">
+  <div class="row g-3 align-items-end">
+
+    <div class="col-md-4">
+      <label class="form-label">검색어</label>
+      <input type="text" id="searchInput" class="form-control" placeholder="동물 이름 입력">
+    </div>
+
+    <div class="col-md-3">
+      <label class="form-label">카테고리</label>
+      <select id="categorySelect" class="form-select">
+        <option value="all">전체 종류</option>
+        <option value="포유류">포유류</option>
+        <option value="파충류">파충류</option>
+        <option value="조류">조류</option>
+      </select>
+    </div>
+
+    <div class="col-md-3">
+      <label class="form-label">가격 정렬</label>
+      <select id="priceSort" class="form-select">
+        <option value="default">기본</option>
+        <option value="low">낮은 가격순</option>
+        <option value="high">높은 가격순</option>
+      </select>
+    </div>
+
+    <div class="col-md-2 d-grid">
+      <button class="btn btn-warning" onclick="searchAnimals()">검색</button>
+    </div>
+
+  </div>
+</div>
+
+<!-- MARKET -->
+<div class="container">
+<div class="row g-4">
+
+<!-- CARD -->
+<div class="col-md-4">
+<div class="card shadow position-relative">
+<span class="heart" onclick="toggleHeart(this)">♥</span>
+<img src="https://images.unsplash.com/photo-1583337130417-3346a1be7dee?auto=format&fit=crop&w=800&q=80">
+<div class="card-body">
+<h5 class="card-title">알비노 고슴도치</h5>
+<p class="text-warning">★★★★★</p>
+<h6 class="text-danger fw-bold">₩150,000</h6>
+<button class="btn btn-outline-secondary btn-sm">상세보기</button>
+<button class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#chatModal">입양 문의</button>
+</div>
+</div>
+</div>
+
+<!-- 사바나 캣 -->
+<div class="col-md-4">
+  <div class="card shadow position-relative">
+    <span class="heart" onclick="toggleHeart(this)">♥</span>
+    <img src="https://images.unsplash.com/photo-1595433562696-6d7e0b5c8a5a?auto=format&fit=crop&w=800&q=80">
+    <div class="card-body">
+      <h5 class="card-title">사바나 캣 F1</h5>
+      <p class="text-warning">★★★★★</p>
+      <h6 class="text-danger fw-bold">₩3,500,000</h6>
+      <button class="btn btn-outline-secondary btn-sm">상세보기</button>
+      <button class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#chatModal">입양 문의</button>
+    </div>
+  </div>
+</div>
+
+<!-- 볼 파이톤 -->
+<div class="col-md-4">
+  <div class="card shadow position-relative">
+    <span class="heart" onclick="toggleHeart(this)">♥</span>
+    <img src="https://images.unsplash.com/photo-1615486367152-6f1d5c93d353?auto=format&fit=crop&w=800&q=80">
+    <div class="card-body">
+      <h5>볼 파이톤 모프</h5>
+      <p class="text-warning">★★★★☆</p>
+      <h6 class="text-danger fw-bold">₩780,000</h6>
+      <button class="btn btn-outline-secondary btn-sm">상세보기</button>
+      <button class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#chatModal">입양 문의</button>
+    </div>
+  </div>
+</div>
+
+<!-- 펜넥 여우 -->
+<div class="col-md-4">
+  <div class="card shadow position-relative">
+    <span class="heart" onclick="toggleHeart(this)">♥</span>
+    <img src="https://images.unsplash.com/photo-1501706362039-c6b2a6d9b79c?auto=format&fit=crop&w=800&q=80">
+    <div class="card-body">
+      <h5>펜넥 여우</h5>
+      <p class="text-warning">★★★★★</p>
+      <h6 class="text-danger fw-bold">₩2,200,000</h6>
+      <button class="btn btn-outline-secondary btn-sm">상세보기</button>
+      <button class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#chatModal">입양 문의</button>
+    </div>
+  </div>
+</div>
+
+<!-- 친칠라 -->
+<div class="col-md-4">
+  <div class="card shadow position-relative">
+    <span class="heart" onclick="toggleHeart(this)">♥</span>
+    <img src="https://images.unsplash.com/photo-1583512603805-3cc6b41f3edb?auto=format&fit=crop&w=800&q=80">
+    <div class="card-body">
+      <h5>화이트 친칠라</h5>
+      <p class="text-warning">★★★★☆</p>
+      <h6 class="text-danger fw-bold">₩420,000</h6>
+      <button class="btn btn-outline-secondary btn-sm">상세보기</button>
+      <button class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#chatModal">입양 문의</button>
+    </div>
+  </div>
+</div>
+
+<!-- 미니 염소 -->
+<div class="col-md-4">
+  <div class="card shadow position-relative">
+    <span class="heart" onclick="toggleHeart(this)">♥</span>
+    <img src="https://images.unsplash.com/photo-1500595046743-ddf4d3d753fd?auto=format&fit=crop&w=800&q=80">
+    <div class="card-body">
+      <h5>미니 피그미 염소</h5>
+      <p class="text-warning">★★★★★</p>
+      <h6 class="text-danger fw-bold">₩1,100,000</h6>
+      <button class="btn btn-outline-secondary btn-sm">상세보기</button>
+      <button class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#chatModal">입양 문의</button>
+    </div>
+  </div>
+</div>
+
+<div class="col-md-4">
+<div class="card shadow position-relative">
+<span class="heart" onclick="toggleHeart(this)">♥</span>
+<img src="https://images.unsplash.com/photo-1555169062-013468b47731?auto=format&fit=crop&w=800&q=80">
+<div class="card-body">
+<h5>블루 앵무새</h5>
+<p class="text-warning">★★★★☆</p>
+<h6 class="text-danger fw-bold">₩950,000</h6>
+<button class="btn btn-outline-secondary btn-sm">상세보기</button>
+<button class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#chatModal">입양 문의</button>
+</div>
+</div>
+</div>
+
+</div>
+
+<!-- PAGINATION -->
+<nav class="my-5">
+<ul class="pagination justify-content-center">
+<li class="page-item"><a class="page-link" href="#">1</a></li>
+<li class="page-item"><a class="page-link" href="#">2</a></li>
+<li class="page-item"><a class="page-link" href="#">3</a></li>
+</ul>
+</nav>
+
+</div>
+
+<!-- REVIEW -->
+<section class="review-section text-white py-5">
+<div class="container review-overlay p-5">
+<h3 class="mb-4">💛 이용 후기</h3>
+<p>★★★★★ “슈가 글라이더를 안전하게 입양했어요.” – 김지훈</p>
+<p>★★★★☆ “설명이 상세해서 믿고 거래했습니다.” – 이서연</p>
+<p>★★★★★ “초보자에게 정말 유용했어요.” – 박민준</p>
+</div>
+</section>
+
+<!-- CHAT MODAL -->
+<div class="modal fade" id="chatModal">
+<div class="modal-dialog">
+<div class="modal-content">
+<div class="modal-header bg-warning">
+<h5 class="modal-title">판매자와 채팅</h5>
+<button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+</div>
+<div class="modal-body" id="chatBody" style="height:200px; overflow:auto;"></div>
+<div class="modal-footer">
+<input type="text" id="chatInput" class="form-control" placeholder="메시지 입력">
+<button class="btn btn-warning" onclick="sendMessage()">전송</button>
+</div>
+</div>
+</div>
+</div>
+
+<div th:replace="fragments/fragment :: footer"></div>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+function toggleHeart(el){
+    el.classList.toggle("active");
+}
+
+function sendMessage(){
+    let input=document.getElementById("chatInput");
+    let body=document.getElementById("chatBody");
+    if(input.value.trim()!==""){
+        body.innerHTML+="<div>나: "+input.value+"</div>";
+        input.value="";
+        body.scrollTop=body.scrollHeight;
+    }
+}
+</script>
+
+</body>
+</html>

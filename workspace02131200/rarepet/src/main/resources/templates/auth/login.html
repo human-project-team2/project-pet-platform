@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>AnyZoo Marketplace</title>
+
+
+
+<!-- Bootstrap 5 CSS -->
+<link
+	href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+	rel="stylesheet">
+
+<!-- Google Font -->
+<link
+	href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap"
+	rel="stylesheet">
+
+<style>
+body {
+	font-family: 'Noto Sans KR', sans-serif;
+	background: #fdf6ee;
+}
+
+/* Hero */
+.hero {
+	background: linear-gradient(rgba(230, 180, 150, 0.45),
+		rgba(245, 210, 185, 0.55)),
+		url("https://images.unsplash.com/photo-1508672019048-805c876b67e2?auto=format&fit=crop&w=1600&q=80");
+	background-size: cover;
+	background-position: center;
+	height: 60vh;
+}
+
+.hero-box {
+	background: rgba(255, 250, 245, 0.92);
+	border-radius: 30px;
+}
+
+/* Card */
+.card {
+	border: none;
+	border-radius: 20px;
+}
+
+.card img {
+	height: 200px;
+	object-fit: cover;
+	border-radius: 20px 20px 0 0;
+}
+
+.heart {
+	position: absolute;
+	top: 15px;
+	right: 15px;
+	font-size: 22px;
+	cursor: pointer;
+	color: #ccc;
+}
+
+.heart.active {
+	color: #e76f51;
+}
+
+.review-section {
+	background:
+		url("https://images.unsplash.com/photo-1518717758536-85ae29035b6d?auto=format&fit=crop&w=1600&q=80");
+	background-size: cover;
+	background-position: center;
+}
+
+.review-overlay {
+	background: rgba(90, 60, 50, 0.75);
+	border-radius: 25px;
+}
+</style>
+</head>
+
+<body>
+
+	<!-- NAVBAR -->
+	<div th:replace="fragments/fragment :: header"></div>
+	<!-- --------------------- -->
+	<div id='pageContainer' style="margin-top: 120px; margin-bottom: 60px;">
+
+		<div class="container">
+			<div class="row justify-content-center">
+				<div class="col-md-5">
+					<div class="card shadow-sm p-4" style="border-radius: 25px;">
+						<div class="card-body">
+							<h3 class="text-center fw-bold mb-4" style="color: #5a3c32;">로그인</h3>
+
+							<form action="login" method="post">
+								<input type="hidden" name="returnUrl" value="${returnUrl}">
+
+								<div class="mb-3">
+									<label class="form-label fw-bold" style="color: #777;">아이디(ID)</label>
+									<input type="text" name="memberId"
+										class="form-control form-control-lg" placeholder="아이디를 입력하세요"
+										required style="border-radius: 12px; font-size: 15px;">
+								</div>
+
+								<div class="mb-4">
+									<label class="form-label fw-bold" style="color: #777;">비밀번호</label>
+									<input type="password" name="passwd"
+										class="form-control form-control-lg" placeholder="비밀번호를 입력하세요"
+										required style="border-radius: 12px; font-size: 15px;">
+								</div>
+
+								<div class="d-grid gap-2">
+									<button type="submit" class="btn btn-lg fw-bold shadow-sm"
+										style="background-color: #e76f51; color: white; border-radius: 12px;">
+										로그인</button>
+								</div>
+							</form>
+						</div>
+						</form>
+
+						<hr class="my-4" style="color: #ddd;">
+						<div class="text-center">
+							<p style="color: #777; font-size: 14px;">아직 AnyZoo 회원이 아니신가요?</p>
+							<a href="register"
+								class="btn btn-outline-secondary w-100 fw-bold"
+								style="border-radius: 12px; border-color: #e76f51; color: #e76f51;" >
+								회원가입하기 </a>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	</div>
+
+</body>

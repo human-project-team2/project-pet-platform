@@ -1,12 +1,33 @@
 package com.human.rarepet.controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+
+import com.human.rarepet.dto.BoardDto;
+import com.human.rarepet.service.BoardService;
 
 @Controller
 public class BoardController {
+	
+	@Autowired
+	private BoardService boardService;
+	
+	@GetMapping(path = {"/board/write"})
+	public String showWriteForm(BoardDto board) {
+		
+		System.out.println("-------------->write form");
+		return "board/write";		
+	}
+	
+	@PostMapping(path = {"/board/write"})
+	public String writeBoard(BoardDto board) {
+		boardService.insertBoard(board);
+		return "redirect:/board/list";		
+	}
 	
 	@GetMapping (path = {"/board/boardlist"}) 
 	public String list(Model model) {
