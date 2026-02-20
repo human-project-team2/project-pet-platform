@@ -1,5 +1,7 @@
 package com.human.rarepet.controller;
 
+import java.util.Date;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -20,13 +22,24 @@ public class BoardController {
 	public String showWriteForm(BoardDto board) {
 		
 		System.out.println("-------------->write form");
+		
+		
 		return "board/write";		
 	}
 	
 	@PostMapping(path = {"/board/write"})
 	public String writeBoard(BoardDto board) {
+		Date writeDate = new Date();
+		System.out.println("-------------->writeBoard form");
+		System.out.printf("-------------->writetitle " + board.getBoard_title());
+		System.out.printf("-------------->writecontent " + board.getBoard_content());
+		System.out.printf("-------------->writeid " + board.getBoard_id());
+		board.setBoard_write_date(writeDate);
+		board.setBoard_like_count(1);
+		board.setBoard_view_count(1);
+		// board.getBoardWriteDate();
 		boardService.insertBoard(board);
-		return "redirect:/board/list";		
+		return "redirect:/board/boardlist";		
 	}
 	
 	@GetMapping (path = {"/board/boardlist"}) 

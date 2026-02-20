@@ -7,11 +7,11 @@ import lombok.Data;
 @Data
 public class BoardDto {
 
-	private int boardNo;
-	private String title;
-	private String content;	
-	private String writer;
-	private int boardCount;
-	private int boardRecCount;
-	private Date boardModDate;
+	private int board_id;
+	private String board_title;
+	private String board_content;	
+	private String board_writer_id;
+	private int board_like_count;
+	private int board_view_count;
+	private java.util.Date board_write_date;
 }

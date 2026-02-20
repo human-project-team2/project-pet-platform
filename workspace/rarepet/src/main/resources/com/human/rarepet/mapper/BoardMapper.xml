@@ -4,8 +4,8 @@
 <mapper namespace="com.human.rarepet.mapper.BoardMapper">
 
     <insert id="insertBoard" parameterType="BoardDto">
-        INSERT INTO tbl_board (title, content, writer)
-        VALUES (#{title}, #{content}, #{writer})
+        INSERT INTO board (board_title, board_content, board_writer_id, board_like_count, board_view_count, board_write_date)
+        VALUES (#{board_title}, #{board_content}, #{board_writer_id}, #{board_like_count}, #{board_view_count}, #{board_write_date})
     </insert>
     
    
