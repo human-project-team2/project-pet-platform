@@ -1,34 +1,38 @@
 package com.human.rarepet.controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import com.human.rarepet.dto.AuthDto;
+import com.human.rarepet.dto.MemberDto;
 import com.human.rarepet.dto.ProductRegisterDto;
+import com.human.rarepet.service.MemberService;
 
 @Controller
 @RequestMapping("/auth")
-public class AuthController {
-
+public class MemberController {
+	
+	@Autowired
+	private MemberService memberService;
 	@GetMapping(path = { "/login" })
 	public String login() {
 
 		return "/auth/login";
 	}
     @PostMapping("/login")
-    public String loginProcess(@ModelAttribute AuthDto dto) {
+    public String loginProcess(@ModelAttribute MemberDto dto) {
         
         // 데이터 수신 확인을 위한 콘솔 출력
         System.out.println("===== 상품 등록 데이터 수신 확인 =====");
-        System.out.println("id: " + dto.getMemberId());
+        System.out.println("id: " + dto.getId());
         System.out.println("pw: " + dto.getPasswd());
 		System.out.println("==================================");
 
         // 성공 시 리다이렉트 (임시로 홈으로 이동)
-        return "/home";
+        return "redirect:/";
     }
 
 	@GetMapping(path = { "/register" })
@@ -37,17 +41,23 @@ public class AuthController {
 	}
 	
 	@PostMapping("/register")
-    public String registerProcess(@ModelAttribute AuthDto dto) {
+    public String registerProcess(@ModelAttribute MemberDto member) {
         
         // 데이터 수신 확인을 위한 콘솔 출력
-        System.out.println("===== 상품 등록 데이터 수신 확인 =====");
-        System.out.println("id: " + dto.getMemberId());
-        System.out.println("pw: " + dto.getPasswd());
-        System.out.println("pw: " + dto.getConfirm());
-		System.out.println("==================================");
-
+		/*
+		 * System.out.println("===== 상품 등록 데이터 수신 확인 ====="); System.out.println("id: "
+		 * + dto.getId()); System.out.println("pw: " + dto.getPasswd());
+		 * System.out.println("pw: " + dto.getConfirm()); System.out.println("email: " +
+		 * dto.getEmail()); System.out.println("name: " + dto.getName());
+		 * System.out.println("phone: " + dto.getPhone());
+		 * System.out.println("address: " + dto.getAddress());
+		 * System.out.println("not_user: " + dto.getNot_user());
+		 * System.out.println("==================================");
+		 */
+		
+		memberService.insertMember(member);
         // 성공 시 리다이렉트 (임시로 홈으로 이동)
-        return "/home";
+        return "redirect:/";
     }
 
 	

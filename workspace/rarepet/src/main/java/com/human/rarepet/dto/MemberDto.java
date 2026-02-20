@@ -1,0 +1,17 @@
+package com.human.rarepet.dto;
+
+import lombok.Data;
+
+@Data
+public class MemberDto {
+
+	private String Id;
+	private String passwd;
+	private String confirm;
+	private String name;
+	private String phone;
+	private String address;
+	private String email;
+	private String not_user;
+	
+}
