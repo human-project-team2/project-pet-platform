@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AnyZoo Marketplace</title>
+
+<!-- Bootstrap 5 CSS -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<!-- Google Font -->
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+
+<style>
+body{
+    font-family:'Noto Sans KR',sans-serif;
+    background:#fdf6ee;
+}
+
+/* Hero */
+.hero{
+    background:
+    linear-gradient(rgba(230,180,150,0.45), rgba(245,210,185,0.55)),
+    url("https://images.unsplash.com/photo-1508672019048-805c876b67e2?auto=format&fit=crop&w=1600&q=80");
+    background-size:cover;
+    background-position:center;
+    height:60vh;
+}
+
+.hero-box{
+    background:rgba(255,250,245,0.92);
+    border-radius:30px;
+}
+
+/* Card */
+.card{
+    border:none;
+    border-radius:20px;
+}
+
+.card img{
+    height:200px;
+    object-fit:cover;
+    border-radius:20px 20px 0 0;
+}
+
+.heart{
+    position:absolute;
+    top:15px;
+    right:15px;
+    font-size:22px;
+    cursor:pointer;
+    color:#ccc;
+}
+
+.heart.active{color:#e76f51;}
+
+.review-section{
+    background:url("https://images.unsplash.com/photo-1518717758536-85ae29035b6d?auto=format&fit=crop&w=1600&q=80");
+    background-size:cover;
+    background-position:center;
+}
+
+.review-overlay{
+    background:rgba(90,60,50,0.75);
+    border-radius:25px;
+}
+</style>
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+<div th:replace="fragments/fragment :: header"></div>
+
+<br><br><br><br><br><br>
+
+<div class="container main-container mt-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold">Q&A 게시글</h2>
+        <a th:href="@{/board/qwrite}" class="text-decoration-none">
+                	<strong>글쓰기</strong>
+    </div>    
+
+    <!-- 게시글 리스트 (상단 10개는 인기글 정렬) -->
+    <table class="table table-hover">
+        <thead class="table-light">
+            <tr>
+                <th>번호</th>
+                <th>제목</th>
+                <th>작성자</th>
+                <th>조회수</th>
+                <th>추천</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- 일반 게시글 (최신순) -->
+            <tr style="cursor: pointer;">
+                <td>1</td>
+                <td>
+                	<a th:href="@{/board/qna}" class="text-decoration-none">
+                	<strong>초보 집사를 위한 가이드 문의합니다</strong>
+                </td>
+                <td>애니멀러버</td>
+                <td>450</td>
+                <td>12</td>
+            </tr>
+        </tbody>
+        
+    </table>
+</div>
+
+</body>
+</html>
