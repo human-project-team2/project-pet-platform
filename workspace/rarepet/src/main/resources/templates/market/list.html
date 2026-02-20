@@ -126,12 +126,13 @@ body {
 				<!-- 카테고리 선택 -->
 				<div class="col-md-3">
 					<select class="form-select rounded-pill">
-						<option selected>카테고리 선택</option>
-						<option>포유류</option>
-						<option>파충류</option>
-						<option>조류</option>
-						<option>설치류</option>
-						<option>기타 희귀동물</option>
+                            <option value="포유류">포유류</option>
+                            <option value="파충류">파충류</option>
+                            <option value="양서류">양서류</option>
+                            <option value="조류">조류</option>
+                            <option value="절지동물-곤충">절지동물 & 곤충</option>
+                            <option value="기타동물">기타특수생물</option>
+                            <option value="기타">관련 용품</option>
 					</select>
 				</div>
 
@@ -159,7 +160,7 @@ body {
 			<!-- 상품 리스트 반복문 -->
 				<div class="col-md-4 market-item" th:each="product:${products}">
 					<div class="card shadow">
-						<!-- <a th:href=""><img src="" class="card-img-top"></a> -->
+						<a th:href="@{market/detail}"><img th:src="@{${product.imgUrl}}" class="card-img-top"></a>
 						<div class="card-body">
 							<h5 class="card-title" th:text="${product.productName}"></h5>
 							<p class="card-text text-muted" th:text="${product.shortDescription}" ></p>
@@ -172,20 +173,6 @@ body {
 			
 		</div>
 			
-
-			<!-- 카드 1 -->
-			<!-- <div class="col-md-4 market-item">
-				<div class="card shadow">
-					<a th:href="@{market/detail}"><img
-						src="https://images.unsplash.com/photo-1583337130417-3346a1be7dee?auto=format&fit=crop&w=800&q=80"
-						class="card-img-top"></a>
-					<div class="card-body">
-						<h5 class="card-title">알비노 고슴도치</h5>
-						<p class="card-text text-muted">건강한 3개월 개체 · 예방접종 완료</p>
-						<div class="price-badge">₩150,000</div>
-					</div>
-				</div>
-			</div> -->
 
 			<!-- PAGINATION -->
 			<div class="d-flex justify-content-center mt-5">

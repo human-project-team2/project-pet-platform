@@ -16,6 +16,7 @@ public class MarketService {
 	private ProductMapper productMapper;
 
 	public void registerProduct(ProductDto product) {
+		
 		product.setProductRegDate(new Date());
 		productMapper.insertProduct(product);
 	}

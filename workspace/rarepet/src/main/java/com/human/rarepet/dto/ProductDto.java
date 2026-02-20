@@ -16,5 +16,6 @@ public class ProductDto {
 	private String imgUrl;
 	private java.util.Date productRegDate;
 	private java.util.Date productModDate;	
-    
+	private String savedFileName;
+	private String originalFileName;
 }
