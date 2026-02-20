@@ -60,6 +60,39 @@ public class BoardController {
 		
 	}
 	
+	@GetMapping (path = {"/board/qnalist"}) 
+	public String boardqnalist(Model model) {
+		
+		System.out.println("--------------------QnAList");
+			
+		return "board/qnalist"; 
+		
+	}		
+	
+	@GetMapping(path = {"/board/qwrite"})
+	public String showQWriteForm(BoardDto board) {
+		
+		System.out.println("-------------->write QnAform");
+		
+		
+		return "board/qwrite";		
+	}
+	
+	@PostMapping(path = {"/board/qwrite"})
+	public String writeQBoard(BoardDto board) {
+		Date writeDate = new Date();
+		System.out.println("-------------->writeBoard form");
+		System.out.printf("-------------->writetitle " + board.getBoard_title());
+		System.out.printf("-------------->writecontent " + board.getBoard_content());
+		System.out.printf("-------------->writeid " + board.getBoard_id());
+		board.setBoard_write_date(writeDate);
+		board.setBoard_like_count(1);
+		board.setBoard_view_count(1);
+		
+		boardService.insertBoard(board);
+		return "redirect:/board/boardlist";		
+	}
+	
 	@GetMapping (path = {"/board/qna"}) 
 	public String boardqna(Model model) {
 		
