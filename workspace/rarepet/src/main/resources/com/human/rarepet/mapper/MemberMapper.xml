@@ -12,4 +12,9 @@
         SELECT * FROM member where id = #{memberId} and password = #{passwd}
 	</select>
 	
+	<select id="checkIdDup" resultType="int">
+    	SELECT COUNT(*) 
+    	FROM member 
+    	WHERE id = #{Id}  
+    </select>
 </mapper>
