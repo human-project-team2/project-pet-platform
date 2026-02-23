@@ -137,5 +137,35 @@ body{
     </table>
 </div>
 
+	<!-- PAGINATION -->
+		<div class="d-flex justify-content-center mt-5">
+			<nav>
+				<ul class="pagination pagination-lg">
+
+					<!-- 이전 -->
+					<li class="page-item disabled"><a
+						class="page-link rounded-start-pill" href="#"> &laquo; </a></li>
+
+					<!-- 페이지 번호 -->
+					<li class="page-item active"><a class="page-link" href="#">1</a>
+					</li>
+
+					<li class="page-item"><a class="page-link" href="#">2</a></li>
+
+					<li class="page-item"><a class="page-link" href="#">3</a></li>
+
+					<li class="page-item"><a class="page-link" href="#">4</a></li>
+
+					<li class="page-item"><a class="page-link" href="#">5</a></li>
+					<!-- 다음 -->
+					<li class="page-item"><a class="page-link rounded-end-pill"
+						href="#"> &raquo; </a></li>
+				</ul>
+			</nav>
+	</div>
+
+	<div th:replace="fragments/fragment :: footer"></div>
+
+
 </body>
 </html>
