@@ -31,7 +31,8 @@
 						<li class="nav-item"><a class="nav-link"
 							data-bs-toggle="modal" data-bs-target="#chatListModal"> 메시지 </a>
 						</li>
-						<li class="nav-item"><a class="nav-link" href="/auth/login">로그인</a></li>
+						<li class="nav-item" th:if="${session.loginuser != null}"><a class="nav-link" href="/auth/logout">로그아웃</a></li>
+						<li class="nav-item" th:if="${session.loginuser == null}"><a class="nav-link" href="/auth/login">로그인</a></li>
 					</ul>
 				</div>
 			</div>
@@ -142,7 +143,7 @@
 				</div>
 			</div>
 
-			<!-- 3. 새 메시지 모달 (기존 유지) -->
+			<!-- 3. 새 메시지 모달 -->
 			<div class="modal fade" id="newMessageModal" tabindex="-1"
 				aria-labelledby="newMessageModalLabel" aria-hidden="true">
 				<div class="modal-dialog">

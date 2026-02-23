@@ -17,6 +17,8 @@ public class MessageService {
 	
 	public void sendMessage(MessageDto message) {
 		
+		// 임시로 senderId
+		//message.setSenderId("heh");
 		message.setSendDate(new Date());
 		messageMapper.sendMessage(message);
 	}
