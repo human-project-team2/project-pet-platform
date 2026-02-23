@@ -133,6 +133,30 @@ body{
                 <td>12</td>
             </tr>
         </tbody>
+        <tbody>                      
+          <tr th:each="board: ${boards}" style="height:30px">
+            <th scope="row" th:text="${ board.board_id }"></th>
+            <td>
+                <a 	th:href="@{/board/detail(pageNo=${pager.pageNo}, boardNo=${board.board_id}) }"
+                    th:text="${ board.title }"></a>
+            </td>          
+            
+          </tr>
+        </tbody>
+        <!-- 
+        <tbody>                      
+          <tr th:each="board: ${boards}" style="height:30px">
+            <th scope="row" th:text="${ board.boardNo }"></th>
+            <td>
+                <a 	th:href="@{/board/detail(pageNo=${pager.pageNo}, boardNo=${board.boardNo}) }"
+                    th:text="${ board.title }"></a>
+            </td>
+            <td th:text="${ board.writer.email }"></td>
+            <td th:text="${ #dates.format(board.writeDate, 'yyyy-MM-dd') }"></td>
+            <td th:text="${ board.readCount }"></td>
+          </tr>
+        </tbody>
+         -->
         
     </table>
 </div>
