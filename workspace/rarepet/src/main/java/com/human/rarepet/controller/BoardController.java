@@ -102,6 +102,39 @@ public class BoardController {
 		
 	}		
 	
+	@GetMapping (path = {"/board/adoptionlist"}) 
+	public String boardadoptionlist(Model model) {
+		
+		System.out.println("--------------------Adoptionlist-----");
+			
+		return "board/adoptionlist"; 
+		
+	}
+	
+	@GetMapping(path = {"/board/adoptionwrite"})
+	public String showAWriteForm(BoardDto board) {
+		
+		System.out.println("-------------->write Adoptionform");
+		
+		
+		return "board/adoptionwrite";		
+	}
+	
+	@PostMapping(path = {"/board/adoptionwrite"})
+	public String writeABoard(BoardDto board) {
+		Date writeDate = new Date();
+		System.out.println("-------------->writeBoard form");
+		System.out.printf("-------------->writetitle " + board.getBoard_title());
+		System.out.printf("-------------->writecontent " + board.getBoard_content());
+		System.out.printf("-------------->writeid " + board.getBoard_id());
+		board.setBoard_write_date(writeDate);
+		board.setBoard_like_count(1);
+		board.setBoard_view_count(1);
+		
+		boardService.insertBoard(board);
+		return "redirect:/board/boardlist";		
+	}
+	
 	@GetMapping (path = {"/board/adoption"}) 
 	public String boardadoption(Model model) {
 		
