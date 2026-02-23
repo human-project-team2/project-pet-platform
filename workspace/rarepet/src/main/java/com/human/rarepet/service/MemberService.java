@@ -24,4 +24,11 @@ public class MemberService {
 		
 	}
 	
+	public boolean isIdAvailable(String id) {
+		// 매퍼에 만든 int checkIdDup(String memberId)를 호출합니다.
+		int count = memberMapper.checkIdDup(id);
+		
+		// 검색된 개수가 0이면 사용 가능(true), 아니면 중복(false)
+		return count == 0;
+	}
 }

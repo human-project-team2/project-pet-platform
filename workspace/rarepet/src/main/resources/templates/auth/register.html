@@ -9,7 +9,7 @@
 	rel="stylesheet">
 </head>
 <body style="background-color: #f8f9fa;">
-	<script defer="defer" th:src="@{/main.js}"></script>
+	<script defer="defer" ></script>
 </head>
 
 <body class="app">
@@ -117,7 +117,7 @@
 			</div>
 		</div>
 	</div>
-	
+
 
 	<script src="https://code.jquery.com/jquery-3.7.1.js"></script>
 	<script>
@@ -132,24 +132,24 @@
                 return;
             }
 
-            /* fetch('dup-check?id=' + memberId)
+             fetch('/auth/dup-check?id=' + memberId)
                 .then(response => response.text())
                 .then(data => {
-                    if (data === 'valid') {
+                    if (data.trim() === 'valid') {
                         isIdValid = true;
                         alert("사용 가능한 아이디입니다.");
                     } else { 
                         isIdValid = false;
                         alert("이미 사용중인 아이디입니다.");
                     }
-                }); */
+                }); 
         });
 
         // 아이디 입력 시 중복체크 초기화
         $('#id').on('input', function() {
             isIdValid = false;
         });
-        isIdValid = true; // 테스트용으로 true로 설정, 실제로는 false로 시작해야 함
+        isIdValid = false; // 테스트용으로 true로 설정, 실제로는 false로 시작해야 함
         // 등록 버튼 클릭
         $('#register').on('click', function() {
            /*  if (!isIdValid) {
