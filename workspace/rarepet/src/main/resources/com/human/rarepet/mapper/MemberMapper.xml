@@ -8,7 +8,8 @@
         VALUES (#{id}, #{passwd}, #{name}, #{phone}, #{address}, #{email})
     </insert>
     
-    <select id="selectMemberById" parameterType="String" resultType="MemberDto">
-        SELECT * FROM member WHERE id = #{id}
+    <select id="checkMember" parameterType="hashmap" resultType="MemberDto">
+        SELECT * FROM member where id = #{memberId} and password = #{passwd}
 	</select>
+	
 </mapper>

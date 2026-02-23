@@ -12,9 +12,16 @@ public class MemberService {
 	private MemberMapper memberMapper;
 	
 	public void insertMember(MemberDto member)
- {
+	{
 		// 3. mybatis 사용
 		memberMapper.insertMember(member);
+		
+	}
+	
+	public MemberDto checkMember(String memberId, String passwd) {
+		
+		return memberMapper.checkMember(memberId, passwd);
+		
 	}
 	
 }
