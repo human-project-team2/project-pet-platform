@@ -3,11 +3,21 @@
 <mapper namespace="com.human.rarepet.mapper.MessageMapper">
 
 	<insert id="sendMessage" parameterType="MessageDto">
-		insert into message (message_content, send_date)
-		values (#{messageContent}, #{sendDate})
+		insert into message (message_content, receiver_id, sender_id, sent_at, received_at)
+		values (#{messageContent}, #{receiverId}, #{senderId}, #{sentAt}, #{receivedAt})
 	</insert>
 	
 	<select id="receiveMessage" parameterType="String" resultType="MessageDto">
-		select * from message where receiver_id = #{receiverId}
+		select sender_id, MAX(sent_at) as max_sent_at
+		from message
+		where receiver_id = #{receiverId}
+		group by sender_id
+		order by max_sent_at desc;
+	</select>
+	
+	<select id="messageDetail" parameterType="hashmap" resultType="MessageDto">
+		select * from message
+		where receiver_id = #{receiverId} and sender_id = #{senderId}
+		order by sent_at desc;
 	</select>
 </mapper>

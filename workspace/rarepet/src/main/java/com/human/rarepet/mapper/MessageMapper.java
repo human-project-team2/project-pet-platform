@@ -11,4 +11,6 @@ public interface MessageMapper {
 	void sendMessage(MessageDto message);
 	
 	List<MessageDto> receiveMessage(String receiverId);
+	
+	List<MessageDto> messageDetail(String receiverId, String senderId);
 }

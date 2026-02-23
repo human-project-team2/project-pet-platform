@@ -21,18 +21,23 @@
 				<div class="collapse navbar-collapse justify-content-end"
 					id="navbarNav">
 					<ul class="navbar-nav">
-
-						<li class="nav-item"><a class="nav-link" href="/market">마켓</a></li>
-						<li class="nav-item"><a class="nav-link"
-							href="/market/register">판매등록</a></li>
+						<li class="nav-item"><a class="nav-link" th:href="@{/market}">마켓</a></li>
+						<li class="nav-item" th:if="${session.loginuser}" ><a class="nav-link"
+							th:href="@{/market/register}">판매등록</a></li>
+						<li class="nav-item" th:unless="${session.loginuser}" ><a class="nav-link"
+							href="/auth/login">판매등록</a></li>
 						<li class="nav-item"><a class="nav-link"
 							href="/board/boardlist">게시판</a></li>
-						<li class="nav-item"><a class="nav-link" href="#">리뷰</a></li>
-						<li class="nav-item"><a class="nav-link"
+						<li class="nav-item"><a class="nav-link" th:href="@{#}">리뷰</a></li>
+						<li class="nav-item" th:if="${session.loginuser}"><a class="nav-link"
 							data-bs-toggle="modal" data-bs-target="#chatListModal"> 메시지 </a>
 						</li>
-						<li class="nav-item" th:if="${session.loginuser != null}"><a class="nav-link" href="/auth/logout">로그아웃</a></li>
-						<li class="nav-item" th:if="${session.loginuser == null}"><a class="nav-link" href="/auth/login">로그인</a></li>
+						<li class="nav-item" th:unless="${session.loginuser}"><a class="nav-link"
+							th:href="@{/auth/login}"> 메시지 </a>
+						</li>
+						<li class="nav-item" th:if="${session.loginuser}"><a class="nav-link" th:href="@{/auth/myPage}">마이페이지</a></li>
+						<li class="nav-item" th:if="${session.loginuser != null}"><a class="nav-link" th:href="@{/auth/logout}">로그아웃</a></li>
+						<li class="nav-item" th:if="${session.loginuser == null}"><a class="nav-link" th:href="@{/auth/login}">로그인</a></li>
 					</ul>
 				</div>
 			</div>
@@ -66,35 +71,15 @@
 								<table class="table table-hover align-middle">
 									<thead class="table-light">
 										<tr>
-											<th>보낸 사람</th>
-											<th>받은 사람</th>
+											<th>아이디</th>
 											<th>보낸 시각</th>
 											<th>받은 시각</th>
 										</tr>
 									</thead>
 									<tbody id="messageListBody">
+																			
 										<!-- 실제로는 JS로 채워짐 (지금은 임시 샘플 행) -->
-										<tr class="message-row" data-partner-id="2"
-											data-partner-name="판매자김">
-											<td>판매자김</td>
-											<td>나 (Umi)</td>
-											<td>2026-02-19 14:35</td>
-											<td>2026-02-19 14:40</td>
-										</tr>
-										<tr class="message-row" data-partner-id="7"
-											data-partner-name="초보집사">
-											<td>나 (Umi)</td>
-											<td>초보집사</td>
-											<td>2026-02-18 09:12</td>
-											<td>-</td>
-										</tr>
-										<tr class="message-row" data-partner-id="15"
-											data-partner-name="레오파드맘">
-											<td>레오파드맘</td>
-											<td>나 (Umi)</td>
-											<td>2026-02-17 21:05</td>
-											<td>미확인</td>
-										</tr>
+										
 									</tbody>
 								</table>
 							</div>
@@ -179,13 +164,80 @@
 		<script th:fragment="message_script">
 		
 		$( () => {
-			// 메시지 목록 행 클릭 → 채팅 상세 모달 열기
-		    $(document).on('click', '.message-row', function() {
+			
+			 // 새 메시지 보내기 모달 버튼
+			$('#newMessageModal .btn-primary').on('click', () => {
+		      
+		    	const receiver = $('#receiverId').val().trim();
+		    	const content = $('#messageContent').val().trim();
+
+		      if (!receiver) {
+		        alert('받는 사람을 입력하세요');
+		        return;
+		      }
+		      if (!content) {
+			        alert('메시지 내용을 입력하세요');
+			        return;
+			  }
+		      
+		      fetch("/messages", {method:"post", 
+		    	  				  headers:{"Content-Type":"application/json"},
+		      					  body: JSON.stringify({
+		      							receiverId: receiver,
+		      							messageContent: content
+		      						})
+		      }).then(response => response.text())
+		    	.then(data => {
+		    		if(data == "success"){
+			    		alert("메시지 보내기 완료.");
+		    		} else if (data == "failure"){
+		    			alert("존재하지 않는 회원...")
+		    		}
+		    	})		      
+		    });
+			 
+			// 보낸 사람별로 메시지 목록 불러오기
+			
+			$("#chatListModal").on("shown.bs.modal", () => {
+				
+				fetch("/messages/list").then(response => response.json())
+				.then(messages => {
+					$("#messageListBody").empty();
+					
+					messages.forEach( (message) => {
+						$("#messageListBody").append(
+								`
+								<tr class="message-row" data-sender-id="${message.senderId}">
+									<td>${message.senderId}</td>
+									<td>${message.sentAt}</td>
+									<td>${message.receivedAt}</td>
+								</tr>
+								`);
+					});
+				});
+				
+			})
+			
+			 
+			// 메시지 클릭 → 채팅 상세 모달 열기
+		    $(document).on('click', '.message-row', function () { // $(".message-row").on("click") -> 작동하지 않음
+		    	
+		    	$(this).data("sender-id")
+		    	
+		    	fetch("/messages/detail").then(response => response.json())
+		    	.then(data => {
+		    		
+		    	})
+		    	
+		    	
+		    	
 		      const partnerId   = $(this).data('partner-id');
 		      const partnerName = $(this).data('partner-name') || '대화 상대';
 
 		      $('#chatPartnerTitle').text(partnerName + ' 님과의 대화');
 
+		      
+		      
 		      // 임시 샘플 대화 내용 (나중에 fetch로 대체)
 		      const sampleMessages = `
 		        <div class="d-flex justify-content-start mb-3">
@@ -247,51 +299,7 @@
 		      }
 		    });
 			
-		 // 새 메시지 모달의 보내기 버튼
-		    $('#newMessageModal .btn-primary').on('click', () => {
-		      const receiver = $('#receiverId').val().trim();
-		      const content = $('#messageContent').val().trim();
 
-		      if (!receiver) {
-		        alert('받는 사람을 입력하세요');
-		        return;
-		      }
-		      if (!content) {
-			        alert('메시지 내용을 입력하세요');
-			        return;
-			      }
-
-		      fetch('/messages', {
-		        method: 'POST',
-		        headers: {
-		            'Accept': 'application/json',
-		            'Content-Type': 'application/json'
-		          },
-		        body: JSON.stringify({ // 백엔드로 보냄.
-		          receiverId: receiver,      
-		          messageContent: content
-		        })
-		      })
-		      .then(r => {
-		        if (!r.ok) { // request가 성공했는가?
-		          throw new Error('메시지 전송 실패'); // 새 error 객체를 생성하고 throw 함. 현재 메서드 멈춤.
-		        }
-		        return r.json();
-		      })
-		      .then(data => {
-		        alert('메시지가 전송되었습니다!');
-		        $('#newMessageModal').modal('hide');
-		        $('#receiverId').val('');
-		        $('#messageContent').val('');
-		        
-		        // 옵션: 목록 새로고침
-		        // loadMessageList();  // 나중에 구현
-		      })
-		      .catch(error => {
-		        alert('전송 중 오류가 발생했습니다: ' + error.message);
-		        console.error(error);
-		      });
-		    });
 			
 		})
 		
