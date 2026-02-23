@@ -1,12 +1,19 @@
 package com.human.rarepet.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.human.rarepet.dto.MemberDto;
 import com.human.rarepet.dto.MessageDto;
 import com.human.rarepet.service.MessageService;
+
+import jakarta.servlet.http.HttpSession;
 
 @Controller
 public class MessageController {
@@ -15,8 +22,29 @@ public class MessageController {
 	private MessageService messageService;
 	
 	@PostMapping(path = {"/messages"})
-	public void sendMessage(@RequestBody MessageDto message) {
-		System.out.println(message);
-		messageService.sendMessage(message);
+	@ResponseBody
+	public String sendMessage(@RequestBody MessageDto message, HttpSession session) {
+		try {
+			messageService.sendMessage(message, session);
+			return "success";
+		} catch (RuntimeException exception) {
+			return "failure";
+		}
+	}
+	
+	@GetMapping(path = {"/messages/list"})
+	@ResponseBody
+	public List<MessageDto> receiveMesssage(HttpSession session) {
+		MemberDto member = (MemberDto) session.getAttribute("loginuser");
+		String receiverId = member.getId();
+		return messageService.receiveMessage(receiverId);
+	}
+	
+	@GetMapping(path = {"/messages/detail"})
+	@ResponseBody
+	public List<MessageDto> messageDetail(HttpSession session, String senderId) {
+		MemberDto member = (MemberDto) session.getAttribute("loginuser");
+		String receiverId = member.getId();
+		return messageService.messageDetail(receiverId, senderId);
 	}
 }

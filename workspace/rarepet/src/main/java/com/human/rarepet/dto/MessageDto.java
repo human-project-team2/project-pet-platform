@@ -9,9 +9,9 @@ public class MessageDto {
 
 	int messageNo;
 	String messageContent;
-	//String receiverId;
-	//String senderId;
-	Date sendDate;
-	Date receiveDate;
+	String receiverId;
+	String senderId;
+	Date sentAt;
+	Date receivedAt;
 	
 }

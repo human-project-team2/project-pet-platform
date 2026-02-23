@@ -1,6 +1,7 @@
 package com.human.rarepet.controller;
 
 import java.util.Date;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -8,12 +9,17 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.human.rarepet.dto.BoardDto;
 import com.human.rarepet.service.BoardService;
+import com.human.rarepet.dto.PagerDto;
 
 @Controller
 public class BoardController {
+	
+	private final int PAGE_SIZE = 3; 	// 한 페이지에 표시되는 데이터 개수
+	private final int PAGER_SIZE = 3;	// 한 번에 표시할 페이지 번호 개수
 	
 	@Autowired
 	private BoardService boardService;
@@ -52,10 +58,37 @@ public class BoardController {
 	}
 	
 	@GetMapping (path = {"/board/community"}) 
-	public String boardlist(Model model) {
+	public String boardlist(
+			@RequestParam(value="pageNo", defaultValue="1") int pageNo,
+			Model model) {
 		
-		System.out.println("--------------------Community");
+		System.out.println("--------------------Community page");
+		/* 
+		List<BoardDto> boards = boardService.findBoardByPage(pageNo, PAGE_SIZE);
+		int boardCount = boardService.findBoardCount(); // 페이지 갯수를 계산하기 위한 데이터 조회
+		
+		// 페이저 (페이지 번호 목록) 표시를 위한 데이터 처리
+		int pagerBlock = (pageNo - 1) / PAGER_SIZE;
+		int start = (pagerBlock * PAGER_SIZE) + 1;
+		int end = start + PAGER_SIZE;
+		
+		PagerDto pager = new PagerDto();
+		pager.setPageNo(pageNo);
+		pager.setPageSize(PAGE_SIZE);
+		pager.setPagerSize(PAGER_SIZE);
+		pager.setDataCnt(boardCount);
+		pager.setPageStart(start);
+		pager.setPageEnd(end);
+		//pager.setLinkUrl(LINK_URL);
+		int pageCnt = (boardCount / PAGE_SIZE) + ((boardCount % PAGE_SIZE) > 0 ? 1 : 0);
+		pager.setPageCnt(pageCnt);
+		
+		model.addAttribute("boards", boards);
+		model.addAttribute("pager", pager);
+		model.addAttribute("pageNo", pageNo);
+		*/
 			
+		// 여기에 입력 게시판 페이지 관련 from listWithPaging demoweb2 BoardController.java
 		return "board/community"; 
 		
 	}

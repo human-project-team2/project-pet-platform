@@ -57,25 +57,20 @@ public class MemberController {
 	
 	@PostMapping("/register")
     public String registerProcess(@ModelAttribute MemberDto member) {
-        
-        // 데이터 수신 확인을 위한 콘솔 출력
-		/*
-		 * System.out.println("===== 상품 등록 데이터 수신 확인 ====="); System.out.println("id: "
-		 * + dto.getId()); System.out.println("pw: " + dto.getPasswd());
-		 * System.out.println("pw: " + dto.getConfirm()); System.out.println("email: " +
-		 * dto.getEmail()); System.out.println("name: " + dto.getName());
-		 * System.out.println("phone: " + dto.getPhone());
-		 * System.out.println("address: " + dto.getAddress());
-		 * System.out.println("not_user: " + dto.getNot_user());
-		 * System.out.println("==================================");
-		 */
-		
+        	
 		memberService.insertMember(member);
         // 성공 시 리다이렉트 (임시로 홈으로 이동)
         return "redirect:/";
     }
 	
+<<<<<<< HEAD
 	
 
+=======
+	@GetMapping(path = {"myPage"} )
+	public String myPage() {
+		return "auth/myPage";
+	}
+>>>>>>> 0d62a244f14aa5e404ef6ffd7413c8ee02b8d774
 	
 }
