@@ -224,10 +224,14 @@
 		    	
 		    	$(this).data("sender-id")
 		    	
-		    	fetch("/messages/detail").then(response => response.json())
+		    	/* fetch("/messages/detail").then(response => response.json())
 		    	.then(data => {
+		    		$("#chatMessages").empty();
+		    		data.forEach(message => {
+		    			const myId = message.senderId ==
+		    		});
 		    		
-		    	})
+		    	}) */
 		    	
 		    	
 		    	
