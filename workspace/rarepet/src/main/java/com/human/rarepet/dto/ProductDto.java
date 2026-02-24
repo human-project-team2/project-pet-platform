@@ -18,4 +18,5 @@ public class ProductDto {
 	private java.util.Date productModDate;	
 	private String savedFileName;
 	private String originalFileName;
+	private String id; // DB의 id 컬럼과 매핑될 변수
 }

@@ -17,14 +17,15 @@ import jakarta.servlet.http.HttpSession;
 @Controller
 @RequestMapping("/auth")
 public class MemberController {
-	
+
 	@Autowired
 	private MemberService memberService;
-	
+
 	@GetMapping(path = { "/login" })
 	public String login() {
 		return "/auth/login";
 	}
+
 	
 	@PostMapping(path = {"/login"})
 	public String loginProcess(@RequestParam("memberId") String memberId,
@@ -51,6 +52,7 @@ public class MemberController {
 	public String register() {
 		return "/auth/register";
 	}
+
 	
 	@PostMapping("/register")
 	public String registerProcess(@ModelAttribute MemberDto member) {
@@ -80,4 +82,6 @@ public class MemberController {
 	public String myPage() {
 		return "auth/myPage";
 	}
+
+
 }

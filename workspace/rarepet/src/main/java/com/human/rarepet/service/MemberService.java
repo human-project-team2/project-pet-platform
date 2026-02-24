@@ -24,6 +24,7 @@ public class MemberService {
 		
 	}
 	
+
 	// 아이디 중복 확인 로직
     public boolean existsById(String id) {
         // DB에서 해당 ID로 조회했을 때 결과가 null이 아니면 이미 존재하는 것(중복)
@@ -31,4 +32,12 @@ public class MemberService {
         return member != null; 
     }
 	
+
+	
+	
+	// [추가] 마이페이지용 회원 정보 가져오기
+    public MemberDto getUserById(String id) {
+        return memberMapper.getUserById(id);
+    }
+
 }

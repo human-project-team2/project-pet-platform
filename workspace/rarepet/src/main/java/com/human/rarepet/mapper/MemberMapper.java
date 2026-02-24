@@ -15,4 +15,7 @@ public interface MemberMapper {
     
     // 로그인 할 때,
     MemberDto checkMember(@Param("memberId") String memberId, @Param("passwd") String passwd);
+
+    // 마이페이지 유저 정보 조회 (id를 받아서 MemberDto를 반환)
+    MemberDto getUserById(String id);
 }

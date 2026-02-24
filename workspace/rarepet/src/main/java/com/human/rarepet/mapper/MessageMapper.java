@@ -2,7 +2,9 @@ package com.human.rarepet.mapper;
 
 import java.util.List;
 
+
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Select;
 
 import com.human.rarepet.dto.MessageDto;
 @Mapper
@@ -12,5 +14,9 @@ public interface MessageMapper {
 	
 	List<MessageDto> receiveMessage(String receiverId);
 	
+	@Select("select * from message where (receiver_id = #{receiverId} and sender_id = #{senderId}) "+
+			"or (receiver_id = #{senderId} and senderId = #{receiverId}) "+
+			"order by sent_at")
 	List<MessageDto> messageDetail(String receiverId, String senderId);
+
 }

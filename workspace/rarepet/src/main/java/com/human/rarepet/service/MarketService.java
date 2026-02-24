@@ -25,4 +25,8 @@ public class MarketService {
 		return productMapper.showAllProduct();
 	}
 	
+	// 마이페이지: 특정 유저의 상품 목록 가져오기
+    public List<ProductDto> findProductsByUserId(String id) {
+        return productMapper.findProductsByUserId(id);
+    }
 }
