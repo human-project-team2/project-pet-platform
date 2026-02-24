@@ -32,8 +32,7 @@ public class MessageService {
 		return messageMapper.receiveMessage(receiverId);
 	}
 	
-	public List<MessageDto> messageDetail(String receiverId, String senderId){
-		
-		return messageMapper.messageDetail(receiverId, senderId);
+	public List<MessageDto> messageDetail(String senderId, String receiverId){
+		return messageMapper.messageDetail(senderId, receiverId);
 	}
 }

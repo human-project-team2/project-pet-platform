@@ -7,6 +7,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.human.rarepet.dto.MemberDto;
@@ -34,17 +35,18 @@ public class MessageController {
 	
 	@GetMapping(path = {"/messages/list"})
 	@ResponseBody
-	public List<MessageDto> receiveMesssage(HttpSession session) {
+	public List<MessageDto> receiveMessage(HttpSession session) {
 		MemberDto member = (MemberDto) session.getAttribute("loginuser");
 		String receiverId = member.getId();
 		return messageService.receiveMessage(receiverId);
 	}
 	
-	@GetMapping(path = {"/messages/detail"})
+	@GetMapping(path = {"/message/detail"})
 	@ResponseBody
-	public List<MessageDto> messageDetail(HttpSession session, String senderId) {
-		MemberDto member = (MemberDto) session.getAttribute("loginuser");
-		String receiverId = member.getId();
-		return messageService.messageDetail(receiverId, senderId);
+	public List<MessageDto> messageDetail(@RequestParam String senderId,
+										  @RequestParam String receiverId){
+		
+		return messageService.messageDetail(senderId, receiverId);
 	}
+	
 }

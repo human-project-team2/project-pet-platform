@@ -8,16 +8,11 @@
 	</insert>
 	
 	<select id="receiveMessage" parameterType="String" resultType="MessageDto">
-		select sender_id, MAX(sent_at) as max_sent_at
+		select sender_id, MAX(sent_at) as sent_at
 		from message
 		where receiver_id = #{receiverId}
 		group by sender_id
-		order by max_sent_at desc;
 	</select>
 	
-	<select id="messageDetail" parameterType="hashmap" resultType="MessageDto">
-		select * from message
-		where receiver_id = #{receiverId} and sender_id = #{senderId}
-		order by sent_at desc;
-	</select>
+	
 </mapper>
