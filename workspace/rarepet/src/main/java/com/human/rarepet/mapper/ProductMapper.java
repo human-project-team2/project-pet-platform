@@ -12,4 +12,6 @@ public interface ProductMapper {
 
 	void insertProduct(ProductDto product);
 	List<ProductDto> showAllProduct();
+	
+	List<ProductDto> findProductsByUserId(String id);
 }

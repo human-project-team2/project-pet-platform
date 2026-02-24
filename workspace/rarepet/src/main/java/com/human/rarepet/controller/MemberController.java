@@ -62,10 +62,6 @@ public class MemberController {
         // 성공 시 리다이렉트 (임시로 홈으로 이동)
         return "redirect:/";
     }
-		
-	@GetMapping(path = {"myPage"} )
-	public String myPage() {
-		return "auth/myPage";
-	}
+	
 	
 }

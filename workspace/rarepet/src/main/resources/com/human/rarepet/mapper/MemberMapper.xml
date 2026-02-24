@@ -17,4 +17,10 @@
     	FROM member 
     	WHERE id = #{Id}  
     </select>
+    
+    <select id="getUserById" resultType="MemberDto">
+    SELECT id, name, phone, address, email, not_user 
+    FROM member 
+    WHERE id = #{id} AND not_user = 0
+	</select>
 </mapper>
