@@ -24,11 +24,11 @@ public class MemberService {
 		
 	}
 	
-	public boolean isIdAvailable(String id) {
-		// 매퍼에 만든 int checkIdDup(String memberId)를 호출합니다.
-		int count = memberMapper.checkIdDup(id);
-		
-		// 검색된 개수가 0이면 사용 가능(true), 아니면 중복(false)
-		return count == 0;
-	}
+	// 아이디 중복 확인 로직
+    public boolean existsById(String id) {
+        // DB에서 해당 ID로 조회했을 때 결과가 null이 아니면 이미 존재하는 것(중복)
+        MemberDto member = memberMapper.selectMemberById(id);
+        return member != null; 
+    }
+	
 }

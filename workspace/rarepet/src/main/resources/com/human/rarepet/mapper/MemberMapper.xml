@@ -12,9 +12,9 @@
         SELECT * FROM member where id = #{memberId} and password = #{passwd}
 	</select>
 	
-	<select id="checkIdDup" resultType="int">
-    	SELECT COUNT(*) 
-    	FROM member 
-    	WHERE id = #{Id}  
-    </select>
+	<select id="selectMemberById" parameterType="string" resultType="com.human.rarepet.dto.MemberDto">
+    SELECT * FROM member 
+    WHERE id = #{id}
+</select>
+    
 </mapper>
