@@ -41,7 +41,7 @@ public class MessageController {
 		return messageService.receiveMessage(receiverId);
 	}
 	
-	@GetMapping(path = {"/message/detail"})
+	@GetMapping(path = {"/messages/detail"})
 	@ResponseBody
 	public List<MessageDto> messageDetail(@RequestParam("senderId") String senderId,
 										  @RequestParam("receiverId") String receiverId){

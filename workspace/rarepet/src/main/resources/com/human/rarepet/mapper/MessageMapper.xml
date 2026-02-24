@@ -8,10 +8,10 @@
 	</insert>
 	
 	<select id="receiveMessage" parameterType="String" resultType="MessageDto">
-		select sender_id, MAX(sent_at) as sent_at
+		select sender_id, receiver_id, MAX(sent_at) as sent_at
 		from message
 		where receiver_id = #{receiverId}
-		group by sender_id
+		group by sender_id, receiver_id
 	</select>
 	
 	

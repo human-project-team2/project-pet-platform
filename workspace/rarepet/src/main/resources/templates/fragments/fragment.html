@@ -221,10 +221,10 @@
 			// 메시지 클릭 → 채팅 상세 모달 열기
 		    $(document).on('click', '.message-row', function () { // $(".message-row").on("click") -> 작동하지 않음
 		    	
-		    	const myId = $(this).data("receiver-id")
+		    	const receiverId = $(this).data("receiver-id")
 		    	const senderId = $(this).data("sender-id")
 		    	
-		    	fetch(`/message/detail?receiverId=${myId}&senderId=${senderId}`)
+		    	fetch(`/messages/detail?receiverId=${receiverId}&senderId=${senderId}`)
 		    	.then(response => response.json())
 		    	.then(data => {
 		    		
@@ -232,7 +232,8 @@
 		    		
 		    		data.forEach(message => {
 		    			
-		    			let isMe = (myId === message.senderId)
+		    			let myId = receiverId;
+		    			let isMe = (myId === message.senderId);
 		    			
 		    			$("#chatMessages").append(
 		    			`
