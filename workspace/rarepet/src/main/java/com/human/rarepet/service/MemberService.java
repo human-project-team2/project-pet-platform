@@ -39,5 +39,11 @@ public class MemberService {
     public MemberDto getUserById(String id) {
         return memberMapper.getUserById(id);
     }
+    
+ // [추가] 회원 정보 업데이트 로직
+    public void updateMember(MemberDto member) {
+        // 매퍼를 호출해서 DB 값을 바꿉니다.
+        memberMapper.updateMember(member);
+    }
 
 }

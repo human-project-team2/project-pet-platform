@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AnyZoo | 정보 수정</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&family=Jua&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+<script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+<style>
+body { font-family: 'Noto Sans KR', sans-serif; background: #fdf6ee; padding-top: 100px; }
+.edit-card { background: white; border-radius: 30px; padding: 40px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05); max-width: 600px; margin: 0 auto; }
+.title-font { font-family: 'Jua', sans-serif; color: #5a3c32; font-size: 2rem; }
+.form-label { font-weight: 500; color: #8d7b6d; }
+.form-control, .form-select { border-radius: 15px; border: 1px solid #eee; padding: 12px; }
+.form-control:focus, .form-select:focus { border-color: #ffc107; box-shadow: 0 0 0 0.25rem rgba(255, 193, 7, 0.25); }
+.btn-save { background-color: #5a3c32; color: white; border-radius: 50px; padding: 12px; border: none; transition: 0.3s; }
+.btn-save:hover { background-color: #432c25; }
+.btn-save:disabled { background-color: #ccc; cursor: not-allowed; }
+.btn-zipcode { border-radius: 15px; background: #ffc107; color: #5a3c32; font-weight: bold; border: none; }
+.pw-section { background-color: #fffaf0; border: 1px dashed #ffc107; border-radius: 20px; padding: 20px; }
+#pwCheckMsg, #emailMsg { font-size: 0.85rem; margin-top: 5px; font-weight: 500; }
+</style>
+</head>
+<body>
+	<div th:replace="fragments/fragment :: header"></div>
+
+	<div class="container mb-5">
+		<div class="edit-card">
+			<div class="text-center mb-4">
+				<h2 class="title-font">회원 정보 수정 🐾</h2>
+				<p class="text-muted">소중한 정보를 안전하게 업데이트하세요.</p>
+			</div>
+
+			<form th:action="@{/updateProfile}" method="post" id="editForm">
+				<div class="mb-3">
+					<label class="form-label">아이디</label> 
+					<input type="text" name="id" class="form-control bg-light" th:value="${user.id}" readonly>
+				</div>
+
+				<div class="mb-3">
+					<label class="form-label">이름</label> 
+					<input type="text" name="name" class="form-control" th:value="${user.name}" required>
+				</div>
+
+				<div class="mb-3">
+					<label class="form-label">이메일</label>
+					<div class="d-flex align-items-center gap-2 mb-2">
+						<input type="text" id="emailId" class="form-control" placeholder="아이디" required style="flex: 1.5;"> 
+						<span>@</span>
+						<select class="form-select" id="domainSelect" style="flex: 2;">
+							<option value="naver.com">naver.com</option>
+							<option value="gmail.com">gmail.com</option>
+							<option value="daum.net">daum.net</option>
+							<option value="kakao.com">kakao.com</option>
+							<option value="direct">직접 입력</option>
+						</select>
+					</div>
+					<input type="text" id="emailDomain" class="form-control" placeholder="도메인을 입력하세요 (예: pet.com)" style="display: none;">
+					<div id="emailMsg"></div>
+					<input type="hidden" name="email" id="totalEmail" th:value="${user.email}">
+				</div>
+
+				<div class="mb-3">
+					<label class="form-label">연락처</label> 
+					<input type="text" name="phone" class="form-control" th:value="${user.phone}" placeholder="010-0000-0000">
+				</div>
+
+				<div class="pw-section mb-4">
+					<label class="form-label text-dark"><i class="fa-solid fa-key"></i> 비밀번호 변경</label>
+					<p class="text-muted x-small mb-2" style="font-size: 0.8rem;">변경할 때만 입력하세요. 미입력 시 기존 비밀번호 유지.</p>
+					<div class="mb-2">
+						<input type="password" id="newPassword" name="pw" class="form-control" placeholder="새 비밀번호">
+					</div>
+					<div class="mb-1">
+						<input type="password" id="confirmPassword" class="form-control" placeholder="새 비밀번호 확인">
+					</div>
+					<div id="pwCheckMsg"></div>
+				</div>
+
+				<div class="mb-3">
+					<label class="form-label">배송지 주소</label>
+					<div class="input-group mb-2">
+						<input type="text" id="postcode" class="form-control" placeholder="우편번호" readonly>
+						<button class="btn btn-zipcode px-3" type="button" onclick="execDaumPostcode()">번호 찾기</button>
+					</div>
+					<input type="text" id="address" name="address" class="form-control mb-2" th:value="${user.address}" placeholder="기본 주소" readonly> 
+					<input type="text" id="detailAddress" name="detailAddress" class="form-control" placeholder="상세 주소를 입력하세요">
+				</div>
+
+				<div class="d-grid gap-2 mt-5">
+					<button type="submit" class="btn btn-save shadow-sm" id="submitBtn">수정 완료</button>
+					<a th:href="@{/mypage}" class="btn btn-outline-secondary rounded-pill">취소하기</a>
+				</div>
+			</form>
+		</div>
+	</div>
+
+	<div th:replace="fragments/fragment :: footer"></div>
+
+	<script>
+		const emailId = document.getElementById('emailId');
+		const emailDomain = document.getElementById('emailDomain');
+		const domainSelect = document.getElementById('domainSelect');
+		const totalEmail = document.getElementById('totalEmail');
+		const emailMsg = document.getElementById('emailMsg');
+		
+		const pwInput = document.getElementById('newPassword');
+		const confirmInput = document.getElementById('confirmPassword');
+		const pwMsgArea = document.getElementById('pwCheckMsg');
+		const submitBtn = document.getElementById('submitBtn');
+
+		// 1. 초기 로드 시 이메일 분리 및 셀렉트 박스 설정
+		window.onload = function() {
+			const emailValue = totalEmail.value;
+			if (emailValue && emailValue.includes('@')) {
+				const parts = emailValue.split('@');
+				emailId.value = parts[0];
+				
+				// 기존 도메인이 옵션에 있는지 확인
+				let isKnownDomain = false;
+				for (let option of domainSelect.options) {
+					if (option.value === parts[1]) {
+						domainSelect.value = parts[1];
+						isKnownDomain = true;
+						break;
+					}
+				}
+				
+				if (!isKnownDomain) {
+					domainSelect.value = "direct";
+					emailDomain.value = parts[1];
+					emailDomain.style.display = "block";
+				}
+			}
+		};
+
+		// 2. 도메인 선택 로직 (직접 입력 시에만 입력창 노출)
+		domainSelect.addEventListener('change', function() {
+			if (this.value === "direct") {
+				emailDomain.style.display = "block";
+				emailDomain.value = "";
+				emailDomain.focus();
+			} else {
+				emailDomain.style.display = "none";
+				emailDomain.value = this.value;
+			}
+			checkTotalValidation();
+		});
+
+		// 3. 실시간 유효성 통합 검사 (이메일 도메인 + 비밀번호)
+		function checkTotalValidation() {
+			const isPwMatch = validatePassword();
+			const isEmailValid = validateEmailDomain();
+			
+			// 모든 조건 충족 시에만 버튼 활성화
+			submitBtn.disabled = !(isPwMatch && isEmailValid);
+		}
+
+		// 4. 이메일 도메인 정규식 검사 (점 포함 여부 등)
+		function validateEmailDomain() {
+			const domain = emailDomain.value;
+			const domainRegex = /^[a-zA-Z0-9-]+\.[a-zA-Z]{2,}$/;
+
+			if (domain === "") {
+				emailMsg.innerText = "도메인을 입력해주세요.";
+				emailMsg.style.color = "red";
+				return false;
+			}
+
+			if (domainRegex.test(domain)) {
+				emailMsg.innerText = "올바른 형식입니다. ✓";
+				emailMsg.style.color = "#28a745";
+				return true;
+			} else {
+				emailMsg.innerText = "도메인 형식이 올바르지 않습니다. (예: pet.com)";
+				emailMsg.style.color = "#dc3545";
+				return false;
+			}
+		}
+
+		// 5. 비밀번호 일치 검사
+		function validatePassword() {
+			const pw = pwInput.value;
+			const confirm = confirmInput.value;
+
+			if (pw === "" && confirm === "") {
+				pwMsgArea.innerText = "";
+				return true;
+			}
+
+			if (pw === confirm) {
+				pwMsgArea.innerText = "비밀번호가 일치합니다. ✓";
+				pwMsgArea.style.color = "#28a745";
+				return true;
+			} else {
+				pwMsgArea.innerText = "비밀번호가 일치하지 않습니다. ✗";
+				pwMsgArea.style.color = "#dc3545";
+				return false;
+			}
+		}
+
+		// 이벤트 리스너들
+		pwInput.addEventListener('keyup', checkTotalValidation);
+		confirmInput.addEventListener('keyup', checkTotalValidation);
+		emailId.addEventListener('keyup', checkTotalValidation);
+		emailDomain.addEventListener('keyup', checkTotalValidation);
+
+		// 폼 제출 전 합치기
+		document.getElementById('editForm').addEventListener('submit', function(e) {
+			totalEmail.value = emailId.value + "@" + emailDomain.value;
+		});
+
+		// 카카오 우편번호 API
+		function execDaumPostcode() {
+			new daum.Postcode({
+				oncomplete : function(data) {
+					var addr = data.userSelectedType === 'R' ? data.roadAddress : data.jibunAddress;
+					document.getElementById('postcode').value = data.zonecode;
+					document.getElementById("address").value = addr;
+					document.getElementById("detailAddress").focus();
+				}
+			}).open();
+		}
+	</script>
+</body>
+</html>

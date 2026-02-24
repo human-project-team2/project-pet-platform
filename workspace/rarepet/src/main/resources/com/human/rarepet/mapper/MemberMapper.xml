@@ -26,5 +26,14 @@
     FROM member 
     WHERE id = #{id} AND not_user = 0
 	</select>
+	
+	<update id="updateMember" parameterType="MemberDto">
+    UPDATE member 
+    SET name = #{name}, 
+        address = #{address}, 
+        phone = #{phone},
+        email = #{email}
+    WHERE id = #{id}
+	</update>
 
 </mapper>

@@ -18,4 +18,7 @@ public interface MemberMapper {
 
     // 마이페이지 유저 정보 조회 (id를 받아서 MemberDto를 반환)
     MemberDto getUserById(String id);
+    
+    // [추가] 회원 정보 업데이트 실행
+    void updateMember(MemberDto member);
 }

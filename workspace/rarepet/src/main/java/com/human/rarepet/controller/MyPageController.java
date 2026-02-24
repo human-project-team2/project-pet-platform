@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 
 import com.human.rarepet.dto.MemberDto;
 import com.human.rarepet.dto.ProductDto;
@@ -44,4 +45,29 @@ public class MyPageController {
         // templates/auth/myPage.html 파일을 찾아갑니다.
         return "auth/myPage";
     }
+    
+	// 1. 수정 페이지 열기
+	@GetMapping("/editProfile")
+	public String editProfile(HttpSession session, Model model) {
+	    MemberDto loginUser = (MemberDto) session.getAttribute("loginuser");
+	    if (loginUser == null) return "redirect:/auth/login";
+
+	    // 최신 정보를 DB에서 다시 가져와서 모델에 담기
+	    model.addAttribute("user", memberService.getUserById(loginUser.getId()));
+	    return "auth/editProfile"; // templates/auth/editProfile.html
+	}
+
+	// 2. 수정 실행
+	@PostMapping("/updateProfile")
+	public String updateProfile(MemberDto member, HttpSession session) {
+	    // 1. DB 업데이트
+	    memberService.updateMember(member);
+	    
+	    // 2. [추천] DB에서 최신 정보를 다시 가져와서 세션에 저장
+	    // 이렇게 하면 폼에 없던 다른 정보들까지 누락 없이 세션에 유지됩니다.
+	    MemberDto updatedUser = memberService.getUserById(member.getId());
+	    session.setAttribute("loginuser", updatedUser);
+	    
+	    return "redirect:/mypage";
+	}
 }
