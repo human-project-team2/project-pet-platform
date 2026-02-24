@@ -118,6 +118,9 @@ body{
         <button type="submit" class="btn btn-warning w-100 fw-bold py-3">입양 신청하기</button>
     </form>
 </div>
-
+	<div th:replace="fragments/fragment :: message"></div>
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>	
+	<script th:replace="fragments/fragment :: message_script"></script>
+	<div th:replace="fragments/fragment :: footer"></div>
 </body>
 </html>
