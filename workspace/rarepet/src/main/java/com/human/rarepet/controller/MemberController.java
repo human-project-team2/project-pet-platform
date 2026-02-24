@@ -63,9 +63,5 @@ public class MemberController {
 		return "redirect:/";
 	}
 
-	@GetMapping(path = { "myPage" })
-	public String myPage() {
-		return "auth/myPage";
-	}
 
 }

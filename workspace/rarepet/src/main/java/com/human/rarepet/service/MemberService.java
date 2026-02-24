@@ -31,4 +31,9 @@ public class MemberService {
 		// 검색된 개수가 0이면 사용 가능(true), 아니면 중복(false)
 		return count == 0;
 	}
+	
+	// [추가] 마이페이지용 회원 정보 가져오기
+    public MemberDto getUserById(String id) {
+        return memberMapper.getUserById(id);
+    }
 }

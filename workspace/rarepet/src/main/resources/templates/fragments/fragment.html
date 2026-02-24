@@ -29,17 +29,17 @@
 						<li class="nav-item"><a class="nav-link"
 							href="/board/boardlist">게시판</a></li>
 						<li class="nav-item"><a class="nav-link" th:href="@{#}">리뷰</a></li>
-						<li class="nav-item" th:if="${session.loginuser}"><a
-							class="nav-link" data-bs-toggle="modal"
-							data-bs-target="#chatListModal"> 메시지 </a></li>
-						<li class="nav-item" th:unless="${session.loginuser}"><a
-							class="nav-link" th:href="@{/auth/login}"> 메시지 </a></li>
-						<li class="nav-item" th:if="${session.loginuser}"><a
-							class="nav-link" th:href="@{/auth/myPage}">마이페이지</a></li>
-						<li class="nav-item" th:if="${session.loginuser != null}"><a
-							class="nav-link" th:href="@{/auth/logout}">로그아웃</a></li>
-						<li class="nav-item" th:if="${session.loginuser == null}"><a
-							class="nav-link" th:href="@{/auth/login}">로그인</a></li>
+
+						<li class="nav-item" th:if="${session.loginuser}"><a class="nav-link"
+							data-bs-toggle="modal" data-bs-target="#chatListModal"> 메시지 </a>
+						</li>
+						<li class="nav-item" th:unless="${session.loginuser}"><a class="nav-link"
+							th:href="@{/auth/login}"> 메시지 </a>
+						</li>
+						<li class="nav-item" th:if="${session.loginuser}"><a class="nav-link" th:href="@{/mypage}">마이페이지</a></li>
+						<li class="nav-item" th:if="${session.loginuser != null}"><a class="nav-link" th:href="@{/auth/logout}">로그아웃</a></li>
+						<li class="nav-item" th:if="${session.loginuser == null}"><a class="nav-link" th:href="@{/auth/login}">로그인</a></li>
+
 					</ul>
 				</div>
 			</div>
