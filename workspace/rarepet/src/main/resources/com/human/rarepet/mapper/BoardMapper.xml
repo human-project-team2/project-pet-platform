@@ -3,10 +3,17 @@
 
 <mapper namespace="com.human.rarepet.mapper.BoardMapper">
 
-    <insert id="insertBoard" parameterType="BoardDto">
+    <insert id="insertBoard" parameterType="BoardDto" 
+    		useGeneratedKeys="true" keyColumn="board_id" keyProperty="board_id">
         INSERT INTO board (board_title, board_content, board_writer_id, board_like_count, board_view_count, board_write_date)
         VALUES (#{board_title}, #{board_content}, #{board_writer_id}, #{board_like_count}, #{board_view_count}, #{board_write_date})
     </insert>
+    
+    <insert id="insertBoardQnA" parameterType="QnABoardDto">        
+        INSERT INTO board_question (board_id, answer_selected, board_question_category)
+        VALUES (#{board_id}, #{answer_selected}, #{board_question_category})
+    </insert>
+    
     
    
 </mapper>
