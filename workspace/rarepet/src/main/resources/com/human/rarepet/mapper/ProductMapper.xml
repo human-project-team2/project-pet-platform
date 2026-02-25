@@ -4,8 +4,8 @@
 <mapper namespace="com.human.rarepet.mapper.ProductMapper">
 	
 	<insert id="insertProduct" parameterType="ProductDto">
-		insert into product_all (id, product_name, product_content, product_category, product_count, product_reg_date, price, shortDescription, saved_file_name, original_file_name, img_url)
-		values (#{productName}, #{productContent}, #{productCategory}, #{productCount}, #{productRegDate}, #{price}, #{shortDescription}, #{savedFileName}, #{originalFileName}, #{imgUrl})
+		insert into product_all (product_name, product_content, product_category, product_count, product_reg_date, price, shortDescription, saved_file_name, original_file_name, img_url, seller_id)
+		values (#{productName}, #{productContent}, #{productCategory}, #{productCount}, #{productRegDate}, #{price}, #{shortDescription}, #{savedFileName}, #{originalFileName}, #{imgUrl}, #{sellerId})
 	</insert>
 	
 	<select id="showAllProduct" resultType="ProductDto">
@@ -15,7 +15,7 @@
 	
 	<select id="findProductsByUserId" resultType="ProductDto">
     SELECT * FROM product_all 
-    WHERE id = #{id} 
+    WHERE seller_id = #{sellerId} 
     ORDER BY product_reg_date DESC
 	</select>
 </mapper>

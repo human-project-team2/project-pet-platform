@@ -1,6 +1,8 @@
 package com.human.rarepet.dto;
 
 
+import java.util.Date;
+
 import lombok.Data;
 
 @Data
@@ -14,9 +16,9 @@ public class ProductDto {
 	private int productCount;
 	private int price;
 	private String imgUrl;
-	private java.util.Date productRegDate;
-	private java.util.Date productModDate;	
+	private Date productRegDate;
+	private Date productModDate;	
 	private String savedFileName;
 	private String originalFileName;
-	private String id; // DB의 id 컬럼과 매핑될 변수
+	private String sellerId; 
 }

@@ -298,6 +298,9 @@ textarea[name="content"],
             </div>
         </div>
     </div>
+    <div th:replace="fragments/fragment :: message"></div>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>	
+    <script th:replace="fragments/fragment :: message_script"></script>
 
     <script>
     $(document).ready(function() {

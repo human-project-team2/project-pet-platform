@@ -29,4 +29,8 @@ public class MarketService {
     public List<ProductDto> findProductsByUserId(String id) {
         return productMapper.findProductsByUserId(id);
     }
+    
+    public ProductDto selectProductByNo(int productNo) {
+    	return productMapper.selectProductByNo(productNo);
+    }
 }
