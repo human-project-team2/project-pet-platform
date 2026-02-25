@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>장바구니 | AnyZoo Marketplace</title>
+
+<!-- Bootstrap -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<!-- Google Font -->
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+
+<style>
+body {
+    font-family: 'Noto Sans KR', sans-serif;
+    background: #fdf6ee;
+}
+
+.card {
+    border: none;
+    border-radius: 20px;
+}
+
+.cart-img {
+    width: 120px;
+    height: 120px;
+    object-fit: cover;
+    border-radius: 15px;
+}
+
+.price {
+    font-weight: 700;
+    color: #dc3545;
+}
+
+.total-box {
+    background: #fff5ec;
+    border-radius: 20px;
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+<div th:replace="fragments/fragment :: header"></div>
+
+<div class="container my-5">
+
+    <h3 class="fw-bold mb-4">🛒 장바구니</h3>
+
+    <!-- Cart Items -->
+    <div class="card shadow p-4 mb-4">
+
+        <div th:if="${#lists.isEmpty(cartItems)}" class="text-center py-5">
+            <p class="text-muted">장바구니에 담긴 상품이 없습니다.</p>
+            <a th:href="@{/market}" class="btn btn-warning rounded-pill px-4">
+                쇼핑 계속하기
+            </a>
+        </div>
+
+        <div th:each="item : ${cartItems}" class="row align-items-center mb-4 border-bottom pb-3">
+
+            <!-- Image -->
+            <div class="col-md-2 text-center">
+                <img th:src="@{${item.imgUrl}}" class="cart-img">
+            </div>
+
+            <!-- Name -->
+            <div class="col-md-4">
+                <h5 th:text="${item.productName}"></h5>
+            </div>
+
+            <!-- Quantity -->
+            <div class="col-md-2">
+                <input type="number" min="1"
+                       class="form-control"
+                       th:value="${item.quantity}">
+            </div>
+
+            <!-- Price -->
+            <div class="col-md-2 price"
+                 th:text="|₩${item.price * item.quantity}|">
+            </div>
+
+            <!-- Remove Button -->
+            <div class="col-md-2 text-end">
+                <a th:href="@{/cart/remove/{id}(id=${item.productNo})}"
+                   class="btn btn-outline-danger btn-sm rounded-pill">
+                    삭제
+                </a>
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Total Section -->
+    <div class="card shadow p-4 total-box">
+
+        <div class="d-flex justify-content-between align-items-center">
+            <h5 class="fw-bold">총 결제 금액</h5>
+            <h4 class="price"
+                th:text="|₩${#aggregates.sum(cartItems.![price * quantity])}|">
+            </h4>
+        </div>
+
+        <div class="mt-4 d-flex justify-content-end gap-3">
+            <a th:href="@{/market}" class="btn btn-outline-secondary rounded-pill px-4">
+                쇼핑 계속하기
+            </a>
+            <a th:href="@{/order/checkout}" class="btn btn-danger rounded-pill px-4">
+                결제하기
+            </a>
+        </div>
+
+    </div>
+
+</div>
+
+<div th:replace="fragments/fragment :: footer"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>

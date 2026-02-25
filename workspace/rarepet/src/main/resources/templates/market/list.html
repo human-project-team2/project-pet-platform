@@ -160,7 +160,7 @@ body {
 			<!-- 상품 리스트 반복문 -->
 				<div class="col-md-4 market-item" th:each="product:${products}">
 					<div class="card shadow">
-						<a th:href="@{market/detail}"><img th:src="@{${product.imgUrl}}" class="card-img-top"></a>
+						<a th:href="@{market/detail/{productNo}(productNo=${product.productNo})}"><img th:src="@{${product.imgUrl}}" class="card-img-top"></a>
 						<div class="card-body">
 							<h5 class="card-title" th:text="${product.productName}"></h5>
 							<p class="card-text text-muted" th:text="${product.shortDescription}" ></p>

@@ -105,11 +105,18 @@ body {
 	<div th:replace="fragments/fragment :: header"></div>
 
 	<div class="container my-5">
-
+		
+		<div class="mb-3">
+		    <a th:href="@{/market}" 
+		       class="btn btn-outline-secondary rounded-pill px-4">
+		        ← 목록으로 돌아가기
+		    </a>
+		</div>
+		
 		<!-- Title -->
 		<div class="mb-4">
-			<h3 class="fw-bold">펜넥 여우</h3>
-			<p class="text-muted">이국적인 외모 · 활발하고 사람을 잘 따름</p>
+			<h3 class="fw-bold" th:text="${product.productName}"></h3>
+			<p class="text-muted" th:text="${product.shortDescription}" ></p>
 		</div>
 
 		<div class="row g-5">
@@ -118,7 +125,7 @@ body {
 			<div class="col-lg-6">
 				<div class="card shadow">
 					<img
-						src="https://images.unsplash.com/photo-1601758123927-196bce6b2b8d?auto=format&fit=crop&w=1000&q=80"
+						th:src="@{${product.imgUrl}}"
 						class="card-img-top">
 				</div>
 			</div>
@@ -127,15 +134,16 @@ body {
 			<div class="col-lg-6">
 				<div class="card shadow p-4">
 
-					<div class="price-badge mb-3">₩2,200,000</div>
+					<div class="price-badge mb-3" th:text="|₩${product.price}|" ></div>
 
 					<ul class="list-unstyled mb-4">
-						<li><strong>품종:</strong> Fennec Fox</li>
-						<li><strong>나이:</strong> 6개월</li>
-						<li><strong>성별:</strong> 수컷</li>
-						<li><strong>건강상태:</strong> 건강검진 완료</li>
-						<li><strong>접종여부:</strong> 예방접종 완료</li>
-						<li><strong>지역:</strong> 서울</li>
+						<li><strong>품종:</strong>
+						<span th:text="${product.productCategory}" ></span>
+						</li>
+						<li><strong>성별:</strong></li>
+						<li><strong>건강상태:</strong></li>
+						<li><strong>접종여부:</strong></li>
+						<li><strong>지역:</strong></li>
 					</ul>
 
 					<div class="d-flex gap-3 flex-wrap">
@@ -159,21 +167,21 @@ body {
 		<!-- Description -->
 		<div class="card shadow p-4 mt-5">
 			<h5 class="fw-bold mb-3">상세 설명</h5>
-			<p>활발하고 호기심이 많은 펜넥 여우입니다. 사람을 잘 따르며 기본적인 사회화가 되어 있습니다. 희귀 개체로 책임감
-				있는 분께 분양을 희망합니다.</p>
+			<p  th:text="${product.productContent}" ></p>
 		</div>
 
 		<!-- Seller Info -->
 		<div class="card shadow p-4 mt-4">
 			<h5 class="fw-bold mb-3">판매자 정보</h5>
 			<p>
-				<strong>판매자명:</strong> AnyZoo 브리더
+				<strong>판매자명:</strong>
+				<span th:text="${product.sellerId}"></span>
 			</p>
 			<p>
-				<strong>연락처:</strong> 010-0000-0000
+				<strong>연락처:</strong>
 			</p>
 			<p>
-				<strong>거래방식:</strong> 직거래 / 예약금 가능
+				<strong>거래방식:</strong>
 			</p>
 		</div>
 
