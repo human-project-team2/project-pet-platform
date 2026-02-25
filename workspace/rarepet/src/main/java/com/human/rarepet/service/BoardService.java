@@ -3,6 +3,7 @@ package com.human.rarepet.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.human.rarepet.dto.AdoBoardDto;
 import com.human.rarepet.dto.BoardDto;
 import com.human.rarepet.dto.GenBoardDto;
 import com.human.rarepet.dto.QnaBoardDto;
@@ -36,6 +37,11 @@ public class BoardService {
 	public void insertBoardQnA(QnaBoardDto board) {
 		
 		boardMapper.insertBoardQnA(board);
+	}
+
+	public void insertBoardAdo(AdoBoardDto board) {
+		
+		boardMapper.insertBoardAdo(board);
 	}
 
 }

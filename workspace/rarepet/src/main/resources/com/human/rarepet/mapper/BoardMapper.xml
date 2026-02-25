@@ -19,6 +19,11 @@
         VALUES (#{board_id}, #{answer_selected}, #{board_question_category})
     </insert>
     
+    <insert id="insertBoardAdo" parameterType="AdoBoardDto">        
+        INSERT INTO board_adopt (board_id, board_adopt_category, board_adopt_done)
+        VALUES (#{board_id}, #{board_adopt_category}, #{board_adopt_done})
+    </insert>
+    
     
    
 </mapper>
