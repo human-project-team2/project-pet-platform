@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.human.rarepet.dto.BoardDto;
+import com.human.rarepet.dto.GenBoardDto;
 import com.human.rarepet.dto.QnaBoardDto;
 import com.human.rarepet.mapper.BoardMapper;
 
@@ -27,6 +28,10 @@ public class BoardService {
 		boardMapper.insertBoard(board);
 	}
 
+	public void insertBoardGen(GenBoardDto board) {
+		 
+		boardMapper.insertBoardGen(board);		
+	}
 
 	public void insertBoardQnA(QnaBoardDto board) {
 		

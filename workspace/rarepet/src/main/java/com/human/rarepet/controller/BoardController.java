@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.human.rarepet.dto.BoardDto;
+import com.human.rarepet.dto.GenBoardDto;
 import com.human.rarepet.service.BoardService;
 import com.human.rarepet.dto.PagerDto;
 import com.human.rarepet.dto.QnaBoardDto;
@@ -35,12 +36,13 @@ public class BoardController {
 	}
 	
 	@PostMapping(path = {"/board/write"})
-	public String writeBoard(BoardDto board) {
+	public String writeBoard(GenBoardDto board) {
 		Date writeDate = new Date();
 		System.out.println("-------------->writeBoard form");
 		System.out.printf("-------------->writetitle " + board.getBoard_title());
 		System.out.printf("-------------->writecontent " + board.getBoard_content());
 		System.out.printf("-------------->writeid " + board.getBoard_id());
+		System.out.printf("-------------->generalcategory " + board.isBoard_general_category());
 		
 		board.setBoard_write_date(writeDate);
 		board.setBoard_like_count(1);
@@ -48,6 +50,7 @@ public class BoardController {
 		
 		// board.getBoardWriteDate();
 		boardService.insertBoard(board);
+		boardService.insertBoardGen(board);
 		return "redirect:/board/boardlist";		
 	}
 	

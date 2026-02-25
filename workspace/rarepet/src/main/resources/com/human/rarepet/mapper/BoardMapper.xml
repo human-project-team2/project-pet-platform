@@ -8,6 +8,11 @@
         INSERT INTO board (board_title, board_content, board_writer_id, board_like_count, board_view_count, board_write_date)
         VALUES (#{board_title}, #{board_content}, #{board_writer_id}, #{board_like_count}, #{board_view_count}, #{board_write_date})
     </insert>
+
+    <insert id="insertBoardGen" parameterType="GenBoardDto">        
+        INSERT INTO board_general (board_id, board_general_category)
+        VALUES (#{board_id}, #{board_general_category})
+    </insert>
     
     <insert id="insertBoardQnA" parameterType="QnABoardDto">        
         INSERT INTO board_question (board_id, answer_selected, board_question_category)
