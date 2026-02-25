@@ -15,7 +15,7 @@
 	
 	<select id="findProductsByUserId" resultType="ProductDto">
     SELECT * FROM product_all 
-    WHERE id = #{id} 
+    WHERE seller_id = #{sellerId} 
     ORDER BY product_reg_date DESC
 	</select>
 </mapper>
