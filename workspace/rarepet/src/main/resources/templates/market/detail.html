@@ -150,14 +150,18 @@ body {
 
 						<button class="btn btn-warning rounded-pill px-4">❤️ 관심등록
 						</button>
+						<button class="btn btn-danger rounded-pill px-4" data-bs-toggle="modal" data-bs-target="#newMessageModal" th:data-bs-receiver="${product.sellerId}">💬 판매자
+							문의</button>
 						
 						<form th:action="@{/market/shoppingCart}" method="post">
 							<input type="hidden" name="productNo" th:value="${product.productNo}">
 							<button type="submit" class="btn btn-outline-dark rounded-pill px-4">
 								🛒 장바구니 등록</button>
 						</form>
-						<button class="btn btn-danger rounded-pill px-4">💬 판매자
-							문의</button>
+						<a th:href="@{/market/shoppingCart}"
+					       class="btn btn-success rounded-pill px-4 fw-bold">
+					        🛒 장바구니로 이동
+					    </a>
 
 					</div>
 
@@ -180,7 +184,12 @@ body {
 				<span th:text="${product.sellerId}"></span>
 			</p>
 			<p>
-				<strong>연락처:</strong>
+				<strong>전화번호:</strong>
+				<span th:text="${phone}"></span>
+			</p>
+			<p>
+				<strong>이메일:</strong>
+				<span th:text="${email}"></span>
 			</p>
 			<p>
 				<strong>거래방식:</strong>

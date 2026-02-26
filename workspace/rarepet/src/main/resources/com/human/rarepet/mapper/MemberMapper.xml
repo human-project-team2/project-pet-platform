@@ -14,9 +14,9 @@
 	
 
 	<select id="selectMemberById" parameterType="string" resultType="com.human.rarepet.dto.MemberDto">
-    SELECT * FROM member 
-    WHERE id = #{id}
-</select>
+	    SELECT * FROM member 
+	    WHERE id = #{id}
+	</select>
     
 
 	

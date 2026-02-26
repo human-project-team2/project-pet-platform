@@ -164,6 +164,14 @@
 		
 		$( () => {
 			
+			// 판매자 문의 누를 때 새로 열리는
+			$("#newMessageModal").on("show.bs.modal", function(event){
+				const button = event.relatedTarget;
+				const receiver = button.getAttribute("data-bs-receiver") || "";
+				$("#receiverId").val(receiver.trim());
+				
+			})
+			
 			 // 새 메시지 보내기 모달 버튼
 			$('#newMessageModal .btn-primary').on('click', () => {
 		      

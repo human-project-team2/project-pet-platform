@@ -76,7 +76,7 @@ body {
 
             <!-- Name -->
             <div class="col-md-4">
-                <h5 th:text="${item.product.productName}"></h5>
+                <a th:href="@{detail/{no}(no=${item.product.productNo})}" ><h5 th:text="${item.product.productName}"></h5></a>
             </div>
 
             <!-- Quantity -->

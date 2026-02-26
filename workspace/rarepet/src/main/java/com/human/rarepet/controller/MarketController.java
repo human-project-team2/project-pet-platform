@@ -24,6 +24,7 @@ import com.human.rarepet.dto.ProductDto;
 import com.human.rarepet.dto.ShoppingCartDto;
 import com.human.rarepet.dto.UpdateCartQuantityDto;
 import com.human.rarepet.service.MarketService;
+import com.human.rarepet.service.MemberService;
 
 import jakarta.servlet.http.HttpSession;
 
@@ -31,8 +32,13 @@ import jakarta.servlet.http.HttpSession;
 @Controller
 public class MarketController {
 	
-	@Autowired
-	private MarketService marketService;
+	private final MemberService memberService;
+	private final MarketService marketService;
+	
+	public MarketController(MarketService marketService, MemberService memberService) {
+		this.memberService = memberService;
+		this.marketService = marketService;
+	}
 	
 	@GetMapping(path={"/market"})
 	public String market(Model model) {
@@ -45,8 +51,15 @@ public class MarketController {
 	
 	@GetMapping(path="/market/detail/{productNo}")
 	public String marketDetail(@PathVariable("productNo") int productNo, Model model) {
+	
 		ProductDto product = marketService.selectProductByNo(productNo);
+		String id = product.getSellerId();
+		MemberDto member = memberService.selectMember(id);
+		
+		model.addAttribute("phone", member.getPhone());
+		model.addAttribute("email", member.getEmail());
 		model.addAttribute("product", product);
+		
 		return "market/detail";
 	}
 	

@@ -24,7 +24,9 @@ public class MemberService {
 		
 	}
 	
-
+	public MemberDto selectMember(String id) {
+		return memberMapper.selectMemberById(id);
+	}
 	// 아이디 중복 확인 로직
     public boolean existsById(String id) {
         // DB에서 해당 ID로 조회했을 때 결과가 null이 아니면 이미 존재하는 것(중복)
