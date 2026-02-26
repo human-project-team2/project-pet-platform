@@ -113,7 +113,7 @@ body{
         <tr th:each="board: ${boards}" style="height:30px">
           <th scope="row" th:text="${ board.boardId }"></th>
           <td th:text="${ board.boardTitle }"></td>
-          <td th:text="${ board.boardTitle }"></td>
+          <td th:text="${ board.boardWriterId }"></td>
           <td th:text="${ board.boardWriteDate }"></td>
           <td th:text="${ board.boardViewCount }"></td>
         </tr>
