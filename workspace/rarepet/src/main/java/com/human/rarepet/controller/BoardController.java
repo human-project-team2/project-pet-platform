@@ -15,7 +15,9 @@ import com.human.rarepet.dto.AdoBoardDto;
 import com.human.rarepet.dto.BoardDto;
 import com.human.rarepet.dto.GenBoardDto;
 import com.human.rarepet.service.BoardService;
+import com.human.rarepet.service.MarketService;
 import com.human.rarepet.dto.PagerDto;
+import com.human.rarepet.dto.ProductDto;
 import com.human.rarepet.dto.QnaBoardDto;
 
 @Controller
@@ -26,6 +28,9 @@ public class BoardController {
 	
 	@Autowired
 	private BoardService boardService;
+	
+	@Autowired
+	private MarketService marketService;
 	
 	@GetMapping(path = {"/board/write"})
 	public String showWriteForm(BoardDto board) {
@@ -58,7 +63,7 @@ public class BoardController {
 	@GetMapping (path = {"/board/boardlist"}) 
 	public String list(Model model) {
 		
-		System.out.println("--------------------Board");
+		System.out.println("--------------------Board");		
 			
 		return "board/boardlist"; 
 		
@@ -68,7 +73,7 @@ public class BoardController {
 	public String boardlist(
 			@RequestParam(value="pageNo", defaultValue="1") int pageNo,
 			Model model) {
-		
+		int board_exist = 0;
 		System.out.println("--------------------Community page");
 		/* 
 		List<BoardDto> boards = boardService.findBoardByPage(pageNo, PAGE_SIZE);
@@ -93,8 +98,50 @@ public class BoardController {
 		model.addAttribute("boards", boards);
 		model.addAttribute("pager", pager);
 		model.addAttribute("pageNo", pageNo);
+		*/		
+		int bono = 1;
+
+		BoardDto board = boardService.showBoardById(bono);
+		
+		if(board != null) {
+			board_exist = 1;				
+			System.out.printf("-------------->board id " + board.getBoard_id());
+		}
+		
+		// BoardDto board = boardService.showAllBoard(bono);
+		// List<BoardDto> boards = boardService.showAllBoard();		
+		
+		/*
+		for(BoardDto board : boards) {
+			if(board != null) {
+				board_exist = 1;				
+				System.out.printf("-------------->board id " + board.getBoard_id());
+			}			
+		}
+		if(board_exist == 1) {
+			model.addAttribute("boards", boards);
+		} else {
+			System.out.println("-------------->board null\n");
+		}
+		
+		
+		List<ProductDto> products = marketService.showAllProduct();
+		
+		for(ProductDto product : products) {
+			if(product != null) {
+				board_exist = 1;				
+				System.out.printf("-------------->product title " + product.getProductName());
+			}			
+		}
+		if(board_exist == 00) {
+			System.out.println("-------------->product null\n");
+		}
 		*/
-			
+		
+		
+		/*
+		 * model.addAttribute("boards", boards);
+		 */	
 		// 여기에 입력 게시판 페이지 관련 from listWithPaging demoweb2 BoardController.java
 		return "board/community"; 
 		

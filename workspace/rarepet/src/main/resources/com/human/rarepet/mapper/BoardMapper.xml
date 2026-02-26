@@ -8,6 +8,11 @@
         INSERT INTO board (board_title, board_content, board_writer_id, board_like_count, board_view_count, board_write_date)
         VALUES (#{board_title}, #{board_content}, #{board_writer_id}, #{board_like_count}, #{board_view_count}, #{board_write_date})
     </insert>
+    
+    <select id="showBoardById" resultType="AdoBoardDto" parameterType="int">
+    SELECT board_id, board_title, board_writer_id FROM board 
+    WHERE board_id = #{ bono }
+	</select>
 
     <insert id="insertBoardGen" parameterType="GenBoardDto">        
         INSERT INTO board_general (board_id, board_general_category)
@@ -24,6 +29,9 @@
         VALUES (#{board_id}, #{board_adopt_category}, #{board_adopt_done})
     </insert>
     
-    
+    <select id="showAllBoard" resultType="AdoBoardDto">
+		select *
+		from board
+	</select>
    
 </mapper>
