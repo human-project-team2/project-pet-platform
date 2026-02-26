@@ -17,10 +17,10 @@ import org.springframework.web.multipart.MultipartFile;
 import com.human.rarepet.common.Util;
 import com.human.rarepet.dto.MemberDto;
 import com.human.rarepet.dto.ProductDto;
+import com.human.rarepet.dto.ShoppingCartDto;
 import com.human.rarepet.service.MarketService;
 
 import jakarta.servlet.http.HttpSession;
-
 
 
 @Controller
@@ -82,7 +82,33 @@ public class MarketController {
 		return "redirect:/market";
 	}
 	
+	@GetMapping(path = {"/market/shoppingCart"})
+	public String shoppingCart(Model model, HttpSession session) {
+		
+		MemberDto member = (MemberDto)session.getAttribute("loginuser");
+		if(member == null) {
+			return "redirect:/auth/login";
+		} 
+		String id = member.getId();
+		
+		List<ShoppingCartDto> cartList = marketService.selectShoppingCart(id);
+		model.addAttribute("cartList", cartList);
+		return "market/shoppingCart";
+	}
 	
+	@PostMapping(path = {"/market/shoppingCart"})
+	public String addShoppingCart(@RequestParam("productNo") int productNo, HttpSession session) {
+		
+		MemberDto member = (MemberDto)session.getAttribute("loginuser");
+		if(member == null) {
+			return "redirect:/auth/login";
+		} 
+		String id = member.getId();
+
+		marketService.addShoppingCart(productNo, id);
+		
+		return "redirect:/market/shoppingCart";
+	}
 	
 	
 }

@@ -150,10 +150,12 @@ body {
 
 						<button class="btn btn-warning rounded-pill px-4">❤️ 관심등록
 						</button>
-
-						<button class="btn btn-outline-dark rounded-pill px-4">
-							🛒 장바구니 등록</button>
-
+						
+						<form th:action="@{/market/shoppingCart}" method="post">
+							<input type="hidden" name="productNo" th:value="${product.productNo}">
+							<button type="submit" class="btn btn-outline-dark rounded-pill px-4">
+								🛒 장바구니 등록</button>
+						</form>
 						<button class="btn btn-danger rounded-pill px-4">💬 판매자
 							문의</button>
 
