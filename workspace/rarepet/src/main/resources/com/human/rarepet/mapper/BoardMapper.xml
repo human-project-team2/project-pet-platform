@@ -4,9 +4,9 @@
 <mapper namespace="com.human.rarepet.mapper.BoardMapper">
 
     <insert id="insertBoard" parameterType="BoardDto" 
-    		useGeneratedKeys="true" keyColumn="board_id" keyProperty="board_id">
+    		useGeneratedKeys="true" keyColumn="boardId" keyProperty="boardId">
         INSERT INTO board (board_title, board_content, board_writer_id, board_like_count, board_view_count, board_write_date)
-        VALUES (#{board_title}, #{board_content}, #{board_writer_id}, #{board_like_count}, #{board_view_count}, #{board_write_date})
+        VALUES (#{boardTitle}, #{boardContent}, #{boardWriterId}, #{boardLikeCount}, #{boardViewCount}, #{boardWriteDate})
     </insert>
     
     <select id="showBoardById" resultType="AdoBoardDto" parameterType="int">
@@ -19,22 +19,23 @@
 
     <insert id="insertBoardGen" parameterType="GenBoardDto">        
         INSERT INTO board_general (board_id, board_general_category)
-        VALUES (#{board_id}, #{board_general_category})
+        VALUES (#{boardId}, #{boardGeneralCategory})
     </insert>
     
     <insert id="insertBoardQnA" parameterType="QnABoardDto">        
         INSERT INTO board_question (board_id, answer_selected, board_question_category)
-        VALUES (#{board_id}, #{answer_selected}, #{board_question_category})
+        VALUES (#{boardId}, #{answerSelected}, #{boardQuestionCategory})
     </insert>
     
     <insert id="insertBoardAdo" parameterType="AdoBoardDto">        
         INSERT INTO board_adopt (board_id, board_adopt_category, board_adopt_done)
-        VALUES (#{board_id}, #{board_adopt_category}, #{board_adopt_done})
+        VALUES (#{boardId}, #{boardAdoptCategory}, #{boardAdoptDone})
     </insert>
     
     <select id="showAllBoard" resultType="AdoBoardDto">
 		select *
 		from board
+		ORDER BY board_like_count DESC
 	</select>
    
 </mapper>

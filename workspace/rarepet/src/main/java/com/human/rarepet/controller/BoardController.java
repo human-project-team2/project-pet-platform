@@ -44,14 +44,9 @@ public class BoardController {
 	@PostMapping(path = {"/board/write"})
 	public String writeBoard(GenBoardDto board) {
 		Date writeDate = new Date();
-		/*
-		 * System.out.println("-------------->writeBoard form");
-		 * System.out.printf("-------------->writetitle " + board.getBoard_title());
-		 * System.out.printf("-------------->writecontent " + board.getBoard_content());
-		 * System.out.printf("-------------->writeid " + board.getBoard_id());
-		 * System.out.printf("-------------->generalcategory " +
-		 * board.isBoard_general_category());
-		 */
+		
+		System.out.printf("-------------->Gen writetitle " + board.getBoardTitle());
+		
 		board.setBoardWriteDate(writeDate);
 		board.setBoardLikeCount(1);
 		board.setBoardViewCount(1);
@@ -153,20 +148,13 @@ public class BoardController {
 	@PostMapping(path = {"/board/qwrite"})
 	public String writeQBoard(QnaBoardDto board) {
 		Date writeDate = new Date();
-		/*
-		 * System.out.println("-------------->writeBoard form");
-		 * System.out.printf("-------------->writetitle " + board.getBoard_title());
-		 * System.out.printf("-------------->writecontent " + board.getBoard_content());
-		 * System.out.printf("-------------->writeid " + board.getBoard_id());
-		 * System.out.printf("-------------->answer " + board.getAnswer_selected());
-		 */
-		
+				
 		board.setBoardWriteDate(writeDate);
 		board.setBoardLikeCount(1);
 		board.setBoardViewCount(1);
 		
 		boardService.insertBoard(board);
-		//board.setBoard_id(board.getBoard_id());
+		
 		board.setAnswer_selected("1");
 		board.setBoard_question_category(true);
 		boardService.insertBoardQnA(board);		
@@ -203,11 +191,7 @@ public class BoardController {
 	@PostMapping(path = {"/board/adoptionwrite"})
 	public String writeABoard(AdoBoardDto board) {
 		Date writeDate = new Date();
-		System.out.println("-------------->writeBoard form");
-		System.out.printf("-------------->writetitle " + board.getBoard_title());
-		System.out.printf("-------------->writecontent " + board.getBoard_content());
-		System.out.printf("-------------->writeid " + board.getBoard_id());
-		System.out.printf("-------------->adopt done " + board.getBoard_adopt_done());
+		
 		board.setBoardWriteDate(writeDate);
 		board.setBoardLikeCount(1);
 		board.setBoardViewCount(1);
