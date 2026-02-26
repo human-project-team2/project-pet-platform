@@ -2,11 +2,15 @@ package com.human.rarepet.mapper;
 
 import java.util.List;
 
+import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.One;
+import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Result;
 import org.apache.ibatis.annotations.Results;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 
 import com.human.rarepet.dto.ProductDto;
 import com.human.rarepet.dto.ShoppingCartDto;
@@ -31,12 +35,17 @@ public interface ProductMapper {
 			+ "p.seller_id, p.product_no, p.product_name, p.price, p.img_url "
 			+ "from shopping_cart c, product_all p where c.product_no = p.product_no and c.id = #{id}")
 	@Results({
-		@Result(property = "sellerId", column = "seller_id"),
-		@Result(property = "productName", column = "product_name"),
-		@Result(property = "price", column = "price"),
-		@Result(property = "imgUrl", column = "img_url")
 		
+		@Result(property = "product", column = "product_no",
+				one = @One(select = "com.human.rarepet.mapper.ProductMapper.selectProductByNo"))
 	})
 	List<ShoppingCartDto> selectShoppingCart(String id);
+	
+	@Delete("delete from shopping_cart where product_no = #{productNo} and id = #{id}")
+	void deleteShoppingCart(@Param("productNo") int productNo, @Param("id") String id);
+	
+	@Update("update shopping_cart set cart_quantity = #{cartQuantity} where product_no = #{productNo} and id = #{id}")
+	void updateShoppingCart(ShoppingCartDto updated);
+	
 	
 }

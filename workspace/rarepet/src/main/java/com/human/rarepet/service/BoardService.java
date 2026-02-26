@@ -1,5 +1,7 @@
 package com.human.rarepet.service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -42,6 +44,15 @@ public class BoardService {
 	public void insertBoardAdo(AdoBoardDto board) {
 		
 		boardMapper.insertBoardAdo(board);
+	}
+
+	public List<BoardDto> showAllBoard() {
+		return boardMapper.showAllBoard();
+	}
+
+	public BoardDto showBoardById(int bono) {		
+		BoardDto dto = boardMapper.showBoardById(bono);		
+		return dto;
 	}
 
 }

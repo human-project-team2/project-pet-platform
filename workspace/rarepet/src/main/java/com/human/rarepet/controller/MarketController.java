@@ -6,18 +6,23 @@ import java.io.File;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.human.rarepet.common.Util;
 import com.human.rarepet.dto.MemberDto;
 import com.human.rarepet.dto.ProductDto;
 import com.human.rarepet.dto.ShoppingCartDto;
+import com.human.rarepet.dto.UpdateCartQuantityDto;
 import com.human.rarepet.service.MarketService;
 
 import jakarta.servlet.http.HttpSession;
@@ -92,12 +97,15 @@ public class MarketController {
 		String id = member.getId();
 		
 		List<ShoppingCartDto> cartList = marketService.selectShoppingCart(id);
+		
 		model.addAttribute("cartList", cartList);
 		return "market/shoppingCart";
 	}
 	
 	@PostMapping(path = {"/market/shoppingCart"})
-	public String addShoppingCart(@RequestParam("productNo") int productNo, HttpSession session) {
+	public String addShoppingCart(@RequestParam("productNo") int productNo, 
+									HttpSession session,
+									RedirectAttributes redirectAttributes) {
 		
 		MemberDto member = (MemberDto)session.getAttribute("loginuser");
 		if(member == null) {
@@ -105,10 +113,41 @@ public class MarketController {
 		} 
 		String id = member.getId();
 
-		marketService.addShoppingCart(productNo, id);
+		try {
+			marketService.addShoppingCart(productNo, id);
+			redirectAttributes.addFlashAttribute("message", "장바구니에 담겼습니다.");
+			
+		} catch (DuplicateKeyException exception) {
+			redirectAttributes.addFlashAttribute("message", "이미 장바구니에 담긴 상품입니다");
+			
+		}
 		
 		return "redirect:/market/shoppingCart";
 	}
 	
+	@GetMapping(path = {"/market/deleteShoppingCart"})
+	public String deleteShoppingCart(@RequestParam("productNo") int productNo, HttpSession session) {
+		
+		MemberDto member = (MemberDto) session.getAttribute("loginuser");
+		String id = member.getId();
+		marketService.deleteShoppingCart(productNo, id);
+		return "redirect:/market/shoppingCart";
+	}
 	
+	@PostMapping(path = {"/market/updateShoppingCart"})
+	@ResponseBody
+	public String updateShoppingCart(@RequestBody List<UpdateCartQuantityDto> updatedList,
+									 HttpSession session,
+									 RedirectAttributes redirectAttributes) {
+		
+		MemberDto member = (MemberDto) session.getAttribute("loginuser");
+
+		if(member != null) {
+			String id = member.getId();
+			marketService.updateShoppingCartList(id, updatedList);
+			return "success";
+		} else {
+			return "failure";
+		}
+	}
 }

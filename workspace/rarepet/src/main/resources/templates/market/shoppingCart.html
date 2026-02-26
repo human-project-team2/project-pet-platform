@@ -15,6 +15,8 @@
 body {
     font-family: 'Noto Sans KR', sans-serif;
     background: #fdf6ee;
+    padding-top: 80px; /* adjust to navbar height */
+    
 }
 
 .card {
@@ -46,14 +48,16 @@ body {
 
 <!-- NAVBAR -->
 <div th:replace="fragments/fragment :: header"></div>
-
+<script th:if="${message}" th:inline="javascript"> // message == null 일 경우 무시
+	alert([[${message}]]);
+</script>
 <div class="container my-5">
 
     <h3 class="fw-bold mb-4">🛒 장바구니</h3>
 
     <!-- Cart Items -->
     <div class="card shadow p-4 mb-4">
-
+	
         <div th:if="${#lists.isEmpty(cartList)}" class="text-center py-5">
             <p class="text-muted">장바구니에 담긴 상품이 없습니다.</p>
             <a th:href="@{/market}" class="btn btn-warning rounded-pill px-4">
@@ -61,37 +65,39 @@ body {
             </a>
         </div>
 
-        <div th:each="item : ${cartList}" class="row align-items-center mb-4 border-bottom pb-3">
+        <div th:each="item : ${cartList}" class="row align-items-center mb-4 border-bottom pb-3 cart-item"
+        	th:data-product-no="${item.product.productNo}"
+        >
 
             <!-- Image -->
             <div class="col-md-2 text-center">
-                <img th:src="${item.imgUrl}" class="cart-img">
+                <img th:src="${item.product.imgUrl}" class="cart-img">
             </div>
 
             <!-- Name -->
             <div class="col-md-4">
-                <h5 th:text="${item.productName}"></h5>
+                <h5 th:text="${item.product.productName}"></h5>
             </div>
 
             <!-- Quantity -->
             <div class="col-md-2">
                 <input type="number" min="1"
-                       class="form-control"
+                       class="form-control cart-quantity"
                        th:value="${item.cartQuantity}">
             </div>
 
             <!-- Price -->
             <div class="col-md-2 price"
-                 th:text="|₩${item.price * item.cartQuantity}|">
+                 th:text="|₩${item.product.price * item.cartQuantity}|">
             </div>
 
             <!-- Remove Button -->
-           <!--  <div class="col-md-2 text-end">
-                <a th:href="@{/cart/remove/{id}(id=${item.productNo})}"
+            <div class="col-md-2 text-end">
+                <a th:href="@{/market/deleteShoppingCart(productNo=${item.product.productNo})}"
                    class="btn btn-outline-danger btn-sm rounded-pill">
                     삭제
                 </a>
-            </div> -->
+            </div>
 
         </div>
 
@@ -103,14 +109,17 @@ body {
         <div class="d-flex justify-content-between align-items-center">
             <h5 class="fw-bold">총 결제 금액</h5>
             <h4 class="price"
-                th:text="|₩${#aggregates.sum(cartList.![price * cartQuantity])}|">
-            </h4>
+			    th:text="${cartList != null and !#lists.isEmpty(cartlist) ? #aggregates.sum(cartList.![product.price * cartQuantity]) : 0}">
+			</h4>
         </div>
 
         <div class="mt-4 d-flex justify-content-end gap-3">
             <a th:href="@{/market}" class="btn btn-outline-secondary rounded-pill px-4">
                 쇼핑 계속하기
             </a>
+            <button id="saveShoppingCart" type="submit" th:href="@{/market/saveCart}" class="btn btn-success rounded-pill px-4">
+		        저장하기
+		    </button>
             <a th:href="@{/order/checkout}" class="btn btn-danger rounded-pill px-4">
                 결제하기
             </a>
@@ -121,8 +130,43 @@ body {
 </div>
 
 <div th:replace="fragments/fragment :: footer"></div>
-
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<div th:replace="fragments/fragment :: message"></div>
+<script th:replace="fragments/fragment :: message_script"></script>
 
+<script>
+$(()=>{
+	
+	
+	$("#saveShoppingCart").on("click", (event) => {
+
+		const updatedList = [];
+		
+		$(".cart-item").each(function() {
+			
+			updatedList.push({
+					productNo: parseInt($(this).data("product-no")),
+					cartQuantity: parseInt($(this).find(".cart-quantity").val())
+			})
+		})
+		console.log(updatedList);
+		fetch("/market/updateShoppingCart", 
+			{method: "post", 
+			headers: {"content-type": "application/json"},
+			body: JSON.stringify(updatedList)}		
+		).then(response => response.text()).then(data => {
+			if(data == "success"){
+				alert("저장되었습니다.")
+				location.reload();
+			} else {
+				alert("저장 실패");
+				location.reload();
+			}
+		})
+		
+	})
+})
+</script>
 </body>
 </html>

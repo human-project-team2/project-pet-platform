@@ -12,10 +12,13 @@ public class ShoppingCartDto {
 	private int productNo;
 	private int cartQuantity;
 	
-	//
-	private String sellerId;
-	private String productName;
-	private int price;
-	private String imgUrl;
+
+//	private String sellerId;
+//	private String productName;
+//	private int price;
+//	private String imgUrl;
+
+	private ProductDto product; // nested Dto
+	
 	
 }
