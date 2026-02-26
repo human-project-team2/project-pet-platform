@@ -7,7 +7,7 @@ public class AdoBoardDto extends BoardDto {
 
 	//private BoardDto board;
     
-    private boolean board_adopt_category; 
-    private int board_adopt_done; 
+    private boolean boardAdoptCategory; 
+    private int boardAdoptDone; 
 	
 }

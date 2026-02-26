@@ -50,8 +50,8 @@ public class BoardService {
 		return boardMapper.showAllBoard();
 	}
 
-	public BoardDto showBoardById(int bono) {		 
-		BoardDto dto = boardMapper.showBoardById(bono);
+	public BoardDto showBoardById(int bono) {		
+		BoardDto dto = boardMapper.showBoardById(bono);		
 		return dto;
 	}
 
