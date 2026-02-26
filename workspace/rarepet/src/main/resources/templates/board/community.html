@@ -99,27 +99,7 @@ body{
         </div>
     </div>
 
-	<table class="table table-hover">
-      <thead>
-      <tr>
-        <th scope="col">글번호</th>
-        <th scope="col">제목</th>
-        <th scope="col">작성자</th>
-        <th scope="col">작성일</th>
-        <th scope="col">조회수</th>
-      </tr>
-      </thead>
-      <tbody>                      
-        <tr th:each="board: ${boards}" style="height:30px">
-          <th scope="row" th:text="${ board.board_id }"></th>
-          <td th:text="${ board.board_title }"></td>
-          <td th:text="${ board.board_title }"></td>
-          <td th:text="${ board.board_write_date }"></td>
-          <td th:text="${ board.board_view_count }"></td>
-        </tr>
-      </tbody>
-    </table>
-    
+	
     <!-- 게시글 리스트 (상단 10개는 인기글 정렬) -->
     <table class="table table-hover">
         <thead class="table-light">
@@ -154,16 +134,18 @@ body{
                 <td>12</td>
             </tr>
         </tbody>
+        <!-- 
         <tbody>                      
           <tr th:each="board: ${boards}" style="height:30px">
-            <th scope="row" th:text="${ board.board_id }"></th>
+            <th scope="row" th:text="${ board.boardId }"></th>
             <td>
-                <a 	th:href="@{/board/detail(pageNo=${pager.pageNo}, boardNo=${board.board_id}) }"
+                <a 	th:href="@{/board/detail(pageNo=${pager.pageNo}, boardNo=${board.boardId}) }"
                     th:text="${ board.title }"></a>
             </td>          
             
           </tr>
         </tbody>
+         -->
         <!-- 
         <tbody>                      
           <tr th:each="board: ${boards}" style="height:30px">
@@ -180,6 +162,28 @@ body{
          -->
         
     </table>
+    
+    <table class="table table-hover">
+      <thead>
+      <tr>
+        <th scope="col">글번호</th>
+        <th scope="col">제목</th>
+        <th scope="col">작성자</th>
+        <th scope="col">작성일</th>
+        <th scope="col">조회수</th>
+      </tr>
+      </thead>
+      <tbody>                      
+        <tr th:each="board: ${boards}" style="height:30px">
+          <th scope="row" th:text="${ board.boardId }"></th>
+          <td th:text="${ board.boardTitle }"></td>
+          <td th:text="${ board.boardWriterId }"></td>
+          <td th:text="${ board.boardWriteDate }"></td>
+          <td th:text="${ board.boardViewCount }"></td>
+        </tr>
+      </tbody>
+    </table>
+    
 </div>
 
 	<!-- PAGINATION -->

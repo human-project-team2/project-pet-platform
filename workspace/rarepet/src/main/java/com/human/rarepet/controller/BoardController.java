@@ -44,15 +44,12 @@ public class BoardController {
 	@PostMapping(path = {"/board/write"})
 	public String writeBoard(GenBoardDto board) {
 		Date writeDate = new Date();
-		System.out.println("-------------->writeBoard form");
-		System.out.printf("-------------->writetitle " + board.getBoard_title());
-		System.out.printf("-------------->writecontent " + board.getBoard_content());
-		System.out.printf("-------------->writeid " + board.getBoard_id());
-		System.out.printf("-------------->generalcategory " + board.isBoard_general_category());
 		
-		board.setBoard_write_date(writeDate);
-		board.setBoard_like_count(1);
-		board.setBoard_view_count(1);
+		System.out.printf("-------------->Gen writetitle " + board.getBoardTitle());
+		
+		board.setBoardWriteDate(writeDate);
+		board.setBoardLikeCount(1);
+		board.setBoardViewCount(1);
 		
 		// board.getBoardWriteDate();
 		boardService.insertBoard(board);
@@ -99,23 +96,22 @@ public class BoardController {
 		model.addAttribute("pager", pager);
 		model.addAttribute("pageNo", pageNo);
 		*/		
-		int bono = 1;
-
-		BoardDto board = boardService.showBoardById(bono);
-		
-		if(board != null) {
-			board_exist = 1;				
-			System.out.printf("-------------->board id " + board.getBoard_id());
-		}
-		
-		// BoardDto board = boardService.showAllBoard(bono);
-		// List<BoardDto> boards = boardService.showAllBoard();		
-		
 		/*
+		 * int bono = 15;
+		 * 
+		 * BoardDto board = boardService.showBoardById(bono);
+		 * 
+		 * if(board != null) { board_exist = 1;
+		 * System.out.printf("-------------->board id " + board.getBoardId()); }
+		 */		
+		// BoardDto board = boardService.showAllBoard(bono);
+		
+		List<BoardDto> boards = boardService.showAllBoard();		
+				
 		for(BoardDto board : boards) {
 			if(board != null) {
 				board_exist = 1;				
-				System.out.printf("-------------->board id " + board.getBoard_id());
+				System.out.printf("-------------->board id " + board.getBoardId());
 			}			
 		}
 		if(board_exist == 1) {
@@ -125,23 +121,6 @@ public class BoardController {
 		}
 		
 		
-		List<ProductDto> products = marketService.showAllProduct();
-		
-		for(ProductDto product : products) {
-			if(product != null) {
-				board_exist = 1;				
-				System.out.printf("-------------->product title " + product.getProductName());
-			}			
-		}
-		if(board_exist == 00) {
-			System.out.println("-------------->product null\n");
-		}
-		*/
-		
-		
-		/*
-		 * model.addAttribute("boards", boards);
-		 */	
 		// 여기에 입력 게시판 페이지 관련 from listWithPaging demoweb2 BoardController.java
 		return "board/community"; 
 		
@@ -169,18 +148,13 @@ public class BoardController {
 	@PostMapping(path = {"/board/qwrite"})
 	public String writeQBoard(QnaBoardDto board) {
 		Date writeDate = new Date();
-		System.out.println("-------------->writeBoard form");
-		System.out.printf("-------------->writetitle " + board.getBoard_title());
-		System.out.printf("-------------->writecontent " + board.getBoard_content());
-		System.out.printf("-------------->writeid " + board.getBoard_id());
-		System.out.printf("-------------->answer " + board.getAnswer_selected());
-		
-		board.setBoard_write_date(writeDate);
-		board.setBoard_like_count(1);
-		board.setBoard_view_count(1);
+				
+		board.setBoardWriteDate(writeDate);
+		board.setBoardLikeCount(1);
+		board.setBoardViewCount(1);
 		
 		boardService.insertBoard(board);
-		//board.setBoard_id(board.getBoard_id());
+		
 		board.setAnswer_selected("1");
 		board.setBoard_question_category(true);
 		boardService.insertBoardQnA(board);		
@@ -217,14 +191,10 @@ public class BoardController {
 	@PostMapping(path = {"/board/adoptionwrite"})
 	public String writeABoard(AdoBoardDto board) {
 		Date writeDate = new Date();
-		System.out.println("-------------->writeBoard form");
-		System.out.printf("-------------->writetitle " + board.getBoard_title());
-		System.out.printf("-------------->writecontent " + board.getBoard_content());
-		System.out.printf("-------------->writeid " + board.getBoard_id());
-		System.out.printf("-------------->adopt done " + board.getBoard_adopt_done());
-		board.setBoard_write_date(writeDate);
-		board.setBoard_like_count(1);
-		board.setBoard_view_count(1);
+		
+		board.setBoardWriteDate(writeDate);
+		board.setBoardLikeCount(1);
+		board.setBoardViewCount(1);
 		
 		boardService.insertBoard(board);
 		boardService.insertBoardAdo(board);

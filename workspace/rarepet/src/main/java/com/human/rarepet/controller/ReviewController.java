@@ -12,4 +12,9 @@ public class ReviewController {
 	public String review() {
 		return "/review/review";  
 	}
+	
+	@GetMapping(path = { "/write" })
+	public String write() {
+		return "/review/write";  
+	}
 }

@@ -13,7 +13,7 @@ import com.human.rarepet.mapper.BoardMapper;
 
 @Service("boardService") // 스프링 프레임워크에 클래스를 등록하는 설정 --> new 하지 않고 주입 가능
 public class BoardService {
-	
+	 
 	//@Autowired // 스프링이 관리하는 AuthDao 객체를 주입하세요
 	//private BoardDao authDao;
 	
@@ -50,8 +50,8 @@ public class BoardService {
 		return boardMapper.showAllBoard();
 	}
 
-	public BoardDto showBoardById(int bono) {		 
-		BoardDto dto = boardMapper.showBoardById(bono);
+	public BoardDto showBoardById(int bono) {		
+		BoardDto dto = boardMapper.showBoardById(bono);		
 		return dto;
 	}
 

@@ -8,6 +8,6 @@ public class GenBoardDto extends BoardDto {
 	//private BoardDto board;
     // 일반 게시판 추가 필드
      
-    private boolean board_general_category; 
+    private boolean boardGeneralCategory;
 	
 }

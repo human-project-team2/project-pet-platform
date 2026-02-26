@@ -9,13 +9,13 @@ import lombok.Data;
 @Data
 public class BoardDto {
 
-	private int board_id;
-	private String board_title;
-	private String board_content;	
-	private String board_writer_id;
-	private int board_like_count;
-	private int board_view_count;
-	private java.util.Date board_write_date;
+	private int boardId;
+	private String boardTitle;
+	private String boardContent;	
+	private String boardWriterId;
+	private int boardLikeCount;
+	private int boardViewCount;
+	private java.util.Date boardWriteDate;
 	
 	//private String email;
 	//private MemberDto writer;
