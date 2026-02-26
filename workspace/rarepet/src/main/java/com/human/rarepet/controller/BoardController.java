@@ -11,9 +11,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.human.rarepet.dto.AdoBoardDto;
 import com.human.rarepet.dto.BoardDto;
+import com.human.rarepet.dto.GenBoardDto;
 import com.human.rarepet.service.BoardService;
 import com.human.rarepet.dto.PagerDto;
+import com.human.rarepet.dto.QnaBoardDto;
 
 @Controller
 public class BoardController {
@@ -34,17 +37,21 @@ public class BoardController {
 	}
 	
 	@PostMapping(path = {"/board/write"})
-	public String writeBoard(BoardDto board) {
+	public String writeBoard(GenBoardDto board) {
 		Date writeDate = new Date();
 		System.out.println("-------------->writeBoard form");
 		System.out.printf("-------------->writetitle " + board.getBoard_title());
 		System.out.printf("-------------->writecontent " + board.getBoard_content());
 		System.out.printf("-------------->writeid " + board.getBoard_id());
+		System.out.printf("-------------->generalcategory " + board.isBoard_general_category());
+		
 		board.setBoard_write_date(writeDate);
 		board.setBoard_like_count(1);
 		board.setBoard_view_count(1);
+		
 		// board.getBoardWriteDate();
 		boardService.insertBoard(board);
+		boardService.insertBoardGen(board);
 		return "redirect:/board/boardlist";		
 	}
 	
@@ -103,7 +110,8 @@ public class BoardController {
 	}		
 	
 	@GetMapping(path = {"/board/qwrite"})
-	public String showQWriteForm(BoardDto board) {
+	public String showQWriteForm(QnaBoardDto board) {
+		//public String showQWriteForm(BoardDto board) {
 		
 		System.out.println("-------------->write QnAform");
 		
@@ -112,17 +120,23 @@ public class BoardController {
 	}
 	
 	@PostMapping(path = {"/board/qwrite"})
-	public String writeQBoard(BoardDto board) {
+	public String writeQBoard(QnaBoardDto board) {
 		Date writeDate = new Date();
 		System.out.println("-------------->writeBoard form");
 		System.out.printf("-------------->writetitle " + board.getBoard_title());
 		System.out.printf("-------------->writecontent " + board.getBoard_content());
 		System.out.printf("-------------->writeid " + board.getBoard_id());
+		System.out.printf("-------------->answer " + board.getAnswer_selected());
+		
 		board.setBoard_write_date(writeDate);
 		board.setBoard_like_count(1);
 		board.setBoard_view_count(1);
 		
 		boardService.insertBoard(board);
+		//board.setBoard_id(board.getBoard_id());
+		board.setAnswer_selected("1");
+		board.setBoard_question_category(true);
+		boardService.insertBoardQnA(board);		
 		return "redirect:/board/boardlist";		
 	}
 	
@@ -154,17 +168,19 @@ public class BoardController {
 	}
 	
 	@PostMapping(path = {"/board/adoptionwrite"})
-	public String writeABoard(BoardDto board) {
+	public String writeABoard(AdoBoardDto board) {
 		Date writeDate = new Date();
 		System.out.println("-------------->writeBoard form");
 		System.out.printf("-------------->writetitle " + board.getBoard_title());
 		System.out.printf("-------------->writecontent " + board.getBoard_content());
 		System.out.printf("-------------->writeid " + board.getBoard_id());
+		System.out.printf("-------------->adopt done " + board.getBoard_adopt_done());
 		board.setBoard_write_date(writeDate);
 		board.setBoard_like_count(1);
 		board.setBoard_view_count(1);
 		
 		boardService.insertBoard(board);
+		boardService.insertBoardAdo(board);
 		return "redirect:/board/boardlist";		
 	}
 	
