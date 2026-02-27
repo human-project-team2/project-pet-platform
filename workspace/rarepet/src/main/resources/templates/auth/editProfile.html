@@ -86,7 +86,7 @@ body { font-family: 'Noto Sans KR', sans-serif; background: #fdf6ee; padding-top
 						<button class="btn btn-zipcode px-3" type="button" onclick="execDaumPostcode()">번호 찾기</button>
 					</div>
 					<input type="text" id="address" name="address" class="form-control mb-2" th:value="${user.address}" placeholder="기본 주소" readonly> 
-					<input type="text" id="detailAddress" name="detailAddress" class="form-control" placeholder="상세 주소를 입력하세요">
+					<input type="text" id="detailAddress" class="form-control" placeholder="상세 주소를 입력하세요">
 				</div>
 
 				<div class="d-grid gap-2 mt-5">
@@ -98,8 +98,8 @@ body { font-family: 'Noto Sans KR', sans-serif; background: #fdf6ee; padding-top
 	</div>
 
 	<div th:replace="fragments/fragment :: footer"></div>
+	<div th:replace="fragments/fragment :: message"></div>
 	
-<div th:replace="fragments/fragment :: message"></div>
 	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>	
 	<script th:replace="fragments/fragment :: message_script"></script>
 
@@ -115,18 +115,21 @@ body { font-family: 'Noto Sans KR', sans-serif; background: #fdf6ee; padding-top
 		const pwMsgArea = document.getElementById('pwCheckMsg');
 		const submitBtn = document.getElementById('submitBtn');
 
-		// 1. 초기 로드 시 이메일 분리 및 셀렉트 박스 설정
+		const addrInput = document.getElementById('address');
+		const detailAddrInput = document.getElementById('detailAddress');
+
+		// 1. 초기 로드 시 이메일 분리 설정
 		window.onload = function() {
 			const emailValue = totalEmail.value;
 			if (emailValue && emailValue.includes('@')) {
 				const parts = emailValue.split('@');
 				emailId.value = parts[0];
 				
-				// 기존 도메인이 옵션에 있는지 확인
 				let isKnownDomain = false;
 				for (let option of domainSelect.options) {
 					if (option.value === parts[1]) {
 						domainSelect.value = parts[1];
+						emailDomain.value = parts[1]; // 도메인 값 저장
 						isKnownDomain = true;
 						break;
 					}
@@ -140,7 +143,7 @@ body { font-family: 'Noto Sans KR', sans-serif; background: #fdf6ee; padding-top
 			}
 		};
 
-		// 2. 도메인 선택 로직 (직접 입력 시에만 입력창 노출)
+		// 2. 도메인 선택 로직
 		domainSelect.addEventListener('change', function() {
 			if (this.value === "direct") {
 				emailDomain.style.display = "block";
@@ -153,32 +156,28 @@ body { font-family: 'Noto Sans KR', sans-serif; background: #fdf6ee; padding-top
 			checkTotalValidation();
 		});
 
-		// 3. 실시간 유효성 통합 검사 (이메일 도메인 + 비밀번호)
+		// 3. 실시간 유효성 통합 검사
 		function checkTotalValidation() {
 			const isPwMatch = validatePassword();
 			const isEmailValid = validateEmailDomain();
-			
-			// 모든 조건 충족 시에만 버튼 활성화
 			submitBtn.disabled = !(isPwMatch && isEmailValid);
 		}
 
-		// 4. 이메일 도메인 정규식 검사 (점 포함 여부 등)
+		// 4. 이메일 도메인 검사
 		function validateEmailDomain() {
 			const domain = emailDomain.value;
 			const domainRegex = /^[a-zA-Z0-9-]+\.[a-zA-Z]{2,}$/;
-
 			if (domain === "") {
 				emailMsg.innerText = "도메인을 입력해주세요.";
 				emailMsg.style.color = "red";
 				return false;
 			}
-
 			if (domainRegex.test(domain)) {
 				emailMsg.innerText = "올바른 형식입니다. ✓";
 				emailMsg.style.color = "#28a745";
 				return true;
 			} else {
-				emailMsg.innerText = "도메인 형식이 올바르지 않습니다. (예: pet.com)";
+				emailMsg.innerText = "도메인 형식이 올바르지 않습니다.";
 				emailMsg.style.color = "#dc3545";
 				return false;
 			}
@@ -188,12 +187,10 @@ body { font-family: 'Noto Sans KR', sans-serif; background: #fdf6ee; padding-top
 		function validatePassword() {
 			const pw = pwInput.value;
 			const confirm = confirmInput.value;
-
 			if (pw === "" && confirm === "") {
 				pwMsgArea.innerText = "";
 				return true;
 			}
-
 			if (pw === confirm) {
 				pwMsgArea.innerText = "비밀번호가 일치합니다. ✓";
 				pwMsgArea.style.color = "#28a745";
@@ -211,19 +208,30 @@ body { font-family: 'Noto Sans KR', sans-serif; background: #fdf6ee; padding-top
 		emailId.addEventListener('keyup', checkTotalValidation);
 		emailDomain.addEventListener('keyup', checkTotalValidation);
 
-		// 폼 제출 전 합치기
+		// 6. 폼 제출 시 최종 데이터 합치기 (이메일 + 주소)
 		document.getElementById('editForm').addEventListener('submit', function(e) {
+			// 이메일 합치기
 			totalEmail.value = emailId.value + "@" + emailDomain.value;
+			
+			// 주소 합치기: 기본 주소값 + 상세 주소값
+			const mainAddr = addrInput.value;
+			const detailAddr = detailAddrInput.value;
+			
+			if(detailAddr.trim() !== "") {
+				addrInput.value = mainAddr + " " + detailAddr;
+			}
 		});
 
-		// 카카오 우편번호 API
+		// 7. 카카오 우편번호 API
 		function execDaumPostcode() {
 			new daum.Postcode({
 				oncomplete : function(data) {
 					var addr = data.userSelectedType === 'R' ? data.roadAddress : data.jibunAddress;
 					document.getElementById('postcode').value = data.zonecode;
-					document.getElementById("address").value = addr;
-					document.getElementById("detailAddress").focus();
+					// 주소를 새로 찾으면 기본 주소 필드만 갱신하고 상세주소는 비워줌
+					addrInput.value = addr;
+					detailAddrInput.value = "";
+					detailAddrInput.focus();
 				}
 			}).open();
 		}
