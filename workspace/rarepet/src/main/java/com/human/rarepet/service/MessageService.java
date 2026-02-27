@@ -28,12 +28,12 @@ public class MessageService {
 		messageMapper.sendMessage(message);
 	}
 	
-	public List<MessageDto> receiveMessage(String receiverId){
+	public List<MessageDto> receiveMessage(String loggedInId){
 		
-		return messageMapper.receiveMessage(receiverId);
+		return messageMapper.receiveMessage(loggedInId);
 	}
 	
-	public List<MessageDto> messageDetail(String senderId, String receiverId){
-		return messageMapper.messageDetail(senderId, receiverId);
+	public List<MessageDto> messageDetail(String loggedInId, String partnerId){
+		return messageMapper.messageDetail(loggedInId, partnerId);
 	}
 }

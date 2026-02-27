@@ -13,5 +13,6 @@ public class MessageDto {
 	String senderId;
 	Date sentAt;
 	Date receivedAt;
+	String direction;
 	
 }

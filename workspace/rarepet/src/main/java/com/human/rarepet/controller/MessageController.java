@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -36,17 +37,21 @@ public class MessageController {
 	@GetMapping(path = {"/messages/list"})
 	@ResponseBody
 	public List<MessageDto> receiveMessage(HttpSession session) {
+		
 		MemberDto member = (MemberDto) session.getAttribute("loginuser");
-		String receiverId = member.getId();
-		return messageService.receiveMessage(receiverId);
+		String loggedInId = member.getId();
+		return messageService.receiveMessage(loggedInId);
 	}
 	
 	@GetMapping(path = {"/messages/detail"})
 	@ResponseBody
-	public List<MessageDto> messageDetail(@RequestParam("senderId") String senderId,
-										  @RequestParam("receiverId") String receiverId){
+	public List<MessageDto> messageDetail(@RequestParam("partnerId") String partnerId, HttpSession session){
 		
-		return messageService.messageDetail(senderId, receiverId);
+		MemberDto member = (MemberDto) session.getAttribute("loginuser");
+		String loggedInId = member.getId();
+		return messageService.messageDetail(loggedInId, partnerId);
+		
+		
 	}
 	
 }

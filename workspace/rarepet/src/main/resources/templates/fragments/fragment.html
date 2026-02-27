@@ -70,9 +70,8 @@
 							<table class="table table-hover align-middle">
 								<thead class="table-light">
 									<tr>
-										<th>아이디</th>
-										<th>보낸 시각</th>
-										<th>받은 시각</th>
+										<th>대화 상대</th>
+										<th>마지막 대화 시간</th>
 									</tr>
 								</thead>
 								<tbody id="messageListBody">
@@ -212,12 +211,14 @@
 					$("#messageListBody").empty();
 					
 					messages.forEach( (message) => {
+						
+						const partnerId = message.direction === "sent" ? message.receiverId : message.senderId;
+						 		
 						$("#messageListBody").append(
 							`
-							<tr class="message-row" data-sender-id="${message.senderId}" data-receiver-id="${message.receiverId}" >
-								<td>${message.senderId}</td>
+							<tr class="message-row" data-partner-id="${partnerId}">
+								<td>${partnerId}</td>
 								<td>${message.sentAt}</td>
-								<td>${message.receivedAt}</td>
 							</tr>
 							`);
 					});
@@ -229,10 +230,9 @@
 			// 메시지 클릭 → 채팅 상세 모달 열기
 		    $(document).on('click', '.message-row', function () { // $(".message-row").on("click") -> 작동하지 않음
 		    	
-		    	const receiverId = $(this).data("receiver-id")
-		    	const senderId = $(this).data("sender-id")
+		    	const partnerId = $(this).data("partner-id")
 		    	
-		    	fetch(`/messages/detail?receiverId=${receiverId}&senderId=${senderId}`)
+		    	fetch(`/messages/detail?partnerId=${partnerId}`)
 		    	.then(response => response.json())
 		    	.then(data => {
 		    		
@@ -240,8 +240,7 @@
 		    		
 		    		data.forEach(message => {
 		    			
-		    			let myId = receiverId;
-		    			let isMe = (myId === message.senderId);
+		    			let isMe = (message.direction === "sent");
 		    			
 		    			$("#chatMessages").append(
 		    			`
@@ -254,16 +253,13 @@
 		    			`		
 		    			)
 		    		});
-		    		
+		    		// 전송 버튼에 현재 대화중인 아이디 저장.
+		    		$("#btnSendInChat").data("partner", partnerId);
 		    	})
 		    	
-		    	
-		    	
-		      const partnerId   = $(this).data('sender-id');
-		      const partnerName = $(this).data('sender-id') || '대화 상대';
+		      const partnerName = $(this).data('partner-id') || '대화 상대';
 
 		      $('#chatPartnerTitle').text(partnerId + ' 님과의 대화');
-
 		      
 		      // 채팅 모달 열기
 		      $('#chatListModal').modal('hide');
@@ -276,11 +272,13 @@
 		      $('#chatListModal').modal('show');
 		    });
 
-		    // 채팅창 내 전송 버튼 (임시)
+		    // 채팅창 내 전송 버튼
 		    $('#btnSendInChat').on('click', function() {
+		    	
 		      const text = $('#chatInput').val().trim();
 		      if (!text) return;
-
+		      const partnerId = $(this).data("partner")
+		      
 		      const newMsg = `
 		        <div class="d-flex justify-content-end mb-3">
 		          <div class="p-3 rounded bg-primary text-white shadow-sm" style="max-width: 70%;">
@@ -289,9 +287,25 @@
 		          </div>
 		        </div>
 		      `;
-		      $('#chatMessages').append(newMsg);
-		      $('#chatInput').val('');
-		      $('#chatMessages')[0].scrollTop = $('#chatMessages')[0].scrollHeight;
+		      
+		      fetch("/messages", {method:"post", 
+		    	  				  headers:{"Content-Type":"application/json"},
+		      					  body: JSON.stringify({
+		      							receiverId: partnerId,
+		      							messageContent: text
+		      						})
+		      }).then(response => response.text())
+		    	.then(data => {
+		    		if (data == "failure"){
+		    			alert("메시지 보내기 실패")
+		    		}
+		    		
+		    		$('#chatMessages').append(newMsg);
+				    $('#chatInput').val('');
+				    $('#chatMessages')[0].scrollTop = $('#chatMessages')[0].scrollHeight;
+		    	})	
+		      
+		      
 		    });
 
 		    // Enter 키로도 전송
