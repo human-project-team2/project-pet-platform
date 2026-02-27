@@ -9,7 +9,6 @@ import com.human.rarepet.dto.BoardDto;
 import com.human.rarepet.dto.GenBoardDto;
 import com.human.rarepet.dto.QnaBoardDto;
 
-
 @Mapper
 public interface BoardMapper {
 

@@ -277,6 +277,8 @@ public class BoardController {
 		board.setBoardAdoptCategory(true);
 		board.setBoardAdoptDone(1);
 		
+//		git diff HEAD~2 HEAD 
+		
 		boardService.insertBoard(board);
 		boardService.insertBoardAdo(board);
 		return "redirect:/board/boardlist";		
