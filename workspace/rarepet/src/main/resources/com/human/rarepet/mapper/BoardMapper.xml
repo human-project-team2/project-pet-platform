@@ -36,6 +36,16 @@
 		select *
 		from board
 		ORDER BY board_like_count DESC
+	</select>	
+	
+	<select id="showAllQnaBoard" resultType="QnaBoardDto">
+		select *
+		from board_question		
+	</select>
+	
+	<select id="showAllAdoBoard" resultType="AdoBoardDto">
+		select *
+		from board_adopt		
 	</select>
    
 </mapper>

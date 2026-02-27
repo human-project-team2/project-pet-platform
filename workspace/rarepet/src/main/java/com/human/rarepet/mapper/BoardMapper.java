@@ -8,6 +8,7 @@ import com.human.rarepet.dto.AdoBoardDto;
 import com.human.rarepet.dto.BoardDto;
 import com.human.rarepet.dto.GenBoardDto;
 import com.human.rarepet.dto.QnaBoardDto;
+import com.human.rarepet.service.QnABoardDto;
 
 @Mapper
 public interface BoardMapper {
@@ -23,4 +24,8 @@ public interface BoardMapper {
 	List<BoardDto> showAllBoard();
 
 	BoardDto showBoardById(int bono);
+
+	List<QnaBoardDto> showAllQnaBoard();
+
+	List<AdoBoardDto> showAllAdoBoard();
 }
