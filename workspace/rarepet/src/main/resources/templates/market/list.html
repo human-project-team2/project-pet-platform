@@ -95,6 +95,48 @@ body {
 	height: 150px;
 	object-fit: cover;
 }
+
+.nav-tabs-section {
+    background: #fffaf0;           /* 부드러운 크림/베이지 톤 배경 */
+    border-bottom: 3px solid #e76f51; /* 주 색상 강조 라인 */
+    padding: 15px 0;
+    margin-bottom: 20px;
+}
+
+.nav-tabs {
+    border: none;                  /* 기본 border 제거 */
+    margin: 0 auto;
+    max-width: 800px;              /* 너무 넓지 않게 중앙 정렬 */
+}
+
+.nav-tabs .nav-link {
+    font-size: 1.25rem;            /* 글자 크기 증가 (기본 1rem → 1.25rem) */
+    font-weight: 600;
+    padding: 16px 32px;            /* 상하/좌우 패딩 늘려서 버튼 크게 */
+    color: #555;
+    border-radius: 12px 12px 0 0;  /* 위쪽만 둥글게 */
+    transition: all 0.2s ease;
+}
+
+.nav-tabs .nav-link:hover {
+    background: rgba(231, 111, 81, 0.08);
+    color: #e76f51;
+}
+
+.nav-tabs .nav-link.active {
+    background: #e76f51;           /* 활성 탭 배경 = 메인 컬러 */
+    color: white;
+    border: none;
+    box-shadow: 0 4px 12px rgba(231, 111, 81, 0.25);
+}
+
+/* 모바일 대응 */
+@media (max-width: 576px) {
+    .nav-tabs .nav-link {
+        font-size: 1.1rem;
+        padding: 12px 20px;
+    }
+}
 </style>
 
 </head>
@@ -103,6 +145,32 @@ body {
 
 	<!-- NAVBAR -->
 	<div th:replace="fragments/fragment :: header"></div>
+
+<div class="nav-tabs-section">
+    <div class="container">
+        <ul class="nav nav-tabs nav-justified" id="marketTab" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="personal-tab" data-bs-toggle="tab" 
+                        data-bs-target="#personal" type="button" role="tab" 
+                        aria-controls="personal" aria-selected="false">
+                   Animals
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="shop-tab" data-bs-toggle="tab" 
+                        data-bs-target="#shop" type="button" role="tab" 
+                        aria-controls="shop" aria-selected="true">
+                  Shops
+                </button>
+            </li>
+        </ul>
+    </div>
+</div>
+
+<div class="tab-content container" id="marketTabContent">
+
+    <!-- Tab 1: 개인 분양·입양 (기존 페이지 내용) -->
+    <div class="tab-pane fade show active" id="personal" role="tabpanel" aria-labelledby="personal-tab">
 
 	<!-- PAGE TITLE -->
 	<div class="container my-5">
@@ -202,7 +270,28 @@ body {
 					</ul>
 				</nav>
 			</div>
+			</div>
+<!-- Tab 2: 샵 분양 (아직 placeholder - 실제 구현 시 교체) -->
+    <div class="tab-pane fade" id="shop" role="tabpanel" aria-labelledby="shop-tab">
+        <div class="my-5 text-center">
+            <h3 class="fw-bold mb-4">전문 샵 · 브리더 분양 목록</h3>
+            <p class="lead text-muted mb-5">신뢰할 수 있는 인증된 샵에서 분양 중인 희귀 동물들을 만나보세요</p>
 
+            <!-- 여기에 샵 목록을 위한 카드 그리드 또는 다른 레이아웃 추가 가능 -->
+            <div class="row g-4 justify-content-center">
+                <div class="col-md-8">
+                    <div class="alert alert-info">
+                        <h5>샵 목록 준비 중입니다</h5>
+                        <p>현재 샵 전용 페이지를 구성 중입니다. 곧 다양한 브리더·샵의 상품이 표시됩니다.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 샵 전용 검색/필터 영역 등을 여기에 추가 가능 -->
+        </div>
+    </div>
+
+</div>
 			<div th:replace="fragments/fragment :: footer"></div>
 
 			<!-- Bootstrap JS -->
