@@ -37,6 +37,12 @@ public class MemberController {
 
 		if (member != null) {
 			session.setAttribute("loginuser", member);
+			
+			String redirectUrl = (String)session.getAttribute("redirectUrl");
+			if (redirectUrl != null) {
+				session.removeAttribute("redirectUrl");
+				return "redirect:" + redirectUrl;
+			}
 			return "redirect:/";
 		} else {
 			return "auth/login";
@@ -46,6 +52,7 @@ public class MemberController {
 	@GetMapping(path = {"/logout"})
 	public String logout(HttpSession session) {
 		session.removeAttribute("loginuser");
+		session.removeAttribute("redirectUrl");
 		return "redirect:login";
 	}
 

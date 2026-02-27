@@ -26,6 +26,7 @@ import com.human.rarepet.dto.UpdateCartQuantityDto;
 import com.human.rarepet.service.MarketService;
 import com.human.rarepet.service.MemberService;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 
 
@@ -50,7 +51,7 @@ public class MarketController {
 	}
 	
 	@GetMapping(path="/market/detail/{productNo}")
-	public String marketDetail(@PathVariable("productNo") int productNo, Model model) {
+	public String marketDetail(@PathVariable("productNo") int productNo, Model model, HttpSession session, HttpServletRequest request) {
 	
 		ProductDto product = marketService.selectProductByNo(productNo);
 		String id = product.getSellerId();
@@ -59,6 +60,11 @@ public class MarketController {
 		model.addAttribute("phone", member.getPhone());
 		model.addAttribute("email", member.getEmail());
 		model.addAttribute("product", product);
+		
+		boolean loggedIn = session.getAttribute("loginuser") != null;
+		model.addAttribute("loggedIn", loggedIn);
+		
+		session.setAttribute("redirectUrl", request.getRequestURI());
 		
 		return "market/detail";
 	}
