@@ -196,8 +196,10 @@
 		    	.then(data => {
 		    		if(data == "success"){
 			    		alert("메시지 보내기 완료.");
+			    		$("#newMessageModal").modal("hide");
 		    		} else if (data == "failure"){
 		    			alert("존재하지 않는 회원...")
+		    			$("#newMessageModal").modal("hide");
 		    		}
 		    	})		      
 		    });
@@ -278,12 +280,12 @@
 		      const text = $('#chatInput').val().trim();
 		      if (!text) return;
 		      const partnerId = $(this).data("partner")
-		      
+		      const now = new Date();
 		      const newMsg = `
 		        <div class="d-flex justify-content-end mb-3">
 		          <div class="p-3 rounded bg-primary text-white shadow-sm" style="max-width: 70%;">
 		            ${text}
-		            <div class="small text-white-50 mt-1">방금</div>
+		            <div class="small text-white-50 mt-1">${now}</div>
 		          </div>
 		        </div>
 		      `;
