@@ -66,8 +66,7 @@ body {
         </div>
 
         <div th:each="item : ${cartList}" class="row align-items-center mb-4 border-bottom pb-3 cart-item"
-        	th:data-product-no="${item.product.productNo}"
-        >
+        	th:data-product-no="${item.product.productNo}" th:data-product-price="${item.product.price}">
 
             <!-- Image -->
             <div class="col-md-2 text-center">
@@ -94,7 +93,9 @@ body {
             <!-- Remove Button -->
             <div class="col-md-2 text-end">
                 <a th:href="@{/market/deleteShoppingCart(productNo=${item.product.productNo})}"
-                   class="btn btn-outline-danger btn-sm rounded-pill">
+                   class="btn btn-outline-danger btn-sm rounded-pill"
+                   onclick="return confirm('정말로 삭제하시겠습니까?');"
+                   >
                     삭제
                 </a>
             </div>
@@ -102,16 +103,15 @@ body {
         </div>
 
     </div>
-
     <!-- Total Section -->
     <div class="card shadow p-4 total-box">
 
         <div class="d-flex justify-content-between align-items-center">
             <h5 class="fw-bold">총 결제 금액</h5>
             <h4 class="price"
-			    th:text="${cartList != null and !#lists.isEmpty(cartlist) ? #aggregates.sum(cartList.![product.price * cartQuantity]) : 0}">
+			    th:text="|₩${cartList != null and !#lists.isEmpty(cartList) ? #aggregates.sum(cartList.![product.price * cartQuantity]) : 0}|">
 			</h4>
-        </div>
+    	 </div>
 
         <div class="mt-4 d-flex justify-content-end gap-3">
             <a th:href="@{/market}" class="btn btn-outline-secondary rounded-pill px-4">
@@ -138,6 +138,23 @@ body {
 <script>
 $(()=>{
 	
+	function liveUpdatePrice(){
+		
+		let total = 0;
+		
+		$(".cart-item").each(function() {
+			const price = parseInt($(this).data("product-price"));
+			const quantity = parseInt($(this).find(".cart-quantity").val());
+			total += price * quantity
+			$(this).find(".price").text("₩" + price * quantity);
+		})
+		
+		$(".total-box .price").text("₩" + total);
+	}
+	
+	$(".cart-quantity").on("change", event => {
+		liveUpdatePrice();
+	})
 	
 	$("#saveShoppingCart").on("click", (event) => {
 
