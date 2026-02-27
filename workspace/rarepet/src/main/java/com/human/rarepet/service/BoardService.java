@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.human.rarepet.controller.QnABoardDto;
 import com.human.rarepet.dto.AdoBoardDto;
 import com.human.rarepet.dto.BoardDto;
 import com.human.rarepet.dto.GenBoardDto;
@@ -53,6 +54,14 @@ public class BoardService {
 	public BoardDto showBoardById(int bono) {		
 		BoardDto dto = boardMapper.showBoardById(bono);		
 		return dto;
+	}
+
+	public List<QnaBoardDto> showAllQnaBoard() {
+		return boardMapper.showAllQnaBoard();		
+	}
+
+	public List<AdoBoardDto> showAllAdoBoard() {
+		return boardMapper.showAllAdoBoard();
 	}
 
 }

@@ -129,7 +129,53 @@ public class BoardController {
 	@GetMapping (path = {"/board/qnalist"}) 
 	public String boardqnalist(Model model) {
 		
+		int board_exist = 0;
+		
 		System.out.println("--------------------QnAList");
+		
+		List<BoardDto> boards = boardService.showAllBoard();
+		List<QnaBoardDto> qnaboards = boardService.showAllQnaBoard();		
+		
+		for(QnaBoardDto qnaboard : qnaboards) {
+			if(qnaboard != null) {
+				board_exist = 1;
+				System.out.printf("-------------->qnaboard title \n" + qnaboard.getBoardTitle());
+				for(BoardDto board : boards) {
+					System.out.println("\n");
+					if(board.getBoardId() == qnaboard.getBoardId())
+					{
+						System.out.println(board);
+						System.out.printf("-------------->find qnaboard title \n" + board.getBoardTitle());
+						System.out.printf("-------------->qnaboard id \n" + qnaboard.getBoardId());
+						System.out.printf("-------------->board id \n" + board.getBoardId());
+						System.out.printf("-------------->qnaboard title \n" + qnaboard.getBoardTitle());
+						System.out.printf("-------------->qnaboard cat \n" + qnaboard.isBoardQuestionCategory());
+						System.out.printf("-------------->qnaboard ans \n" + qnaboard.getAnswerSelected());
+
+						System.out.println(qnaboard);
+						System.out.println("\n");
+						
+						qnaboard.setBoardTitle(board.getBoardTitle());
+						qnaboard.setBoardContent(board.getBoardContent());						
+						qnaboard.setBoardWriterId(board.getBoardWriterId());
+						qnaboard.setBoardWriteDate(board.getBoardWriteDate());
+						qnaboard.setBoardViewCount(board.getBoardViewCount());
+						
+						System.out.printf("after -------------->qnaboard id \n" + qnaboard.getBoardId());
+						System.out.printf("after -------------->qnaboard title \n" + qnaboard.getBoardTitle());
+						System.out.printf("after -------------->qnaboard cat \n" + qnaboard.isBoardQuestionCategory());
+						System.out.printf("after -------------->qnaboard ans \n" + qnaboard.getAnswerSelected());
+						System.out.println(qnaboard);
+						System.out.println("\n");
+					}
+				}				
+			}			
+		}
+		if(board_exist == 1) {
+			model.addAttribute("qnaboards", qnaboards);
+		} else {
+			System.out.println("-------------->qnaboard null\n");
+		}
 			
 		return "board/qnalist"; 
 		
@@ -150,13 +196,13 @@ public class BoardController {
 		Date writeDate = new Date();
 				
 		board.setBoardWriteDate(writeDate);
-		board.setBoardLikeCount(1);
-		board.setBoardViewCount(1);
+		board.setBoardLikeCount(2);
+		board.setBoardViewCount(2);
 		
 		boardService.insertBoard(board);
 		
-		board.setAnswer_selected("1");
-		board.setBoard_question_category(true);
+		board.setAnswerSelected("1");
+		board.setBoardQuestionCategory(true);
 		boardService.insertBoardQnA(board);		
 		return "redirect:/board/boardlist";		
 	}
@@ -172,8 +218,41 @@ public class BoardController {
 	
 	@GetMapping (path = {"/board/adoptionlist"}) 
 	public String boardadoptionlist(Model model) {
-		
+
+		int board_exist = 0;
 		System.out.println("--------------------Adoptionlist-----");
+		
+		List<BoardDto> boards = boardService.showAllBoard();
+		List<AdoBoardDto> adoboards = boardService.showAllAdoBoard();		
+		
+		for(AdoBoardDto adoboard : adoboards) {
+			if(adoboard != null) {
+				board_exist = 1;
+				System.out.println(adoboard);
+				System.out.println("\n");
+				
+				for(BoardDto board : boards) {
+					
+					if(board.getBoardId() == adoboard.getBoardId())
+					{
+										
+						adoboard.setBoardTitle(board.getBoardTitle());
+						adoboard.setBoardContent(board.getBoardContent());						
+						adoboard.setBoardWriterId(board.getBoardWriterId());
+						adoboard.setBoardWriteDate(board.getBoardWriteDate());
+						adoboard.setBoardViewCount(board.getBoardViewCount());
+						
+						System.out.println(adoboard);
+						System.out.println("\n");
+					}
+				}				
+			}			
+		}
+		if(board_exist == 1) {
+			model.addAttribute("adoboards", adoboards);
+		} else {
+			System.out.println("-------------->adoboard null\n");
+		}
 			
 		return "board/adoptionlist"; 
 		
@@ -195,6 +274,8 @@ public class BoardController {
 		board.setBoardWriteDate(writeDate);
 		board.setBoardLikeCount(1);
 		board.setBoardViewCount(1);
+		board.setBoardAdoptCategory(true);
+		board.setBoardAdoptDone(1);
 		
 		boardService.insertBoard(board);
 		boardService.insertBoardAdo(board);
