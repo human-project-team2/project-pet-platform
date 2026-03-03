@@ -51,6 +51,8 @@ public class BoardService {
 	}
 
 	public BoardDto showBoardById(int bono) {		
+		System.out.printf("-----showBoardById" + bono);
+		System.out.println("-----showBoardById---------");
 		BoardDto dto = boardMapper.showBoardById(bono);		
 		return dto;
 	}
@@ -61,6 +63,15 @@ public class BoardService {
 
 	public List<AdoBoardDto> showAllAdoBoard() {
 		return boardMapper.showAllAdoBoard();
+	}
+
+	public BoardDto showGenBoardById(int boardId) {
+		System.out.printf("-----showGenBoardById" + boardId);
+		// showBoardById
+		// BoardDto dto = boardMapper.showGenBoardById(boardId);
+		
+		BoardDto dto = boardMapper.showGenBoardById(boardId);
+		return dto;
 	}
 
 }
