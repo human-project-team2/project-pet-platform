@@ -77,6 +77,12 @@ public class BoardService {
 		return dto;
 	}
 
+	public BoardDto showAdoBoardById(int boardId) {
+		
+		BoardDto dto = boardMapper.showAdoBoardById(boardId);
+		return dto;
+	}
+
 }
 
 

@@ -302,9 +302,26 @@ public class BoardController {
 	}
 	
 	@GetMapping (path = {"/board/adoption"}) 
-	public String boardadoption(Model model) {
+	public String boardadoption(
+			@RequestParam(value = "boardId", defaultValue = "-1") int boardId, 
+			@RequestParam(value = "pageNo", defaultValue = "-1") int pageNo,
+			Model model) {
 		
 		System.out.println("--------------------Adoption");
+		
+		/*
+		 * if (boardId == -1 || pageNo == -1) { return "redirect:/board/adoptionlist"; }
+		 */			
+		
+		BoardDto board = boardService.showAdoBoardById(boardId);		
+		if (board == null) {
+			System.out.println("--------------------Adoption NULL--  ");	
+			return "redirect:/board/adoptionlist";
+		}
+		System.out.println("Adoption Ok");
+		
+		model.addAttribute("board", board);
+		model.addAttribute("pageNo", pageNo);
 			
 		return "board/adoption"; 
 		
