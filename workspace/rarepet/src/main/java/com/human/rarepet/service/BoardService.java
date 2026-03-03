@@ -65,12 +65,15 @@ public class BoardService {
 		return boardMapper.showAllAdoBoard();
 	}
 
-	public BoardDto showGenBoardById(int boardId) {
-		System.out.printf("-----showGenBoardById" + boardId);
-		// showBoardById
-		// BoardDto dto = boardMapper.showGenBoardById(boardId);
+	public BoardDto showGenBoardById(int boardId) {		
 		
 		BoardDto dto = boardMapper.showGenBoardById(boardId);
+		return dto;
+	}
+
+	public BoardDto showQnaBoardById(int boardId) {
+		
+		BoardDto dto = boardMapper.showQnaBoardById(boardId);
 		return dto;
 	}
 

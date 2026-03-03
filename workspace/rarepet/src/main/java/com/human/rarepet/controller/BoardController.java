@@ -208,9 +208,26 @@ public class BoardController {
 	}
 	
 	@GetMapping (path = {"/board/qna"}) 
-	public String boardqna(Model model) {
+	public String boardqna(
+			@RequestParam(value = "boardId", defaultValue = "-1") int boardId, 
+			@RequestParam(value = "pageNo", defaultValue = "-1") int pageNo,
+			Model model) {	
+				
+		System.out.printf("--------------------Qna--  " + boardId);	
+			
+		/*
+		 * if (boardId == -1 || pageNo == -1) { return "redirect:/board/boardlist"; }
+		 */			
 		
-		System.out.println("--------------------QnA");
+		BoardDto board = boardService.showQnaBoardById(boardId);		
+		if (board == null) {
+			System.out.println("--------------------Qna NULL--  ");	
+			return "redirect:/board/qnalist";
+		}
+		System.out.println("QnA Ok");
+		
+		model.addAttribute("board", board);
+		model.addAttribute("pageNo", pageNo);
 			
 		return "board/qna"; 
 		

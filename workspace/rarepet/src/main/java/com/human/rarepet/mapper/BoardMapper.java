@@ -29,4 +29,6 @@ public interface BoardMapper {
 	List<AdoBoardDto> showAllAdoBoard();
 
 	BoardDto showGenBoardById(int boardId);
+
+	BoardDto showQnaBoardById(int boardId);
 }
