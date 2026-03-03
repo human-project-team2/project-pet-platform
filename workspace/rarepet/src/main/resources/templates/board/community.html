@@ -100,69 +100,6 @@ body{
     </div>
 
 	
-    <!-- 게시글 리스트 (상단 10개는 인기글 정렬) -->
-    <table class="table table-hover">
-        <thead class="table-light">
-            <tr>
-                <th>번호</th>
-                <th>제목</th>
-                <th>작성자</th>
-                <th>조회수</th>
-                <th>추천</th>
-            </tr>
-        </thead>
-        <tbody>
-            <!-- [변경] 행 클릭 시 해당 ID의 상세 페이지로 이동 (cursor 스타일 추가) -->
-            <!-- 인기 게시글 예시 (노란색 강조) -->
-               
-            <tr class="table-warning" style="cursor: pointer;">
-                <td>BEST</td>
-                <td>
-                	<a th:href="@{/board/detail}" class="text-decoration-none">
-                	<strong>우리집 고슴도치 먹방 영상입니다!</strong>
-                </td>
-                <td>도치맘</td>
-                <td>1,240</td>
-                <td>56</td>
-            </tr>
-            <!-- 일반 게시글 (최신순) -->
-            <tr onclick="location.href='detail.html?id=124'" style="cursor: pointer;">
-                <td>124</td>
-                <td>초보 집사를 위한 가이드 공유해요</td>
-                <td>애니멀러버</td>
-                <td>450</td>
-                <td>12</td>
-            </tr>
-        </tbody>
-        <!-- 
-        <tbody>                      
-          <tr th:each="board: ${boards}" style="height:30px">
-            <th scope="row" th:text="${ board.boardId }"></th>
-            <td>
-                <a 	th:href="@{/board/detail(pageNo=${pager.pageNo}, boardId=${board.boardId}) }"
-                    th:text="${ board.title }"></a>
-            </td>          
-            
-          </tr>
-        </tbody>
-         -->
-        <!-- 
-        <tbody>                      
-          <tr th:each="board: ${boards}" style="height:30px">
-            <th scope="row" th:text="${ board.boardId }"></th>
-            <td>
-                <a 	th:href="@{/board/detail(pageNo=${pager.pageNo}, boardId=${board.boardId}) }"
-                    th:text="${ board.title }"></a>
-            </td>
-            <td th:text="${ board.writer.email }"></td>
-            <td th:text="${ #dates.format(board.writeDate, 'yyyy-MM-dd') }"></td>
-            <td th:text="${ board.readCount }"></td>
-          </tr>
-        </tbody>
-         -->
-        
-    </table>
-    
     <table class="table table-hover">
       <thead>
       <tr>

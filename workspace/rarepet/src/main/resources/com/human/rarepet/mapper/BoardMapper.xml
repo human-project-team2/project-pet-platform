@@ -28,6 +28,11 @@
 		select *
 		from board
 		ORDER BY board_like_count DESC
+	</select>
+	
+	<select id="showAllGenBoard" resultType="GenBoardDto">
+		select *
+		from board_general		
 	</select>	
 	
 	<select id="showAllQnaBoard" resultType="QnaBoardDto">

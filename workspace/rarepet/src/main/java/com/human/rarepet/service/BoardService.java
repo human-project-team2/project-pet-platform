@@ -56,6 +56,10 @@ public class BoardService {
 		BoardDto dto = boardMapper.showBoardById(bono);		
 		return dto;
 	}
+	
+	public List<GenBoardDto> showAllGenBoard() {
+		return boardMapper.showAllGenBoard();
+	}
 
 	public List<QnaBoardDto> showAllQnaBoard() {
 		return boardMapper.showAllQnaBoard();		
@@ -81,7 +85,7 @@ public class BoardService {
 		
 		BoardDto dto = boardMapper.showAdoBoardById(boardId);
 		return dto;
-	}
+	}	
 
 }
 
