@@ -78,6 +78,9 @@ body {
 <body>
 	<div th:replace="fragments/fragment :: header"></div>
 
+	<script th:inline="javascript" th:if="${shopRegisterMessage}">
+		alert(/*[[${shopRegisterMessage}]]*/"")
+	</script>
 	<div class="container mb-5">
 		<div class="row g-4">
 			<div class="col-lg-4">
@@ -112,6 +115,18 @@ body {
 						</p>
 					</div>
 					<div class="d-grid gap-2">
+					<!-- 판매자 등록 버튼 -->
+					    <a 
+					       th:if="${session.loginuser != null and !session.loginuser.shop and shop == null}"
+				    	   th:href="@{/shop-register}"
+					       class="btn btn-warning rounded-pill">
+					        판매자 등록
+					    </a>
+					   <a th:if="${session.loginuser != null and shop != null and shop.verified == false}"
+					   	   th:href="@{/shop/shopmain}"
+						   class="btn btn-secondary rounded-pill" tabindex="-1" aria-disabled="true">
+						   판매자 승인 대기중
+						</a>
 						<a th:href="@{/editProfile}"
 							class="btn btn-outline-dark rounded-pill">정보 수정</a>
 					</div>

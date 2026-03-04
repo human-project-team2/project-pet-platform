@@ -34,7 +34,6 @@ public class MemberController {
 							   HttpSession session){
 		
 		MemberDto member = memberService.checkMember(memberId, passwd); 
-
 		if (member != null) {
 			session.setAttribute("loginuser", member);
 			

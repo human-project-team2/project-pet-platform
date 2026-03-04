@@ -4,9 +4,13 @@ import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.sql.SQLData;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+
+import org.apache.ibatis.jdbc.SQL;
 
 public class Util {
 	
@@ -146,6 +150,32 @@ public class Util {
 		sb = sb.replace(0, 1, "?");
 		
 		return sb.toString();
+	}
+	
+	///////////////////////////////////////////////////////
+	// 선택적으로 sql update 하기
+	
+	public static String selectiveUpdateShop(Map<String, Object> fields) {
+		
+		String id = (String) fields.get("id");
+		
+		SQL sql = new SQL().UPDATE("shop").WHERE("id = #{id}");
+		
+		if (fields.containsKey("shop_name")) {
+	            sql.SET("shop_name = #{shop_name}");
+	        }
+        if (fields.containsKey("shop_content")) {
+            sql.SET("shop_content = #{shop_content}");
+        }
+        if (fields.containsKey("savedFileName")) {
+            sql.SET("saved_file_name = #{savedFileName}");
+        }if (fields.containsKey("originalFileName")) {
+            sql.SET("original_file_name = #{originalFileName}");
+        }
+        if (fields.containsKey("imgUrlShop")) {
+        	sql.SET("img_url_shop = #{imgUrlShop}");
+        }
+        return sql.toString();
 	}
 
 }
