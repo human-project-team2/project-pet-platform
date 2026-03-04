@@ -24,7 +24,24 @@ public interface BoardMapper {
 
 	BoardDto showBoardById(int bono);
 
+	List<GenBoardDto> showAllGenBoard();
+	
 	List<QnaBoardDto> showAllQnaBoard();
 
-	List<AdoBoardDto> showAllAdoBoard();
+	List<AdoBoardDto> showAllAdoBoard();	
+
+	BoardDto showGenBoardById(int boardId);
+
+	BoardDto showQnaBoardById(int boardId);
+
+	BoardDto showAdoBoardById(int boardId);
+
+	void deleteBoard(int boardId);
+
+	void deleteBoardGen(int boardId);
+
+	void deleteBoardQnA(int boardId);
+
+	void deleteBoardAdo(int boardId);
+	
 }

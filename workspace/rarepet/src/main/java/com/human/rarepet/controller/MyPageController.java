@@ -9,20 +9,26 @@ import org.springframework.web.bind.annotation.PostMapping;
 
 import com.human.rarepet.dto.MemberDto;
 import com.human.rarepet.dto.ProductDto;
+import com.human.rarepet.dto.ShopDto;
 import com.human.rarepet.service.MarketService;
 import com.human.rarepet.service.MemberService;
+import com.human.rarepet.service.ShopService;
 
 import jakarta.servlet.http.HttpSession;
 
 @Controller
 public class MyPageController {
 
-    @Autowired
+    
     private MemberService memberService;
-
-    @Autowired
     private MarketService marketService;
-
+    private ShopService shopService;
+    
+    public MyPageController(MemberService memberService, MarketService marketService, ShopService shopService) {
+    	this.memberService = memberService;
+    	this.marketService = marketService;
+    	this.shopService = shopService;
+    }
     @GetMapping("/mypage")
     public String myPage(HttpSession session, Model model) {
         // 1. 세션에서 로그인한 유저 정보 가져오기 (소문자 loginuser 확인)
@@ -37,11 +43,13 @@ public class MyPageController {
         MemberDto user = memberService.getUserById(loginUser.getId());
         List<ProductDto> myProducts = marketService.findProductsByUserId(loginUser.getId());
 
+        ShopDto shop = (ShopDto)shopService.showShopInfo(user.getId());
+        
         // 4. 화면(HTML)으로 데이터 전달
         model.addAttribute("user", user);
         model.addAttribute("myProducts", myProducts);
         model.addAttribute("productCount", myProducts.size());
-
+        model.addAttribute("shop", shop);
         // templates/auth/myPage.html 파일을 찾아갑니다.
         return "auth/myPage";
     }

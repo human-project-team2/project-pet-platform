@@ -21,6 +21,7 @@ public interface ProductMapper {
 	void insertProduct(ProductDto product);
 	
 	List<ProductDto> showAllProduct();
+	List<ProductDto> showAllProductSearch();
 	
 	List<ProductDto> findProductsByUserId(String id);
 	
@@ -47,5 +48,6 @@ public interface ProductMapper {
 	@Update("update shopping_cart set cart_quantity = #{cartQuantity} where product_no = #{productNo} and id = #{id}")
 	void updateShoppingCart(ShoppingCartDto updated);
 	
+	List<ProductDto> findProductsByFilter(@Param("search") String search, @Param("category") String category);
 	
 }

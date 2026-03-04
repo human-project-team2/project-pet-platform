@@ -100,69 +100,6 @@ body{
     </div>
 
 	
-    <!-- 게시글 리스트 (상단 10개는 인기글 정렬) -->
-    <table class="table table-hover">
-        <thead class="table-light">
-            <tr>
-                <th>번호</th>
-                <th>제목</th>
-                <th>작성자</th>
-                <th>조회수</th>
-                <th>추천</th>
-            </tr>
-        </thead>
-        <tbody>
-            <!-- [변경] 행 클릭 시 해당 ID의 상세 페이지로 이동 (cursor 스타일 추가) -->
-            <!-- 인기 게시글 예시 (노란색 강조) -->
-               
-            <tr class="table-warning" style="cursor: pointer;">
-                <td>BEST</td>
-                <td>
-                	<a th:href="@{/board/detail}" class="text-decoration-none">
-                	<strong>우리집 고슴도치 먹방 영상입니다!</strong>
-                </td>
-                <td>도치맘</td>
-                <td>1,240</td>
-                <td>56</td>
-            </tr>
-            <!-- 일반 게시글 (최신순) -->
-            <tr onclick="location.href='detail.html?id=124'" style="cursor: pointer;">
-                <td>124</td>
-                <td>초보 집사를 위한 가이드 공유해요</td>
-                <td>애니멀러버</td>
-                <td>450</td>
-                <td>12</td>
-            </tr>
-        </tbody>
-        <!-- 
-        <tbody>                      
-          <tr th:each="board: ${boards}" style="height:30px">
-            <th scope="row" th:text="${ board.boardId }"></th>
-            <td>
-                <a 	th:href="@{/board/detail(pageNo=${pager.pageNo}, boardNo=${board.boardId}) }"
-                    th:text="${ board.title }"></a>
-            </td>          
-            
-          </tr>
-        </tbody>
-         -->
-        <!-- 
-        <tbody>                      
-          <tr th:each="board: ${boards}" style="height:30px">
-            <th scope="row" th:text="${ board.boardNo }"></th>
-            <td>
-                <a 	th:href="@{/board/detail(pageNo=${pager.pageNo}, boardNo=${board.boardNo}) }"
-                    th:text="${ board.title }"></a>
-            </td>
-            <td th:text="${ board.writer.email }"></td>
-            <td th:text="${ #dates.format(board.writeDate, 'yyyy-MM-dd') }"></td>
-            <td th:text="${ board.readCount }"></td>
-          </tr>
-        </tbody>
-         -->
-        
-    </table>
-    
     <table class="table table-hover">
       <thead>
       <tr>
@@ -177,14 +114,14 @@ body{
         <tr th:each="board: ${boards}" style="height:30px">
           <th scope="row" th:text="${ board.boardId }"></th>
           <td>
-            <a 	th:href="@{/board/detail(boardNo=${board.boardId}) }"
+            <a 	th:href="@{/board/detail(boardId=${board.boardId}) }"
                 th:text="${ board.boardTitle }"></a>
           </td>
           <!-- 
           <td th:text="${ board.boardTitle }"></td>
           
           <td>
-            <a 	th:href="@{/board/detail(pageNo=${pager.pageNo}, boardNo=${board.boardId}) }"
+            <a 	th:href="@{/board/detail(pageNo=${pager.pageNo}, boardId=${board.boardId}) }"
                 th:text="${ board.boardTitle }"></a>
           </td>
            -->                
@@ -194,34 +131,52 @@ body{
         </tr>
       </tbody>
     </table>
-    
+	
 </div>
 
 	<!-- PAGINATION -->
-		<div class="d-flex justify-content-center mt-5">
-			<nav>
-				<ul class="pagination pagination-lg">
-
-					<!-- 이전 -->
-					<li class="page-item disabled"><a
-						class="page-link rounded-start-pill" href="#"> &laquo; </a></li>
-
-					<!-- 페이지 번호 -->
-					<li class="page-item active"><a class="page-link" href="#">1</a>
-					</li>
-
-					<li class="page-item"><a class="page-link" href="#">2</a></li>
-
-					<li class="page-item"><a class="page-link" href="#">3</a></li>
-
-					<li class="page-item"><a class="page-link" href="#">4</a></li>
-
-					<li class="page-item"><a class="page-link" href="#">5</a></li>
-					<!-- 다음 -->
-					<li class="page-item"><a class="page-link rounded-end-pill"
-						href="#"> &raquo; </a></li>
-				</ul>
-			</nav>
+		<<nav aria-label="board pager">
+          <ul class="pagination justify-content-center">
+          <li class="page-item">	                            
+                  <a th:if="${ pager.pageNo > 1}" class="page-link" th:href="@{/board/community(pageNo=1)}" aria-label="First">
+                      <span aria-hidden="true">&laquo;</span>
+                  </a>
+                  <a th:if="${ pager.pageNo <= 1}" class="page-link" href="javascript:" aria-label="First">
+                      <span aria-hidden="true">&laquo;</span>
+                  </a>
+          </li>
+          <li class="page-item">
+          
+              <a th:if="${ pager.pageNo > 1}" class="page-link" th:href="@{/board/community(pageNo=${pager.pageNo - 1})}" aria-label="Previous">
+              <span aria-hidden="true">&lt;</span>
+              </a>
+              <a th:if="${ pager.pageNo <= 1}"  class="page-link" href="javascript:" aria-label="Previous">
+                  <span aria-hidden="true">&lt;</span>
+              </a>
+          </li>
+          <li th:each="i : ${#numbers.sequence(pager.pageStart, (pageCnt < pager.pageEnd ? pager.pageCnt : pager.pageEnd))}" class="page-item">
+          	
+              <a class="page-link" th:href="@{/board/community(pageNo=${i})}" th:text="${i}"></a>
+          </li>
+          
+          <li class="page-item">
+              <a th:if="${ pager.pageNo < pager.pageCnt }" class="page-link" th:href="@{/board/community(pageNo=${pager.pageNo+1})}" aria-label="Next">
+              <span aria-hidden="true">&gt;</span>
+              </a>
+              <a th:if="${ pager.pageNo >= pager.pageCnt }" class="page-link" href="javascript:" aria-label="Previous">
+                  <span aria-hidden="true">&gt;</span>
+              </a>
+          </li>
+          <li class="page-item">
+              <a th:if="${ pager.pageNo < pager.pageCnt }" class="page-link" th:href="@{/board/community(pageNo=${pager.pageCnt})}" aria-label="Last">
+              <span aria-hidden="true">&raquo;</span>
+              </a>
+              <a th:if="${ pager.pageNo >= pager.pageCnt }" class="page-link" href="javascript:" aria-label="Last">
+                  <span aria-hidden="true">&raquo;</span>
+              </a>
+          </li>
+          </ul>
+      </nav>
 	</div>
 
 	
