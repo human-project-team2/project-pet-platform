@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.human.rarepet.mapper.ReviewMapper">
+
+    <insert id="insertReview" parameterType="com.human.rarepet.dto.ReviewDto">
+        INSERT INTO review (id, order_no, product_no, content, rating)
+        VALUES (#{id},#{orderNo},#{productNo},#{content},#{rating})
+    </insert>
+
+    <select id="selectAllReviews" resultType="com.human.rarepet.dto.ReviewDto">
+        SELECT review_no, id, order_no, product_no, created_at, modified_at, rating 
+        FROM review 
+        ORDER BY review_no DESC
+    </select>
+
+</mapper>
