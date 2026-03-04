@@ -73,35 +73,7 @@ body{
 <!-- NAVBAR -->
 <div th:replace="fragments/fragment :: header"></div>
 
-<br><br><br><br><br><br>
-
-<!-- 질문/답변 상세 예시 -->
-<div class="container main-container mt-5">
-    <div class="border-bottom pb-3 mb-4">
-        <span class="badge bg-secondary mb-2">답변 대기</span>
-        <h3 class="fw-bold">분양받은 아이가 잠만 자요. 괜찮은가요?</h3>
-        <div class="text-muted small">작성자: 펫뉴비 | 2026-02-12</div>
-    </div>
-
-    <div class="content mb-5" style="min-height: 200px;">
-        질문 내용이 여기에 표시됩니다...
-    </div>
-
-    <!-- 답변 리스트 (작성자는 이 중 하나를 선택 가능) -->
-    <div class="reply-list mt-5">
-        <h5 class="fw-bold mb-4">등록된 답변</h5>
-        <div class="card mb-3 border-warning">
-            <div class="card-body">
-                <div class="d-flex justify-content-between">
-                    <h6 class="fw-bold">AnyZoo 업체 답변</h6>
-                    <!-- 질문 작성자에게만 보이는 채택 버튼 -->
-                    <button class="btn btn-sm btn-outline-warning">답변 채택하기</button>
-                </div>
-                <p class="mt-2">적응 기간에는 활동량이 줄어들 수 있습니다...</p>
-            </div>
-        </div>
-    </div>
-</div>
+<br><br>
 
 <div class="container my-5">
 		
@@ -109,12 +81,25 @@ body{
 		    <a th:href="@{/board/qnalist}" 
 		       class="btn btn-outline-secondary rounded-pill px-4">
 		        ← 목록으로 돌아가기
-		    </a>
+		    </a>		    
+		</div>		
+		
+		<h3 class="fw-bold" th:text="${board.boardId}"></h3>        
+        <h3 class="fw-bold">AnyZoooo 분양받은 아이가 잠만 자요. 괜찮은가요?</h3>
+        <div class="text-muted small">작성자</div>
+		<div class="mb-4">			
+			<p class="text-muted" th:text="${board.boardWriterId}" ></p>
+		</div>
+		<div class="mb-4">			
+			<p class="text-muted" th:text="${board.boardWriteDate}" ></p>
+		</div>
+		
+		<div class="mb-3">
+			<span class="badge bg-secondary mb-2">답변 대기</span>
 		</div>
 		
 		<!-- Title -->
-		<div class="mb-4">
-			<h3 class="fw-bold" th:text="${board.boardId}"></h3>
+		<div class="mb-4">			
 			<p class="text-muted" th:text="${board.boardTitle}" ></p>
 		</div>
 
@@ -153,6 +138,40 @@ body{
 			</div>
 
 		</div>
+		
+		<div id="mainContent">
+	      <div class="container-fluid">
+	    	  <div class="row">
+	          <div class="col-md-12">
+	            <div class="bgc-white p-20 bd">            
+	            <div class="mT-30">
+	            <div>
+				  <button type="button" id="edit-btn" class="btn btn-primary btn-color btn-sm">수정</button>
+				  <button type="button" id="delete-btn" class="btn btn-primary btn-color btn-sm">삭제</button>
+				  <button type="button" id="to-list-btn" class="btn btn-primary btn-color btn-sm">목록</button>
+				</div>			
+	            </div> <!-- ### mT-30 ### -->           
+	          </div> <!-- ### col-md-12 ### -->
+	        </div> <!-- ### row ### -->        
+	      </div> <!-- ### container-fluid ### --> 
+	    </div> <!-- ### mainContent ### -->
+	    
+	    
+	<!-- 답변 리스트 (작성자는 이 중 하나를 선택 가능) -->
+    <div class="reply-list mt-5">
+        <h5 class="fw-bold mb-4">등록된 답변</h5>
+        <div class="card mb-3 border-warning">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <h6 class="fw-bold">AnyZoo 업체 답변</h6>
+                    <!-- 질문 작성자에게만 보이는 채택 버튼 -->
+                    <button class="btn btn-sm btn-outline-warning">답변 채택하기</button>
+                </div>
+                <p class="mt-2">적응 기간에는 활동량이 줄어들 수 있습니다...</p>
+            </div>
+        </div>
+    </div>
+	    
 
 	</div>
 	<div th:replace="fragments/fragment :: message"></div>
