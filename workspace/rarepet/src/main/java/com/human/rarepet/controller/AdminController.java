@@ -26,10 +26,11 @@ public class AdminController {
 		return "admin";
 	}
 	
-	@PostMapping(path = {"/admin/verify/{id}"})
-	public String verify(@PathVariable("id") String id, Model model) {
-		System.out.println("여기까지 왔음");
-		return "admin/verify";
+	@GetMapping(path = {"/admin/verify/{id}"})
+	public String verify(@PathVariable("id") String id) {
+		
+		adminService.verifyShop(id);
+		return "redirect:/admin";
 	}
 	
 	

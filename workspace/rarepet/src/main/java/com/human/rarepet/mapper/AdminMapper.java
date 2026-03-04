@@ -21,4 +21,7 @@ public interface AdminMapper {
 	@Update("update shop set verified = true where id = #{id}")
 	int verifyShop(String id);
 	
+	@Update("update member set is_shop = true where id = #{id}")
+	int verifyShopMember(String id);
+	
 }

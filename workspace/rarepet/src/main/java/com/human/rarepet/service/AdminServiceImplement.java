@@ -3,6 +3,7 @@ package com.human.rarepet.service;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.human.rarepet.dto.MemberDto;
 import com.human.rarepet.dto.ShopDto;
@@ -28,8 +29,10 @@ public class AdminServiceImplement implements AdminService {
 	}
 
 	@Override
+	@Transactional
 	public int verifyShop(String id) {
 		adminMapper.verifyShop(id);
+		adminMapper.verifyShopMember(id);
 		return 0;
 	}
 
