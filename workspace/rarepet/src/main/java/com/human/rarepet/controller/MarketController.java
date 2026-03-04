@@ -5,7 +5,6 @@ package com.human.rarepet.controller;
 import java.io.File;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -70,7 +69,14 @@ public class MarketController {
 	}
 	
 	@GetMapping(path= {"/market/register"})
-	public String register() {
+	public String register(HttpSession session, RedirectAttributes redirectMessage) {
+		
+		MemberDto member = (MemberDto)session.getAttribute("loginuser");
+		
+		if(!member.isShop()) {
+			redirectMessage.addFlashAttribute("shopRegisterMessage", "판매자 등록된 회원만 등록이 가능합니다. -> 마이페이지");
+			return "redirect:/mypage";
+		}
 		return "market/register";
 	}
 	
@@ -80,28 +86,28 @@ public class MarketController {
 	public String registerProduct(ProductDto product, @RequestParam("picture") MultipartFile picture,
 								  HttpSession session) {
 				
-			MemberDto member = (MemberDto)session.getAttribute("loginuser");
+		MemberDto member = (MemberDto)session.getAttribute("loginuser");
+				
+		if (picture != null && picture.getOriginalFilename().length() > 0) {
 			
-			if (picture != null && picture.getOriginalFilename().length() > 0) {
+			String savedFileName = Util.makeUniqueFileName(picture.getOriginalFilename());
+			
+			File file = new File(UPLOAD_PATH, savedFileName);
+			String imgUrl = "/images/" + savedFileName;
+			
+			try {
 				
-				String savedFileName = Util.makeUniqueFileName(picture.getOriginalFilename());
-				
-				File file = new File(UPLOAD_PATH, savedFileName);
-				String imgUrl = "/images/" + savedFileName;
-				
-				try {
-					
-					String id = member.getId();
-					product.setSellerId(id);
-					product.setImgUrl(imgUrl);
-					product.setOriginalFileName(picture.getOriginalFilename());
-					product.setSavedFileName(savedFileName);
-					marketService.registerProduct(product);
-					picture.transferTo(file);
-				}	catch (Exception ex) {
-					ex.printStackTrace();
-				}
+				String id = member.getId();
+				product.setSellerId(id);
+				product.setImgUrl(imgUrl);
+				product.setOriginalFileName(picture.getOriginalFilename());
+				product.setSavedFileName(savedFileName);
+				marketService.registerProduct(product);
+				picture.transferTo(file);
+			}	catch (Exception ex) {
+				ex.printStackTrace();
 			}
+		}
 		
 		return "redirect:/market";
 	}
