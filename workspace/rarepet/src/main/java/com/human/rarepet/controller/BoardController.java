@@ -163,7 +163,7 @@ public class BoardController {
 		System.out.println("delete \n");
 		//System.out.println();
 		
-		return "redirect:boardlist";
+		return "redirect:community";
 		/*
 		 * return "redirect:list?pageNo=" + pageNo;
 		 */
