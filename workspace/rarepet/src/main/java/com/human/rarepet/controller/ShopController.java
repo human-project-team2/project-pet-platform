@@ -72,26 +72,39 @@ public class ShopController {
 	}
 	
 	@PostMapping(path = {"/shop/editshop"})
-	public String updateShop(ShopDto shop, HttpSession session, @RequestParam("picture") MultipartFile picture) {
+	public String updateShop(ShopDto shop, HttpSession session, 
+			@RequestParam("picture") MultipartFile picture,
+			@RequestParam("existingOriginalFileName") String existingOriginalFileName,
+			@RequestParam("existingSavedFileName") String existingSavedFileName,
+			@RequestParam("existingImgUrlShop") String existingImgUrlShop) {
 
+		MemberDto member = (MemberDto)session.getAttribute("loginuser");
+		String id = member.getId();
+		
 		if (picture != null && picture.getOriginalFilename().length() > 0) {
 			String savedFileName = Util.makeUniqueFileName(picture.getOriginalFilename());
 			File file = new File(UPLOAD_PATH, savedFileName);
 			String imgUrlShop = "/images/" + savedFileName;
 
 			try {
-
+				shop.setId(id);
 				shop.setOriginalFileName(picture.getOriginalFilename());
 				shop.setSavedFileName(savedFileName);
 				shop.setImgUrlShop(imgUrlShop);
 				picture.transferTo(file);
-				
-				shopService.selectiveUpdateShop(shop, session);
+			
+				shopService.updateShop(shop);
 				
 			} catch (Exception x) {
 				x.printStackTrace();
 			}
 
+		} else {
+			shop.setId(id);
+			shop.setOriginalFileName(existingOriginalFileName);
+			shop.setSavedFileName(existingSavedFileName);
+			shop.setImgUrlShop(existingImgUrlShop);
+			shopService.updateShop(shop);
 		}
 
 		return "redirect:/shop/shopmain";

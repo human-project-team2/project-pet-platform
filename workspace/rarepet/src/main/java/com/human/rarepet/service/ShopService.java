@@ -10,5 +10,5 @@ public interface ShopService {
 	
 	void insertShop(ShopDto shop, HttpSession session);
 	ShopDto showShopInfo(String id);
-	void selectiveUpdateShop(ShopDto shop, HttpSession session);
+	void updateShop(ShopDto shop);
 }

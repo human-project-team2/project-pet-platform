@@ -5,6 +5,7 @@ import java.util.Map;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 import org.apache.ibatis.annotations.UpdateProvider;
 
 import com.human.rarepet.common.Util;
@@ -21,9 +22,9 @@ public interface ShopMapper {
 			+ "shop where id = #{id}")
 	ShopDto showShopInfo(String id);
 	
-	@Insert("insert into shop (shop_content, verified, rating, business_reg_no, shop_name, saved_file_name, original_file_name, img_url_shop) "
-			+ "values (#{shopContent}, #{verified}, #{rating}, #{businessRegNo}, #{shopName}, #{savedFileName}, #{originalFileName}, #{imgUrlShop}) "
-			+ "where id = #{id}")
-	String selectiveUpdateShop(ShopDto shop, String id);
+	@Update("update shop set shop_content = #{shopContent}, verified = #{verified}, rating = #{rating}, "
+			+ "business_reg_no = #{businessRegNo}, shop_name = #{shopName}, saved_file_name = #{savedFileName}, "
+			+ "original_file_name = #{originalFileName}, img_url_shop = #{imgUrlShop} where id = #{id}")
+	int updateShop(ShopDto shop);
 	
 }

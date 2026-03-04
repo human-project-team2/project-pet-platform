@@ -1,7 +1,5 @@
 package com.human.rarepet.service;
 
-import java.util.Map;
-
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Service;
 
@@ -34,10 +32,9 @@ public class ShopServiceImplement implements ShopService {
 	}
 
 	@Override
-	public void selectiveUpdateShop(ShopDto shop, HttpSession session) {
-		MemberDto member = (MemberDto)session.getAttribute("loginuser");
-		String id = member.getId();
-		shopMapper.selectiveUpdateShop(shop, id);
+	public void updateShop(ShopDto shop) {
+		
+		shopMapper.updateShop(shop);
 	}
 
 }
