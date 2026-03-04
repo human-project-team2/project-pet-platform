@@ -36,6 +36,10 @@
         VALUES (#{boardId}, #{boardAdoptCategory}, #{boardAdoptDone})
     </insert>
     
+    <delete id="deleteBoardAdo" parameterType="int">
+        DELETE from board_adopt WHERE board_id = #{boardId}
+    </delete>
+    
     <select id="showAllBoard" resultType="AdoBoardDto">
 		select *
 		from board

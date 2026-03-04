@@ -374,6 +374,28 @@ public class BoardController {
 		
 	}
 	
+	// adoption.html deleteado
+	@GetMapping(path = { "/board/deleteado" })
+	public String deleteado(
+			@RequestParam(value = "boardId", defaultValue="-1") int boardId
+			) {
+		
+		/*
+		if (boardId == -1 || pageNo == -1) {
+			return "redirect:/board/list";
+		}
+*/
+		System.out.println(boardId);
+		System.out.println("delete QnA \n");
+		boardService.deleteBoardAdoByBoardId(boardId);
+		boardService.deleteBoardByBoardId(boardId);						
+		
+		return "redirect:adoptionlist";
+		/*
+		 * return "redirect:adolist?pageNo=" + pageNo;
+		 */
+	}
+	
 	@GetMapping (path = {"/board/detail"}) 
 	public String boarddetail(
 			@RequestParam(value = "boardId", defaultValue = "-1") int boardId, 

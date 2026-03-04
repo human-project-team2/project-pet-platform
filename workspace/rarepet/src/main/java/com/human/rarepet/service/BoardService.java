@@ -97,6 +97,10 @@ public class BoardService {
 
 	public void deleteBoardQnaByBoardId(int boardId) {
 		boardMapper.deleteBoardQnA(boardId);		
+	}
+
+	public void deleteBoardAdoByBoardId(int boardId) {
+		boardMapper.deleteBoardAdo(boardId);		
 	}	
 
 }
