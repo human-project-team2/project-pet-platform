@@ -27,10 +27,18 @@
         VALUES (#{boardId}, #{answerSelected}, #{boardQuestionCategory})
     </insert>
     
+    <delete id="deleteBoardQnA" parameterType="int">
+        DELETE from board_question WHERE board_id = #{boardId}
+    </delete>
+    
     <insert id="insertBoardAdo" parameterType="AdoBoardDto">        
         INSERT INTO board_adopt (board_id, board_adopt_category, board_adopt_done)
         VALUES (#{boardId}, #{boardAdoptCategory}, #{boardAdoptDone})
     </insert>
+    
+    <delete id="deleteBoardAdo" parameterType="int">
+        DELETE from board_adopt WHERE board_id = #{boardId}
+    </delete>
     
     <select id="showAllBoard" resultType="AdoBoardDto">
 		select *

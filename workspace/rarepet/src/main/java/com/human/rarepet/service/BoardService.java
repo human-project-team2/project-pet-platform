@@ -93,6 +93,14 @@ public class BoardService {
 
 	public void deleteBoardGenByBoardId(int boardId) {
 		boardMapper.deleteBoardGen(boardId);		
+	}
+
+	public void deleteBoardQnaByBoardId(int boardId) {
+		boardMapper.deleteBoardQnA(boardId);		
+	}
+
+	public void deleteBoardAdoByBoardId(int boardId) {
+		boardMapper.deleteBoardAdo(boardId);		
 	}	
 
 }

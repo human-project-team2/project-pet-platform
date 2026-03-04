@@ -256,7 +256,29 @@ public class BoardController {
 			
 		return "board/qna"; 
 		
-	}		
+	}	
+	
+	// detail deleteqna
+		@GetMapping(path = { "/board/deleteqna" })
+		public String deleteqna(
+				@RequestParam(value = "boardId", defaultValue="-1") int boardId
+				) {
+			
+			/*
+			if (boardId == -1 || pageNo == -1) {
+				return "redirect:/board/list";
+			}
+	*/
+			System.out.println(boardId);
+			System.out.println("delete QnA \n");
+			boardService.deleteBoardQnaByBoardId(boardId);
+			boardService.deleteBoardByBoardId(boardId);						
+			
+			return "redirect:qnalist";
+			/*
+			 * return "redirect:qnalist?pageNo=" + pageNo;
+			 */
+		}
 	
 	@GetMapping (path = {"/board/adoptionlist"}) 
 	public String boardadoptionlist(Model model) {
@@ -350,6 +372,28 @@ public class BoardController {
 			
 		return "board/adoption"; 
 		
+	}
+	
+	// adoption.html deleteado
+	@GetMapping(path = { "/board/deleteado" })
+	public String deleteado(
+			@RequestParam(value = "boardId", defaultValue="-1") int boardId
+			) {
+		
+		/*
+		if (boardId == -1 || pageNo == -1) {
+			return "redirect:/board/list";
+		}
+*/
+		System.out.println(boardId);
+		System.out.println("delete QnA \n");
+		boardService.deleteBoardAdoByBoardId(boardId);
+		boardService.deleteBoardByBoardId(boardId);						
+		
+		return "redirect:adoptionlist";
+		/*
+		 * return "redirect:adolist?pageNo=" + pageNo;
+		 */
 	}
 	
 	@GetMapping (path = {"/board/detail"}) 
