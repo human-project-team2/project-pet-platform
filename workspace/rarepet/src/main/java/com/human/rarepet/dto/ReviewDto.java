@@ -1,14 +1,18 @@
 package com.human.rarepet.dto;
 
+import java.time.LocalDateTime;
+
 import lombok.Data;
 
 @Data
 public class ReviewDto {
 
-	private int review_no;
-	private String product_name;
-	private String reviewer_nick;
-	private String reported;
+	private int reviewNo;
 	private String id;
-	private String product_no;
+	private int orderNo;
+	private int productNo;
+	private String content;
+	private LocalDateTime createdAt;
+	private LocalDateTime modifiedAt;
+	private int rating;
 }

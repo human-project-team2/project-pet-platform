@@ -54,7 +54,7 @@ public class BoardController {
 		// board.getBoardWriteDate();
 		boardService.insertBoard(board);
 		boardService.insertBoardGen(board);
-		return "redirect:/board/boardlist";		
+		return "redirect:/board/community";		
 	}
 	
 	@GetMapping (path = {"/board/boardlist"}) 
@@ -72,14 +72,19 @@ public class BoardController {
 			Model model) {
 		int board_exist = 0;
 		System.out.println("--------------------Community page");
-		/* 
-		List<BoardDto> boards = boardService.findBoardByPage(pageNo, PAGE_SIZE);
-		int boardCount = boardService.findBoardCount(); // 페이지 갯수를 계산하기 위한 데이터 조회
+		
+		// List<BoardDto> boards = boardService.findBoardByPage(pageNo, PAGE_SIZE);
+		List<BoardDto> boards = boardService.showAllBoard();
+		// int boardCount = boardService.findBoardCount(); // 페이지 갯수를 계산하기 위한 데이터 조회
+		int boardCount = 1;
+		int pagerBlock = 1;
+		int start = 1;
+		int end = 1;
 		
 		// 페이저 (페이지 번호 목록) 표시를 위한 데이터 처리
-		int pagerBlock = (pageNo - 1) / PAGER_SIZE;
-		int start = (pagerBlock * PAGER_SIZE) + 1;
-		int end = start + PAGER_SIZE;
+		//int pagerBlock = (pageNo - 1) / PAGER_SIZE;
+		//int start = (pagerBlock * PAGER_SIZE) + 1;
+		//int end = start + PAGER_SIZE;
 		
 		PagerDto pager = new PagerDto();
 		pager.setPageNo(pageNo);
@@ -92,10 +97,10 @@ public class BoardController {
 		int pageCnt = (boardCount / PAGE_SIZE) + ((boardCount % PAGE_SIZE) > 0 ? 1 : 0);
 		pager.setPageCnt(pageCnt);
 		
-		model.addAttribute("boards", boards);
+		//model.addAttribute("boards", boards);
 		model.addAttribute("pager", pager);
 		model.addAttribute("pageNo", pageNo);
-		*/		
+		
 		/*
 		 * int bono = 15;
 		 * 
@@ -105,7 +110,7 @@ public class BoardController {
 		 * System.out.printf("-------------->board id " + board.getBoardId()); }
 		 */		
 		
-		List<BoardDto> boards = boardService.showAllBoard();
+		// List<BoardDto> boards = boardService.showAllBoard();
 		List<GenBoardDto> genboards = boardService.showAllGenBoard();
 		
 		for(GenBoardDto genboard : genboards) {
@@ -158,7 +163,7 @@ public class BoardController {
 		System.out.println("delete \n");
 		//System.out.println();
 		
-		return "redirect:boardlist";
+		return "redirect:community";
 		/*
 		 * return "redirect:list?pageNo=" + pageNo;
 		 */
