@@ -140,6 +140,33 @@ public class BoardController {
 		
 	}
 	
+	// detail delete
+	@GetMapping(path = { "/board/delete" })
+	public String delete(
+			@RequestParam(value = "boardId", defaultValue="-1") int boardId
+			) {
+		
+		/*
+		if (boardId == -1 || pageNo == -1) {
+			return "redirect:/board/list";
+		}
+*/
+		System.out.println(boardId);
+		System.out.println("delete GEN \n");
+		boardService.deleteBoardGenByBoardId(boardId);
+		boardService.deleteBoardByBoardId(boardId);
+		System.out.println("delete \n");
+		//System.out.println();
+		
+		return "redirect:boardlist";
+		/*
+		 * return "redirect:list?pageNo=" + pageNo;
+		 */
+	}
+	
+	
+	
+	
 	@GetMapping (path = {"/board/qnalist"}) 
 	public String boardqnalist(Model model) {
 		
