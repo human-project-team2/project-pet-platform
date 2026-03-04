@@ -103,10 +103,68 @@ body{
     </div>
 </div>
 
-<div th:replace="fragments/fragment :: footer"></div>
-<div th:replace="fragments/fragment :: message"></div>
-	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>	
-	<script th:replace="fragments/fragment :: message_script"></script>
+<div class="container my-5">
+		
+		<div class="mb-3">
+		    <a th:href="@{/board/qnalist}" 
+		       class="btn btn-outline-secondary rounded-pill px-4">
+		        ← 목록으로 돌아가기
+		    </a>
+		</div>
+		
+		<!-- Title -->
+		<div class="mb-4">
+			<h3 class="fw-bold" th:text="${board.boardId}"></h3>
+			<p class="text-muted" th:text="${board.boardTitle}" ></p>
+		</div>
 
+		<div class="row g-5">
+
+			<!-- LEFT : Image -->
+			<div class="col-lg-6">
+				<div class="card shadow">
+				<!-- 
+					<img
+						th:src="@{${product.imgUrl}}"
+						class="card-img-top">
+						 -->
+				</div>
+			</div>
+
+			<!-- RIGHT : Basic Info -->
+			<div class="col-lg-6">
+				<div class="card shadow p-4">
+<!-- 
+					<div class="price-badge mb-3" th:text="|₩${board.boardContent}|" ></div>
+ -->
+					<ul class="list-unstyled mb-4">
+						<li><strong>타입:</strong>
+						<span th:text="${board.boardId}" ></span>
+						</li>
+						<!-- 
+						<li><strong>성별:</strong></li>
+						<li><strong>건강상태:</strong></li>
+						<li><strong>접종여부:</strong></li>
+						<li><strong>지역:</strong></li>
+						 -->
+					</ul>
+
+				</div>
+			</div>
+
+		</div>
+
+	</div>
+	<div th:replace="fragments/fragment :: message"></div>
+	<div th:replace="fragments/fragment :: footer"></div>
+
+	<!-- Bootstrap JS -->
+	<script
+		src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+	<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+	<script th:replace="fragments/fragment :: message_script"></script>
+	<script>
+		
+	</script>
 </body>
 </html>

@@ -104,20 +104,34 @@ public class BoardController {
 		 * if(board != null) { board_exist = 1;
 		 * System.out.printf("-------------->board id " + board.getBoardId()); }
 		 */		
-		// BoardDto board = boardService.showAllBoard(bono);
 		
-		List<BoardDto> boards = boardService.showAllBoard();		
+		List<BoardDto> boards = boardService.showAllBoard();
+		List<GenBoardDto> genboards = boardService.showAllGenBoard();
+		
+		for(GenBoardDto genboard : genboards) {
+			if(genboard != null) {
+				board_exist = 1;
 				
-		for(BoardDto board : boards) {
-			if(board != null) {
-				board_exist = 1;				
-				System.out.printf("-------------->board id " + board.getBoardId());
+				for(BoardDto board : boards) {
+					System.out.println("\n");
+					if(board.getBoardId() == genboard.getBoardId())
+					{
+						
+						genboard.setBoardTitle(board.getBoardTitle());
+						genboard.setBoardContent(board.getBoardContent());						
+						genboard.setBoardWriterId(board.getBoardWriterId());
+						genboard.setBoardWriteDate(board.getBoardWriteDate());
+						genboard.setBoardViewCount(board.getBoardViewCount());
+						
+					}
+				}				
 			}			
 		}
+		
 		if(board_exist == 1) {
-			model.addAttribute("boards", boards);
+			model.addAttribute("boards", genboards);
 		} else {
-			System.out.println("-------------->board null\n");
+			System.out.println("-------------->genboard null\n");
 		}
 		
 		
@@ -144,16 +158,6 @@ public class BoardController {
 					System.out.println("\n");
 					if(board.getBoardId() == qnaboard.getBoardId())
 					{
-						System.out.println(board);
-						System.out.printf("-------------->find qnaboard title \n" + board.getBoardTitle());
-						System.out.printf("-------------->qnaboard id \n" + qnaboard.getBoardId());
-						System.out.printf("-------------->board id \n" + board.getBoardId());
-						System.out.printf("-------------->qnaboard title \n" + qnaboard.getBoardTitle());
-						System.out.printf("-------------->qnaboard cat \n" + qnaboard.isBoardQuestionCategory());
-						System.out.printf("-------------->qnaboard ans \n" + qnaboard.getAnswerSelected());
-
-						System.out.println(qnaboard);
-						System.out.println("\n");
 						
 						qnaboard.setBoardTitle(board.getBoardTitle());
 						qnaboard.setBoardContent(board.getBoardContent());						
@@ -161,12 +165,6 @@ public class BoardController {
 						qnaboard.setBoardWriteDate(board.getBoardWriteDate());
 						qnaboard.setBoardViewCount(board.getBoardViewCount());
 						
-						System.out.printf("after -------------->qnaboard id \n" + qnaboard.getBoardId());
-						System.out.printf("after -------------->qnaboard title \n" + qnaboard.getBoardTitle());
-						System.out.printf("after -------------->qnaboard cat \n" + qnaboard.isBoardQuestionCategory());
-						System.out.printf("after -------------->qnaboard ans \n" + qnaboard.getAnswerSelected());
-						System.out.println(qnaboard);
-						System.out.println("\n");
 					}
 				}				
 			}			
@@ -208,9 +206,26 @@ public class BoardController {
 	}
 	
 	@GetMapping (path = {"/board/qna"}) 
-	public String boardqna(Model model) {
+	public String boardqna(
+			@RequestParam(value = "boardId", defaultValue = "-1") int boardId, 
+			@RequestParam(value = "pageNo", defaultValue = "-1") int pageNo,
+			Model model) {	
+				
+		System.out.printf("--------------------Qna--  " + boardId);	
+			
+		/*
+		 * if (boardId == -1 || pageNo == -1) { return "redirect:/board/boardlist"; }
+		 */			
 		
-		System.out.println("--------------------QnA");
+		BoardDto board = boardService.showQnaBoardById(boardId);		
+		if (board == null) {
+			System.out.println("--------------------Qna NULL--  ");	
+			return "redirect:/board/qnalist";
+		}
+		System.out.println("QnA Ok");
+		
+		model.addAttribute("board", board);
+		model.addAttribute("pageNo", pageNo);
 			
 		return "board/qna"; 
 		
@@ -285,19 +300,53 @@ public class BoardController {
 	}
 	
 	@GetMapping (path = {"/board/adoption"}) 
-	public String boardadoption(Model model) {
+	public String boardadoption(
+			@RequestParam(value = "boardId", defaultValue = "-1") int boardId, 
+			@RequestParam(value = "pageNo", defaultValue = "-1") int pageNo,
+			Model model) {
 		
 		System.out.println("--------------------Adoption");
+		
+		/*
+		 * if (boardId == -1 || pageNo == -1) { return "redirect:/board/adoptionlist"; }
+		 */			
+		
+		BoardDto board = boardService.showAdoBoardById(boardId);		
+		if (board == null) {
+			System.out.println("--------------------Adoption NULL--  ");	
+			return "redirect:/board/adoptionlist";
+		}
+		System.out.println("Adoption Ok");
+		
+		model.addAttribute("board", board);
+		model.addAttribute("pageNo", pageNo);
 			
 		return "board/adoption"; 
 		
 	}
 	
 	@GetMapping (path = {"/board/detail"}) 
-	public String boarddetail(Model model) {
-		
-		System.out.println("--------------------Detail");
+	public String boarddetail(
+			@RequestParam(value = "boardId", defaultValue = "-1") int boardId, 
+			@RequestParam(value = "pageNo", defaultValue = "-1") int pageNo,
+			Model model) {
+		System.out.println("Gen");
+		System.out.printf("--------------------DetailBo--  " + boardId);		
 			
+		/*
+		 * if (boardId == -1 || pageNo == -1) { return "redirect:/board/boardlist"; }
+		 */		
+		// if(board.getBoardId() == adoboard.getBoardId())
+		// BoardDto board = boardService.showBoardById(boardId);
+				
+		BoardDto board = boardService.showGenBoardById(boardId);
+		if (board == null) {
+			return "redirect:/board/boardlist";
+		}
+		
+		model.addAttribute("board", board);
+		model.addAttribute("pageNo", pageNo);
+		
 		return "board/detail"; 
 		
 	}

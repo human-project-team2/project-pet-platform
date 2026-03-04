@@ -123,8 +123,11 @@ body{
       </thead>
       <tbody>                      
         <tr th:each="board: ${qnaboards}" style="height:30px">
-          <th scope="row" th:text="${ board.boardId }"></th>
-          <td th:text="${ board.boardTitle }"></td>
+          <th scope="row" th:text="${ board.boardId }"></th>          
+          <td>
+          	<a 	th:href="@{/board/qna(boardId=${board.boardId}) }"
+                th:text="${ board.boardTitle }"></a>
+          </td>          
           <td th:text="${ board.boardWriterId }"></td>
           <td th:text="${ board.boardWriteDate }"></td>
           <td th:text="${ board.boardViewCount }"></td>
