@@ -21,7 +21,9 @@ public interface ShopMapper {
 			+ "shop where id = #{id}")
 	ShopDto showShopInfo(String id);
 	
-	@UpdateProvider(type = Util.class, method = "selectiveUpdateShop")
-	String selectiveUpdateShop(Map<String, Object> fields);
+	@Insert("insert into shop (shop_content, verified, rating, business_reg_no, shop_name, saved_file_name, original_file_name, img_url_shop) "
+			+ "values (#{shopContent}, #{verified}, #{rating}, #{businessRegNo}, #{shopName}, #{savedFileName}, #{originalFileName}, #{imgUrlShop}) "
+			+ "where id = #{id}")
+	String selectiveUpdateShop(ShopDto shop, String id);
 	
 }

@@ -34,8 +34,10 @@ public class ShopServiceImplement implements ShopService {
 	}
 
 	@Override
-	public void updateShop(Map<String, Object> fields) {
-		shopMapper.selectiveUpdateShop(fields);
+	public void selectiveUpdateShop(ShopDto shop, HttpSession session) {
+		MemberDto member = (MemberDto)session.getAttribute("loginuser");
+		String id = member.getId();
+		shopMapper.selectiveUpdateShop(shop, id);
 	}
 
 }

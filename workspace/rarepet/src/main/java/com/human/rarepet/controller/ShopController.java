@@ -71,4 +71,30 @@ public class ShopController {
 		return "shop/editshop";
 	}
 	
+	@PostMapping(path = {"/shop/editshop"})
+	public String updateShop(ShopDto shop, HttpSession session, @RequestParam("picture") MultipartFile picture) {
+
+		if (picture != null && picture.getOriginalFilename().length() > 0) {
+			String savedFileName = Util.makeUniqueFileName(picture.getOriginalFilename());
+			File file = new File(UPLOAD_PATH, savedFileName);
+			String imgUrlShop = "/images/" + savedFileName;
+
+			try {
+
+				shop.setOriginalFileName(picture.getOriginalFilename());
+				shop.setSavedFileName(savedFileName);
+				shop.setImgUrlShop(imgUrlShop);
+				picture.transferTo(file);
+				
+				shopService.selectiveUpdateShop(shop, session);
+				
+			} catch (Exception x) {
+				x.printStackTrace();
+			}
+
+		}
+
+		return "redirect:/shop/shopmain";
+	}
+	
 }

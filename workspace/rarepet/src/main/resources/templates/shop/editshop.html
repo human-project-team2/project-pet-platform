@@ -58,7 +58,7 @@ body {
 		<div class="edit-card">
 			<h1>판매자 정보 수정</h1>
 			
-			<form th:action="@{/shop/owner/update}" th:object="${shop}" method="post" enctype="multipart/form-data">
+			<form th:action="@{/shop/editshop}" th:object="${shop}" method="post" enctype="multipart/form-data">
 				
 				<!-- Shop Name -->
 				<div class="mb-3">
@@ -75,7 +75,7 @@ body {
 				<!-- Shop Image -->
 				<div class="mb-3">
 					<label for="imgUrlShop" class="form-label">상점 이미지 업로드</label>
-					<input class="form-control" type="file" id="imgUrlShop" name="imgUrlShop">
+					<input class="form-control" type="file" id="imgUrlShop" name="picture" accept="image/*" required>
 					<div class="mt-2" th:if="${shop.imgUrlShop != null}">
 						<img th:src="@{${shop.imgUrlShop}}" alt="Current Shop Image" class="img-fluid rounded" style="max-height:200px;">
 						<p class="text-muted">현재 이미지</p>
