@@ -154,8 +154,26 @@ body {
 			</div>
 
 		</div>
+		
+		<div id="mainContent">
+	      <div class="container-fluid">
+	    	  <div class="row">
+	          <div class="col-md-12">
+	            <div class="bgc-white p-20 bd">            
+	            <div class="mT-30">
+	            <div>
+				  <button type="button" id="edit-btn" class="btn btn-primary btn-color btn-sm">수정</button>
+				  <button type="button" id="delete-btn" class="btn btn-primary btn-color btn-sm">삭제</button>
+				  <button type="button" id="to-list-btn" class="btn btn-primary btn-color btn-sm">목록</button>
+				</div>			
+	            </div> <!-- ### mT-30 ### -->           
+	          </div> <!-- ### col-md-12 ### -->
+	        </div> <!-- ### row ### -->        
+	      </div> <!-- ### container-fluid ### --> 
+	    </div> <!-- ### mainContent ### --> 	
 
-	</div>
+	</div>	
+	
 	<div th:replace="fragments/fragment :: message"></div>
 	<div th:replace="fragments/fragment :: footer"></div>
 
