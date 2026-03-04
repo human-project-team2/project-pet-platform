@@ -35,5 +35,9 @@ public interface BoardMapper {
 	BoardDto showQnaBoardById(int boardId);
 
 	BoardDto showAdoBoardById(int boardId);
+
+	void deleteBoard(int boardId);
+
+	void deleteBoardGen(int boardId);
 	
 }

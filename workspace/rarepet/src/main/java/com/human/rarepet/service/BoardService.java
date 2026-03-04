@@ -85,6 +85,14 @@ public class BoardService {
 		
 		BoardDto dto = boardMapper.showAdoBoardById(boardId);
 		return dto;
+	}
+
+	public void deleteBoardByBoardId(int boardId) {
+		boardMapper.deleteBoard(boardId);		
+	}
+
+	public void deleteBoardGenByBoardId(int boardId) {
+		boardMapper.deleteBoardGen(boardId);		
 	}	
 
 }

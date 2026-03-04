@@ -8,11 +8,19 @@
         INSERT INTO board (board_title, board_content, board_writer_id, board_like_count, board_view_count, board_write_date)
         VALUES (#{boardTitle}, #{boardContent}, #{boardWriterId}, #{boardLikeCount}, #{boardViewCount}, #{boardWriteDate})
     </insert>
+    
+	<delete id="deleteBoard" parameterType="int">
+        DELETE from board WHERE board_id = #{boardId}
+    </delete>
 
     <insert id="insertBoardGen" parameterType="GenBoardDto">        
         INSERT INTO board_general (board_id, board_general_category)
-        VALUES (#{boardId}, #{boardGeneralCategory})
+        VALUES (#{boardId}, #{boardGeneralCategory})        
     </insert>
+    
+    <delete id="deleteBoardGen" parameterType="int">
+        DELETE from board_general WHERE board_id = #{boardId}
+    </delete>
     
     <insert id="insertBoardQnA" parameterType="QnABoardDto">        
         INSERT INTO board_question (board_id, answer_selected, board_question_category)
