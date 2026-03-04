@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <body>
 
-    <div th:fragment="header">
+<div th:fragment="header">
     <nav class="navbar navbar-expand-lg shadow-sm fixed-top" 
          style="background-color: var(--bs-body-bg); border-bottom: 1px solid rgba(0,0,0,0.1); transition: 0.3s;">
         <div class="container">
@@ -22,6 +22,8 @@
 
             <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
                 <ul class="navbar-nav">
+                <!-- 관리자 아이디 임시 설정 -> 권한으로 변경 -->
+                	<li class="nav-item" th:if="${session.loginuser != null and session.loginuser.id == 'administrator'}"><a class="nav-link" th:href="@{/admin}">관리자</a></li>
                     <li class="nav-item"><a class="nav-link" th:href="@{/market}">마켓</a></li>
                     <li class="nav-item" th:if="${session.loginuser}"><a class="nav-link" th:href="@{/market/register}">판매등록</a></li>
                     <li class="nav-item" th:unless="${session.loginuser}"><a class="nav-link" th:href="@{/auth/login}">판매등록</a></li>
