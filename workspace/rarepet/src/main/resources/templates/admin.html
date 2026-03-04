@@ -132,6 +132,7 @@ body {
             <table class="table align-middle">
                 <thead class="table-light">
                     <tr>
+                    	<th>id</th>
                         <th>상점명</th>
                         <th>사업자번호</th>
                         <th>상태</th>
@@ -140,6 +141,7 @@ body {
                 </thead>
                 <tbody>
                     <tr th:each="shop : ${shops}">
+                        <td th:text="${shop.id}"></td>
                         <td th:text="${shop.shopName}"></td>
                         <td th:text="${shop.businessRegNo}"></td>
 

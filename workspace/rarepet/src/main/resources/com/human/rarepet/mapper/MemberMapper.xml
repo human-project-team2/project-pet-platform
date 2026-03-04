@@ -9,7 +9,7 @@
     </insert>
     
     <select id="checkMember" parameterType="hashmap" resultType="MemberDto">
-        SELECT id, name, phone, address, email FROM member where id = #{memberId} and password = #{passwd}
+        SELECT id, name, phone, address, email, not_user, is_shop  FROM member where id = #{memberId} and password = #{passwd}
 	</select>
 	
 
@@ -22,7 +22,7 @@
 	
     
     <select id="getUserById" resultType="MemberDto">
-    SELECT id, name, phone, address, email, not_user 
+    SELECT id, name, phone, address, email, not_user, is_shop
     FROM member 
     WHERE id = #{id} AND not_user = 0
 	</select>

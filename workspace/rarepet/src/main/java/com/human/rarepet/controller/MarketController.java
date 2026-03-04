@@ -72,12 +72,13 @@ public class MarketController {
 	public String register(HttpSession session, RedirectAttributes redirectMessage) {
 		
 		MemberDto member = (MemberDto)session.getAttribute("loginuser");
-		
+		System.out.println(member);
 		if(!member.isShop()) {
 			redirectMessage.addFlashAttribute("shopRegisterMessage", "판매자 등록된 회원만 등록이 가능합니다. -> 마이페이지");
 			return "redirect:/mypage";
+		} else {
+			return "market/register";
 		}
-		return "market/register";
 	}
 	
 	final String UPLOAD_PATH = "d:\\uploaded_images";
