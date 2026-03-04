@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.human.rarepet.mapper.ProductMapper">
@@ -18,4 +17,24 @@
     WHERE seller_id = #{sellerId} 
     ORDER BY product_reg_date DESC
 	</select>
+	
+	<select id="findProductsByFilter" resultType="com.human.rarepet.dto.ProductDto">
+    /* product 대신 실제 존재하는 product_all 테이블 사용 */
+    SELECT * FROM product_all
+    <where>
+        <if test="category != null and category != ''">
+            AND product_category = #{category}
+        </if>
+        
+        <if test="search != null and search != ''">
+            AND product_name LIKE CONCAT('%', #{search}, '%')
+        </if>
+    </where>
+    ORDER BY product_reg_date DESC
+</select>
+
+<select id="showAllProductSearch" resultType="com.human.rarepet.dto.ProductDto">
+    SELECT * FROM product_all ORDER BY product_reg_date DESC
+</select>
+
 </mapper>
