@@ -54,7 +54,7 @@ public class BoardController {
 		// board.getBoardWriteDate();
 		boardService.insertBoard(board);
 		boardService.insertBoardGen(board);
-		return "redirect:/board/boardlist";		
+		return "redirect:/board/community";		
 	}
 	
 	@GetMapping (path = {"/board/boardlist"}) 
