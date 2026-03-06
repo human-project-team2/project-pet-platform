@@ -39,7 +39,7 @@ public class BoardController {
 		
 		
 		return "board/write";		
-	}
+	}	
 	
 	@PostMapping(path = {"/board/write"})
 	public String writeBoard(GenBoardDto board) {
