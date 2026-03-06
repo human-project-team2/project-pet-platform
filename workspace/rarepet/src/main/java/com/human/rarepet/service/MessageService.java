@@ -5,11 +5,13 @@ import java.util.List;
 
 import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Service;
 
 import com.human.rarepet.dto.MemberDto;
 import com.human.rarepet.dto.MessageDto;
 import com.human.rarepet.mapper.MessageMapper;
+import com.human.rarepet.security.RarepetUserDetails;
 
 import jakarta.servlet.http.HttpSession;
 
@@ -19,9 +21,9 @@ public class MessageService {
 	@Autowired
 	private MessageMapper messageMapper;
 	
-	public void sendMessage(MessageDto message, HttpSession session) throws RuntimeException {
+	public void sendMessage(MessageDto message, @AuthenticationPrincipal RarepetUserDetails userDetails ) throws RuntimeException {
 		
-		MemberDto member = (MemberDto)session.getAttribute("loginuser");
+		MemberDto member = userDetails.getMember();
 		message.setSentAt(new Date());
 		message.setSenderId(member.getId());
 		

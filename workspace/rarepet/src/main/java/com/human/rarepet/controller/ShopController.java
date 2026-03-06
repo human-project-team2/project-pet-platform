@@ -2,6 +2,7 @@ package com.human.rarepet.controller;
 
 import java.io.File;
 
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,6 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.human.rarepet.common.Util;
 import com.human.rarepet.dto.MemberDto;
 import com.human.rarepet.dto.ShopDto;
+import com.human.rarepet.security.RarepetUserDetails;
 import com.human.rarepet.service.ShopService;
 
 import jakarta.servlet.http.HttpSession;
@@ -32,8 +34,11 @@ public class ShopController {
 	}
 	
 	@PostMapping(path = {"/shop-register"})
-	public String insertShop(ShopDto shop, HttpSession session, @RequestParam("picture") MultipartFile picture) {
+	public String insertShop(ShopDto shop, 
+							@AuthenticationPrincipal RarepetUserDetails userDetails, 
+							@RequestParam("picture") MultipartFile picture) {
 		
+		String id = userDetails.getUsername();
 		if(picture != null && picture.getOriginalFilename().length() > 0) {
 			String savedFileName = Util.makeUniqueFileName(picture.getOriginalFilename());
 			File file = new File(UPLOAD_PATH, savedFileName);
@@ -45,7 +50,7 @@ public class ShopController {
 				shop.setSavedFileName(savedFileName);
 				shop.setImgUrlShop(imgUrlShop);
 				picture.transferTo(file);
-				shopService.insertShop(shop, session);
+				shopService.insertShop(shop, id);
 			} catch (Exception x) {
 				x.printStackTrace();
 			}
@@ -56,29 +61,30 @@ public class ShopController {
 	}
 	
 	@GetMapping(path = {"/shop/shopmain"})
-	public String shopPage(HttpSession session, Model model) {
-		MemberDto member = (MemberDto)session.getAttribute("loginuser");
+	public String shopPage(@AuthenticationPrincipal RarepetUserDetails userDetails, Model model) {
+		MemberDto member = userDetails.getMember();
 		String id = member.getId();
 		model.addAttribute("shop", shopService.showShopInfo(id)); 
 		return "shop/shopmain";
 	}
 	
 	@GetMapping(path = {"/shop/editshop"})
-	public String shopEdit(HttpSession session, Model model) {
-		MemberDto member = (MemberDto)session.getAttribute("loginuser");
+	public String shopEdit(@AuthenticationPrincipal RarepetUserDetails userDetails, Model model) {
+		MemberDto member = userDetails.getMember();
 		String id = member.getId();
 		model.addAttribute("shop", shopService.showShopInfo(id)); 
 		return "shop/editshop";
 	}
 	
 	@PostMapping(path = {"/shop/editshop"})
-	public String updateShop(ShopDto shop, HttpSession session, 
+	public String updateShop(ShopDto shop, 
+			@AuthenticationPrincipal RarepetUserDetails userDetails, 
 			@RequestParam("picture") MultipartFile picture,
 			@RequestParam("existingOriginalFileName") String existingOriginalFileName,
 			@RequestParam("existingSavedFileName") String existingSavedFileName,
 			@RequestParam("existingImgUrlShop") String existingImgUrlShop) {
 
-		MemberDto member = (MemberDto)session.getAttribute("loginuser");
+		MemberDto member = userDetails.getMember();
 		String id = member.getId();
 		
 		if (picture != null && picture.getOriginalFilename().length() > 0) {

@@ -18,10 +18,10 @@ public class ShopServiceImplement implements ShopService {
 	}
 	
 	@Override
-	public void insertShop(ShopDto shop, HttpSession session) {
+	public void insertShop(ShopDto shop, String id) {
 		
-		MemberDto member = (MemberDto)session.getAttribute("loginuser");
-		shop.setId(member.getId()); 
+		
+		shop.setId(id); 
 		shopMapper.insertShop(shop);
 	}
 

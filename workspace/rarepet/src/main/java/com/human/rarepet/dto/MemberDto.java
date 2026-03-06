@@ -1,5 +1,7 @@
 package com.human.rarepet.dto;
 
+import java.util.List;
+
 import lombok.Data;
 
 @Data
@@ -11,10 +13,11 @@ public class MemberDto {
 	private String phone;
 	private String address;
 	private String email;
-	private String notUser;
+	private boolean notUser;
 
 	private boolean isShop;
 	
+	private List<RoleDto> roles;
 
 	
 }

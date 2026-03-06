@@ -1,0 +1,65 @@
+package com.human.rarepet.security;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
+import org.jspecify.annotations.Nullable;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
+import com.human.rarepet.dto.MemberDto;
+import com.human.rarepet.dto.RoleDto;
+
+public class RarepetUserDetails implements UserDetails {
+
+	private MemberDto member;
+
+	public RarepetUserDetails(MemberDto member) {
+		this.member = member;
+	}
+
+	public MemberDto getMember() {
+		return member;
+	}
+	
+	@Override
+	public Collection<? extends GrantedAuthority> getAuthorities() {
+		
+		List<SimpleGrantedAuthority> grants = new ArrayList<>();
+		for (RoleDto role : member.getRoles()) {
+			grants.add(new SimpleGrantedAuthority(role.getRoleName()));
+		}
+		return grants;
+		
+	}
+	
+	@Override
+	public String getPassword() {
+		
+		return member.getPasswd();
+	}
+
+	@Override
+	public String getUsername() {
+		return member.getId();
+	}
+	
+	@Override
+	public boolean isAccountNonExpired() {
+		return true;
+	}
+	@Override
+	public boolean isAccountNonLocked() {
+		return true;
+	}
+	@Override
+	public boolean isEnabled() {
+		return !member.isNotUser();
+	}
+	
+	
+	
+	
+}

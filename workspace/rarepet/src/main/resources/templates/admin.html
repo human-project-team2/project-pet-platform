@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" 
+xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Admin | AnyZoo</title>
+
+<!-- Bootstrap Icons -->
+<link rel="stylesheet"
+	href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+<script
+		src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+<style>
+body {
+    background-color: #f5f6f8;
+    padding-top: 80px;
+}
+
+/* Clean stat cards */
+.stat-card {
+    border-radius: 16px;
+    border: 1px solid #e5e7eb;
+    background: #ffffff;
+}
+
+.stat-number {
+    font-size: 1.8rem;
+    font-weight: 700;
+}
+
+/* Section container */
+.section-box {
+    background: #ffffff;
+    border-radius: 16px;
+    border: 1px solid #e5e7eb;
+    padding: 25px;
+}
+
+/* Status badges */
+.badge-pending {
+    background-color: #fff3cd;
+    color: #856404;
+}
+
+.badge-verified {
+    background-color: #e6f4ea;
+    color: #1e7e34;
+}
+
+.badge-reported {
+    background-color: #fde2e2;
+    color: #842029;
+}
+</style>
+</head>
+
+<body>
+
+<div th:replace="fragments/fragment :: header"></div>
+
+<div class="container my-5">
+
+    <h3 class="fw-bold mb-4">
+        <i class="bi bi-shield-lock me-2"></i> 관리자 대시보드
+    </h3>
+
+    <!-- ================= SUMMARY ================= -->
+    <div class="row g-4 mb-5">
+
+        <div class="col-md-4">
+            <div class="stat-card p-4">
+                <div class="text-muted small">총 회원 수</div>
+                <div class="stat-number" th:text="${members.size()}"></div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="stat-card p-4">
+                <div class="text-muted small">총 상점 수</div>
+                <div class="stat-number" th:text="${shops.size()}"></div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="stat-card p-4">
+                <div class="text-muted small">신고 건수</div>
+                <div class="stat-number" th:text="..."></div>
+            </div>
+        </div>
+
+    </div>
+	
+	<form method="get" th:action="@{/admin}" class="mb-3">
+	    <div class="input-group">
+	        <input type="text" name="memberKeyword"
+	               class="form-control"
+	               placeholder="회원 ID 또는 이름 검색"
+	               th:value="${param.memberKeyword}">
+	        <button class="btn btn-outline-primary">
+	            <i class="bi bi-search"></i> 검색
+	        </button>
+	    </div>
+	</form>
+    <!-- ================= MEMBER LIST ================= -->
+    <div class="section-box mb-5">
+        <h5 class="fw-bold mb-3">회원 목록</h5>
+
+        <div class="table-responsive">
+            <table class="table align-middle">
+                <thead class="table-light">
+                    <tr>
+                        <th>ID</th>
+                        <th>이름</th>
+                        <th>전화번호</th>
+                        <th>상점 여부</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="member : ${members}">
+                        <td th:text="${member.id}"></td>
+                        <td th:text="${member.name}"></td>
+                        <td th:text="${member.phone}"></td>
+                        <td>
+						    <span th:if="${member.isShop}" class="badge bg-success">
+						        판매자
+						    </span>
+						    <span th:unless="${member.isShop}" class="badge bg-secondary">
+						        일반회원
+						    </span>
+						</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+	<form method="get" th:action="@{/admin}" class="mb-3">
+	    <div class="input-group">
+	        <input type="text" name="shopKeyword"
+	               class="form-control"
+	               placeholder="상점명 또는 사업자번호 검색"
+	               th:value="${param.shopKeyword}">
+	        <button class="btn btn-outline-primary">
+	            <i class="bi bi-search"></i> 검색
+	        </button>
+	    </div>
+	</form>
+    <!-- ================= SHOP LIST ================= -->
+    <div class="section-box mb-5">
+        <h5 class="fw-bold mb-3">상점 관리</h5>
+
+        <div class="table-responsive">
+            <table class="table align-middle">
+                <thead class="table-light">
+                    <tr>
+                    	<th>id</th>
+                        <th>상점명</th>
+                        <th>사업자번호</th>
+                        <th>상태</th>
+                        <th>관리</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="shop : ${shops}">
+                        <td th:text="${shop.id}"></td>
+                        <td th:text="${shop.shopName}"></td>
+                        <td th:text="${shop.businessRegNo}"></td>
+
+                        <td>
+                            <span th:if="${shop.verified}"
+                                  class="badge badge-verified">인증 완료</span>
+
+                            <span th:unless="${shop.verified}"
+                                  class="badge badge-pending">승인 대기</span>
+                        </td>
+
+                        <td>
+                            <a th:if="${!shop.verified}"
+                               th:href="@{/admin/verify/{id}(id=${shop.id})}"
+                               class="btn btn-sm btn-outline-success">
+                               승인
+                            </a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- ================= REPORT LIST ================= -->
+    <div class="section-box">
+        <h5 class="fw-bold mb-3">신고 목록</h5>
+
+        <div class="table-responsive">
+            <table class="table align-middle">
+                <thead class="table-light">
+                    <tr>
+                        <th>대상</th>
+                        <th>신고자</th>
+                        <th>사유</th>
+                        <th>신고일</th>
+                    </tr>
+                </thead>
+                <!-- <tbody>
+                    <tr th:each="report : ${reportList}">
+                        <td th:text="${report.targetId}"></td>
+                        <td th:text="${report.reporterId}"></td>
+                        <td>
+                            <span class="badge badge-reported">신고</span>
+                            <span th:text="${report.reason}"></span>
+                        </td>
+                        <td th:text="${report.createdAt}"></td>
+                    </tr>
+                </tbody> -->
+            </table>
+        </div>
+    </div>
+
+</div>
+
+<div th:replace="fragments/fragment :: footer"></div>
+<div th:replace="fragments/fragment :: message"></div>
+<script th:replace="fragments/fragment :: message_script"></script>
+
+</body>
+</html>

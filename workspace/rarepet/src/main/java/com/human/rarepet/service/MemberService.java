@@ -1,8 +1,11 @@
 package com.human.rarepet.service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.human.rarepet.dto.MemberDto;
+import com.human.rarepet.dto.RoleDto;
 import com.human.rarepet.mapper.MemberMapper;
 
 @Service("memberService")
@@ -15,6 +18,9 @@ public class MemberService {
 	{
 		// 3. mybatis 사용
 		memberMapper.insertMember(member);
+		for (RoleDto role : member.getRoles()) {
+			memberMapper.insertMemberRole(member.getId(), role.getRoleNo());
+		}
 		
 	}
 	
@@ -48,4 +54,7 @@ public class MemberService {
         memberMapper.updateMember(member);
     }
 
+	public List<RoleDto> selectMemberRolesById(String id) {
+		return memberMapper.selectMemberRolesById(id);
+	}
 }

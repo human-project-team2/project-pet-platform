@@ -1,5 +1,8 @@
 package com.human.rarepet.controller;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -11,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody; // 추가됨
 
 import com.human.rarepet.dto.MemberDto;
+import com.human.rarepet.dto.RoleDto;
 import com.human.rarepet.service.MemberService;
 
 import jakarta.servlet.http.HttpSession;
@@ -63,6 +67,14 @@ public class MemberController {
 	
 	@PostMapping("/register")
 	public String registerProcess(@ModelAttribute MemberDto member) {
+		
+		List<RoleDto> roles = new ArrayList<RoleDto>();
+		RoleDto role = new RoleDto();
+		role.setRoleNo(2); // 일반 사용자 역할 번호
+		role.setRoleName("member");
+		roles.add(role);
+		member.setRoles(roles);
+		
 		memberService.insertMember(member);
 		return "redirect:/";
 	}
