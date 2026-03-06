@@ -33,7 +33,9 @@ public class MyPageController {
     }
     @GetMapping("/mypage")
     public String myPage(@AuthenticationPrincipal RarepetUserDetails userDetails , Model model) {
-        // 1. 세션에서 로그인한 유저 정보 가져오기 (소문자 loginuser 확인)
+       
+    	// 1. 세션에서 로그인한 유저 정보 가져오기 (소문자 loginuser 확인)
+    	// Spring Security 로 바꿈.
         MemberDto loginUser = userDetails.getMember();
 
         // 2. 로그인 안 되어 있으면 로그인 페이지로 강제 이동
@@ -58,8 +60,10 @@ public class MyPageController {
     
 	// 1. 수정 페이지 열기
 	@GetMapping("/editProfile")
-	public String editProfile(HttpSession session, Model model) {
-	    MemberDto loginUser = (MemberDto) session.getAttribute("loginuser");
+	public String editProfile(@AuthenticationPrincipal RarepetUserDetails userDetails,
+							Model model) {
+		
+	    MemberDto loginUser = userDetails.getMember();
 	    if (loginUser == null) return "redirect:/auth/login";
 
 	    // 최신 정보를 DB에서 다시 가져와서 모델에 담기

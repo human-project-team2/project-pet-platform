@@ -24,6 +24,7 @@ public class AdminController {
 		this.adminService = adminService;
 	}
 	
+	
 	@GetMapping(path = {"/admin"})
 	public String admin(Model model, HttpSession session,
 				       @RequestParam(required = false, value = "memberKeyword") String memberKeyword,

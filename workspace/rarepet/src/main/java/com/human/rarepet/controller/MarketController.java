@@ -109,6 +109,7 @@ public class MarketController {
 				picture.transferTo(file);
 			}	catch (Exception ex) {
 				ex.printStackTrace();
+				
 			}
 		}
 		

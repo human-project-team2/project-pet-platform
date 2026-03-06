@@ -2,6 +2,7 @@ package com.human.rarepet.mapper;
 
 import java.util.List;
 
+import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
@@ -27,7 +28,7 @@ public interface AdminMapper {
 	@Update("update member set is_shop = true where id = #{id}")
 	int verifyShopMember(String id);
 	
-	@Update("update member_role set role_no = 3 where id = #{id}")
+	@Insert("insert member_role (id, role_no) values (#{id}, 3)")
 	int updateMemberRole(String id);
 	
 	// 검색 기능

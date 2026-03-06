@@ -25,7 +25,7 @@ public class RarepetSecurityConfig {
 		http.csrf(AbstractHttpConfigurer::disable)
 				.authorizeHttpRequests(
 						auth -> auth
-									//.requestMatchers(HttpMethod.POST, "/**").authenticated() // POST 요청은 인증 필요
+									
 									.requestMatchers("/market/register","/market/shoppingCart",
 											"/market/deleteShoppingCart","/market/updateShoppingCart","/mypage").hasRole("member")
 									.requestMatchers("/messages/**").hasRole("member")
@@ -47,15 +47,19 @@ public class RarepetSecurityConfig {
 						                .invalidateHttpSession(true)
 						                .deleteCookies("JSESSIONID")
 										.logoutSuccessUrl("/"));
+				
 		return http.build();
 						
 	}
 	
-	@Bean PasswordEncoder passwordEncoder() {
+	@Bean 
+	PasswordEncoder passwordEncoder() {
 		return new RarepetPasswordEncoder();
 	}
 	
-	@Bean UserDetailsService userDetailsService(MemberService memberService) {
+	@Bean 
+	UserDetailsService userDetailsService(MemberService memberService) {
 		return new RarepetUserDetailsService(memberService);
 	}
+	
 }
