@@ -102,6 +102,12 @@ public class BoardCommentController {
 		// 1. 요청 데이터 읽기 ( 전달인자로 대체 )
 		
 		System.out.println("====================writeComment");
+		
+		if(userDetails == null)
+		{
+			return "redirect:/auth/login";		
+		}
+		
 		MemberDto member = userDetails.getMember();
 		if(member != null) {
 			String id = member.getId();
