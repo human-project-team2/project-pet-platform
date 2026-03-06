@@ -53,6 +53,11 @@ public class BoardController {
 		
 		System.out.printf("-------------->Gen writetitle " + board.getBoardTitle());
 		
+		if(userDetails == null)
+		{
+			return "redirect:/auth/login";		
+		}		
+		
 		MemberDto member = userDetails.getMember();
 		if(member != null) {
 			String id = member.getId();

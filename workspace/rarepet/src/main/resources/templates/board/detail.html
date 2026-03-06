@@ -159,6 +159,8 @@ body {
                 <div class="col-md-12">
                   <div class="bgc-white p-20 bd">                  
                   <div class="mT-10">
+                  
+                    <th:block sec:authorize="isAuthenticated()">
                   	<form id="commentform" action="write-comment" method="post">
 					  
 					  <input type="hidden" name="boardId" th:value="${ board.boardId }" />
@@ -177,6 +179,10 @@ body {
 	                    <button type="button" id="writecomment" class="btn btn-primary btn-color btn-sm">댓글쓰기</button>
                       </div>
 					</form>
+					</th:block>
+					
+					
+					
                   </div>
                 </div>
                 </div>
