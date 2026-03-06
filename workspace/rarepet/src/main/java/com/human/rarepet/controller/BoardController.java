@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,6 +24,7 @@ import jakarta.servlet.http.HttpSession;
 import com.human.rarepet.dto.PagerDto;
 import com.human.rarepet.dto.ProductDto;
 import com.human.rarepet.dto.QnaBoardDto;
+import com.human.rarepet.security.RarepetUserDetails;
 
 @Controller
 public class BoardController {
@@ -46,12 +48,12 @@ public class BoardController {
 	}	
 	
 	@PostMapping(path = {"/board/write"})
-	public String writeBoard(HttpSession session, GenBoardDto board) {
+	public String writeBoard(@AuthenticationPrincipal RarepetUserDetails userDetails , GenBoardDto board) {
 		Date writeDate = new Date();
 		
 		System.out.printf("-------------->Gen writetitle " + board.getBoardTitle());
 		
-		MemberDto member = (MemberDto)session.getAttribute("loginuser");
+		MemberDto member = userDetails.getMember();
 		if(member != null) {
 			String id = member.getId();
 			System.out.printf("====================write Community ID\n" + id);
