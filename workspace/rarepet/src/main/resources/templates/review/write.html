@@ -127,7 +127,7 @@
                 <div class="card write-card">
                     <form action="/review/write" method="post" enctype="multipart/form-data">
                         <input type="hidden" id="orderNo" name="orderNo" value="2">
-                        <input type="hidden" id="id" name="id" th:value="${session.loginuser.id}">
+                        <input type="hidden" id="id" name="id" th:value="${#authentication.principal.username}">
                         <div class="mb-4">
                             <label class="form-label d-block">만족도는 어떠셨나요?</label>
                             <div class="star-rating">

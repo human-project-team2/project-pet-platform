@@ -15,4 +15,7 @@ public class ReviewDto {
 	private LocalDateTime createdAt;
 	private LocalDateTime modifiedAt;
 	private int rating;
+	
+	private String productName; 
+    private String imgUrl;
 }

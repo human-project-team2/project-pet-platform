@@ -4,6 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.human.rarepet.dto.ReviewDto;
 import com.human.rarepet.mapper.ReviewMapper;
+
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -19,4 +21,5 @@ public class ReviewService {
     public List<ReviewDto> getReviewList() {
         return reviewMapper.selectAllReviews();
     }
+
 }
