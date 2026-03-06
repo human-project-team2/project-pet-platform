@@ -14,8 +14,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.human.rarepet.dto.AdoBoardDto;
 import com.human.rarepet.dto.BoardDto;
 import com.human.rarepet.dto.GenBoardDto;
+import com.human.rarepet.dto.MemberDto;
 import com.human.rarepet.service.BoardService;
 import com.human.rarepet.service.MarketService;
+
+import jakarta.servlet.http.HttpSession;
+
 import com.human.rarepet.dto.PagerDto;
 import com.human.rarepet.dto.ProductDto;
 import com.human.rarepet.dto.QnaBoardDto;
@@ -42,18 +46,24 @@ public class BoardController {
 	}	
 	
 	@PostMapping(path = {"/board/write"})
-	public String writeBoard(GenBoardDto board) {
+	public String writeBoard(HttpSession session, GenBoardDto board) {
 		Date writeDate = new Date();
 		
 		System.out.printf("-------------->Gen writetitle " + board.getBoardTitle());
 		
-		board.setBoardWriteDate(writeDate);
-		board.setBoardLikeCount(1);
-		board.setBoardViewCount(1);
+		MemberDto member = (MemberDto)session.getAttribute("loginuser");
+		if(member != null) {
+			String id = member.getId();
+			System.out.printf("====================write Community ID\n" + id);
 		
-		// board.getBoardWriteDate();
-		boardService.insertBoard(board);
-		boardService.insertBoardGen(board);
+			board.setBoardWriteDate(writeDate);
+			board.setBoardLikeCount(1);
+			board.setBoardViewCount(1);
+			
+			// board.getBoardWriteDate();
+			boardService.insertBoard(board);
+			boardService.insertBoardGen(board);
+		}
 		return "redirect:/board/community";		
 	}
 	
