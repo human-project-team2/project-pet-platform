@@ -8,7 +8,7 @@ import jakarta.servlet.http.HttpSession;
 
 public interface ShopService {
 	
-	void insertShop(ShopDto shop, HttpSession session);
+	void insertShop(ShopDto shop, String id);
 	ShopDto showShopInfo(String id);
 	void updateShop(ShopDto shop);
 }
