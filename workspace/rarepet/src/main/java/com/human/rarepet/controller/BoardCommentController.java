@@ -3,6 +3,7 @@ package com.human.rarepet.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,6 +16,7 @@ import com.human.rarepet.dto.BoardCommentDto;
 import com.human.rarepet.dto.BoardDto;
 import com.human.rarepet.dto.GenBoardDto;
 import com.human.rarepet.dto.MemberDto;
+import com.human.rarepet.security.RarepetUserDetails;
 import com.human.rarepet.service.BoardCommentService;
 import com.human.rarepet.service.BoardService;
 
@@ -96,11 +98,11 @@ public class BoardCommentController {
 	
 	@PostMapping(path = { "/write-comment" })
 	@ResponseBody  // 메서드의 반환값을 view의 이름으로 사용하지 않고 있는 그대로 응답하는 설정 
-	public String writeComment(HttpSession session, BoardCommentDto commentDto) {
+	public String writeComment(@AuthenticationPrincipal RarepetUserDetails userDetails, BoardCommentDto commentDto) {
 		// 1. 요청 데이터 읽기 ( 전달인자로 대체 )
 		
 		System.out.println("====================writeComment");
-		MemberDto member = (MemberDto)session.getAttribute("loginuser");
+		MemberDto member = userDetails.getMember();
 		if(member != null) {
 			String id = member.getId();
 			System.out.printf("====================writeCommentId\n" + id);
