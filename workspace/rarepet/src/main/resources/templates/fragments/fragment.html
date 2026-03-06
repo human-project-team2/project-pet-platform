@@ -42,6 +42,7 @@
 					    [[${#authentication.principal.username}]] 님
 					</span>
                     </th:block>
+                    <th:block sec:authorize="isAuthenticated()">
 	                    <li class="nav-item dropdown ms-2">
 	                        <a class="nav-link dropdown-toggle p-0 d-flex align-items-center" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown">
 	                           <div class="rounded-circle overflow-hidden me-2 border border-secondary"

@@ -1,14 +1,10 @@
 package com.human.rarepet.mapper;
 
-import java.util.Map;
-
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
-import org.apache.ibatis.annotations.UpdateProvider;
 
-import com.human.rarepet.common.Util;
 import com.human.rarepet.dto.ShopDto;
 
 @Mapper

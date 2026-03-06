@@ -30,11 +30,11 @@ public class AdminServiceImplement implements AdminService {
 
 	@Override
 	@Transactional
-	public int verifyShop(String id) {
+	public void verifyShop(String id) {
 		adminMapper.verifyShop(id);
 		adminMapper.verifyShopMember(id);
 		adminMapper.updateMemberRole(id);
-		return 0;
+		
 	}
 
 	@Override
