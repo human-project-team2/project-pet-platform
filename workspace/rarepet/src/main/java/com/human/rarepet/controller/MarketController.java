@@ -6,6 +6,7 @@ import java.io.File;
 import java.util.List;
 
 import org.springframework.dao.DuplicateKeyException;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,6 +23,7 @@ import com.human.rarepet.dto.MemberDto;
 import com.human.rarepet.dto.ProductDto;
 import com.human.rarepet.dto.ShoppingCartDto;
 import com.human.rarepet.dto.UpdateCartQuantityDto;
+import com.human.rarepet.security.RarepetUserDetails;
 import com.human.rarepet.service.MarketService;
 import com.human.rarepet.service.MemberService;
 
@@ -50,7 +52,8 @@ public class MarketController {
 	}
 	
 	@GetMapping(path="/market/detail/{productNo}")
-	public String marketDetail(@PathVariable("productNo") int productNo, Model model, HttpSession session, HttpServletRequest request) {
+	public String marketDetail(@PathVariable("productNo") int productNo,
+								Model model) {
 	
 		ProductDto product = marketService.selectProductByNo(productNo);
 		String id = product.getSellerId();
@@ -60,19 +63,16 @@ public class MarketController {
 		model.addAttribute("email", member.getEmail());
 		model.addAttribute("product", product);
 		
-		boolean loggedIn = session.getAttribute("loginuser") != null;
-		model.addAttribute("loggedIn", loggedIn);
 		
-		session.setAttribute("redirectUrl", request.getRequestURI());
 		
 		return "market/detail";
 	}
 	
 	@GetMapping(path= {"/market/register"})
-	public String register(HttpSession session, RedirectAttributes redirectMessage) {
+	public String register(@AuthenticationPrincipal RarepetUserDetails userDetails, RedirectAttributes redirectMessage) {
 		
-		MemberDto member = (MemberDto)session.getAttribute("loginuser");
-		System.out.println(member);
+		MemberDto member = userDetails.getMember();
+		
 		if(!member.isShop()) {
 			redirectMessage.addFlashAttribute("shopRegisterMessage", "판매자 등록된 회원만 등록이 가능합니다. -> 마이페이지");
 			return "redirect:/mypage";
@@ -84,10 +84,12 @@ public class MarketController {
 	final String UPLOAD_PATH = "d:\\uploaded_images";
 	
 	@PostMapping(path = {"/market/register"})
-	public String registerProduct(ProductDto product, @RequestParam("picture") MultipartFile picture,
-								  HttpSession session) {
+	public String registerProduct(ProductDto product, 
+			@RequestParam("picture") MultipartFile picture,
+			@AuthenticationPrincipal RarepetUserDetails userDetails
+								  ) {
 				
-		MemberDto member = (MemberDto)session.getAttribute("loginuser");
+		MemberDto member = userDetails.getMember();
 				
 		if (picture != null && picture.getOriginalFilename().length() > 0) {
 			
@@ -114,9 +116,10 @@ public class MarketController {
 	}
 	
 	@GetMapping(path = {"/market/shoppingCart"})
-	public String shoppingCart(Model model, HttpSession session) {
+	public String shoppingCart(Model model,
+			@AuthenticationPrincipal RarepetUserDetails userDetails) {
 		
-		MemberDto member = (MemberDto)session.getAttribute("loginuser");
+		MemberDto member = userDetails.getMember();
 		if(member == null) {
 			return "redirect:/auth/login";
 		} 

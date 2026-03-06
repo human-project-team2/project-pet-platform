@@ -33,7 +33,20 @@ public class AdminServiceImplement implements AdminService {
 	public int verifyShop(String id) {
 		adminMapper.verifyShop(id);
 		adminMapper.verifyShopMember(id);
+		adminMapper.updateMemberRole(id);
 		return 0;
+	}
+
+	@Override
+	public List<MemberDto> searchMembers(String keyword) {
+		
+		return adminMapper.searchMembers(keyword);
+	}
+
+	@Override
+	public List<ShopDto> searchShops(String keyword) {
+		
+		return adminMapper.searchShops(keyword);
 	}
 
 }

@@ -1,9 +1,14 @@
 package com.human.rarepet.mapper;
 
+import java.util.List;
+
+import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
 
 import com.human.rarepet.dto.MemberDto;
+import com.human.rarepet.dto.RoleDto;
 
 @Mapper
 public interface MemberMapper {
@@ -21,4 +26,14 @@ public interface MemberMapper {
     
     // [추가] 회원 정보 업데이트 실행
     void updateMember(MemberDto member);
+    
+    @Select("SELECT r.role_no, r.role_name " +
+            "FROM member m " +
+            "inner JOIN member_role mr ON m.id = mr.id " +
+            "inner JOIN role r ON mr.role_no = r.role_no " +
+    		"WHERE mr.id = #{id}")
+    List<RoleDto> selectMemberRolesById(String id);
+    
+    @Insert("INSERT INTO member_role (id, role_no) VALUES (#{id}, #{roleNo})")
+    void insertMemberRole(@Param("id") String id, @Param("roleNo") int roleNo);
 }

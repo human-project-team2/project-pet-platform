@@ -2,6 +2,7 @@ package com.human.rarepet.controller;
 
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import com.human.rarepet.dto.MemberDto;
 import com.human.rarepet.dto.ProductDto;
 import com.human.rarepet.dto.ShopDto;
+import com.human.rarepet.security.RarepetUserDetails;
 import com.human.rarepet.service.MarketService;
 import com.human.rarepet.service.MemberService;
 import com.human.rarepet.service.ShopService;
@@ -30,9 +32,9 @@ public class MyPageController {
     	this.shopService = shopService;
     }
     @GetMapping("/mypage")
-    public String myPage(HttpSession session, Model model) {
+    public String myPage(@AuthenticationPrincipal RarepetUserDetails userDetails , Model model) {
         // 1. 세션에서 로그인한 유저 정보 가져오기 (소문자 loginuser 확인)
-        MemberDto loginUser = (MemberDto) session.getAttribute("loginuser");
+        MemberDto loginUser = userDetails.getMember();
 
         // 2. 로그인 안 되어 있으면 로그인 페이지로 강제 이동
         if (loginUser == null) {

@@ -1,12 +1,19 @@
 package com.human.rarepet.controller;
 
+import java.util.List;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
+import com.human.rarepet.dto.MemberDto;
+import com.human.rarepet.dto.ShopDto;
 import com.human.rarepet.service.AdminService;
+
+import jakarta.servlet.http.HttpSession;
 
 @Controller
 public class AdminController {
@@ -18,11 +25,27 @@ public class AdminController {
 	}
 	
 	@GetMapping(path = {"/admin"})
-	public String admin(Model model) {
+	public String admin(Model model, HttpSession session,
+				       @RequestParam(required = false, value = "memberKeyword") String memberKeyword,
+				       @RequestParam(required = false, value = "shopKeyword") String shopKeyword) {
+		List<MemberDto> members;
+		List<ShopDto> shops;
 		
-		model.addAttribute("members", adminService.getAllMembers());
-		model.addAttribute("shops", adminService.getAllShops());
-		System.out.println(adminService.getAllMembers());
+		if (memberKeyword != null && !memberKeyword.isBlank()) {
+			members = adminService.searchMembers(memberKeyword);
+		} else {
+			members = adminService.getAllMembers();
+		}
+		
+		if (shopKeyword != null && !shopKeyword.isBlank()) {
+			shops = adminService.searchShops(shopKeyword);
+		} else {
+			shops = adminService.getAllShops();
+		}
+		
+		model.addAttribute("members",members);
+		model.addAttribute("shops", shops);
+		
 		return "admin";
 	}
 	

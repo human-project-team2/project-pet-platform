@@ -3,6 +3,7 @@ package com.human.rarepet.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.human.rarepet.dto.MemberDto;
 import com.human.rarepet.dto.MessageDto;
+import com.human.rarepet.security.RarepetUserDetails;
 import com.human.rarepet.service.MessageService;
 
 import jakarta.servlet.http.HttpSession;
@@ -25,9 +27,9 @@ public class MessageController {
 	
 	@PostMapping(path = {"/messages"})
 	@ResponseBody
-	public String sendMessage(@RequestBody MessageDto message, HttpSession session) {
+	public String sendMessage(@RequestBody MessageDto message, @AuthenticationPrincipal RarepetUserDetails userDetails) {
 		try {
-			messageService.sendMessage(message, session);
+			messageService.sendMessage(message, userDetails);
 			return "success";
 		} catch (RuntimeException exception) {
 			return "failure";
@@ -36,18 +38,19 @@ public class MessageController {
 	
 	@GetMapping(path = {"/messages/list"})
 	@ResponseBody
-	public List<MessageDto> receiveMessage(HttpSession session) {
+	public List<MessageDto> receiveMessage(@AuthenticationPrincipal RarepetUserDetails userDetails) {
 		
-		MemberDto member = (MemberDto) session.getAttribute("loginuser");
+		MemberDto member = userDetails.getMember();
 		String loggedInId = member.getId();
 		return messageService.receiveMessage(loggedInId);
 	}
 	
 	@GetMapping(path = {"/messages/detail"})
 	@ResponseBody
-	public List<MessageDto> messageDetail(@RequestParam("partnerId") String partnerId, HttpSession session){
+	public List<MessageDto> messageDetail(@RequestParam("partnerId") String partnerId, 
+							@AuthenticationPrincipal RarepetUserDetails userDetails){
 		
-		MemberDto member = (MemberDto) session.getAttribute("loginuser");
+		MemberDto member = userDetails.getMember();
 		String loggedInId = member.getId();
 		return messageService.messageDetail(loggedInId, partnerId);
 		

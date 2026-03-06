@@ -18,10 +18,27 @@ public interface AdminMapper {
 	@Select("select * from shop")
 	List<ShopDto> getAllShops();
 	
+	// 관리자가 가게 승인 시 shop 테이블의 verified 컬럼을 true로 업데이트, 
+	// member 테이블의 is_shop 컬럼을 true로 업데이트, 
+	// member_role 테이블의 role_no 컬럼을 3으로 업데이트
 	@Update("update shop set verified = true where id = #{id}")
 	int verifyShop(String id);
 	
 	@Update("update member set is_shop = true where id = #{id}")
 	int verifyShopMember(String id);
+	
+	@Update("update member_role set role_no = 3 where id = #{id}")
+	int updateMemberRole(String id);
+	
+	// 검색 기능
+	@Select("SELECT id, name, phone, address, email, is_shop "
+			+ "FROM member WHERE id LIKE CONCAT('%', #{keyword}, '%') "
+				+ "OR name LIKE CONCAT('%', #{keyword}, '%')")
+	List<MemberDto> searchMembers(String keyword);
+	
+	@Select("SELECT * FROM shop WHERE id LIKE CONCAT('%', #{keyword}, '%') "
+            + "OR shop_name LIKE CONCAT('%', #{keyword}, '%')")
+	List<ShopDto> searchShops(String keyword);
+	
 	
 }
