@@ -270,18 +270,51 @@ public class BoardController {
 	}
 	
 	@PostMapping(path = {"/board/qwrite"})
-	public String writeQBoard(QnaBoardDto board) {
+	public String writeQBoard(
+			@AuthenticationPrincipal RarepetUserDetails userDetails , 
+			@RequestParam("picture") MultipartFile picture,
+			QnaBoardDto board) {
 		Date writeDate = new Date();
-				
-		board.setBoardWriteDate(writeDate);
-		board.setBoardLikeCount(2);
-		board.setBoardViewCount(2);
 		
-		boardService.insertBoard(board);
+		if (picture != null && picture.getOriginalFilename().length() > 0) {
+			
+			String savedFileName = Util.makeUniqueFileName(picture.getOriginalFilename());
+			
+			System.out.println(picture.getOriginalFilename());
+			System.out.println(savedFileName);
+			
+			File file = new File(UPLOAD_PATH, savedFileName);
+			String imgUrl = "/images/" + savedFileName;		
 		
-		board.setAnswerSelected("1");
-		board.setBoardQuestionCategory(true);
-		boardService.insertBoardQnA(board);		
+			MemberDto member = userDetails.getMember();
+			if(member != null) {
+				String id = member.getId();
+				System.out.printf("====================write Community ID\n" + id);
+			
+				try {
+								
+					board.setBoardWriteDate(writeDate);
+					board.setImgUrl(imgUrl);
+					board.setOriginalFileName(picture.getOriginalFilename());
+					board.setSavedFileName(savedFileName);
+					picture.transferTo(file);
+					board.setBoardLikeCount(2);
+					board.setBoardViewCount(2);
+					
+					boardService.insertBoard(board);
+					
+					board.setAnswerSelected("1");
+					board.setBoardQuestionCategory(true);
+					boardService.insertBoardQnA(board);
+					
+				}   catch (Exception ex) {
+					ex.printStackTrace();
+					
+				}
+			}
+		
+		}				
+	
 		return "redirect:/board/boardlist";		
 	}
 	
@@ -385,19 +418,52 @@ public class BoardController {
 	}
 	
 	@PostMapping(path = {"/board/adoptionwrite"})
-	public String writeABoard(AdoBoardDto board) {
+	public String writeABoard(
+			@AuthenticationPrincipal RarepetUserDetails userDetails , 
+			@RequestParam("picture") MultipartFile picture,
+			AdoBoardDto board) {
 		Date writeDate = new Date();
 		
-		board.setBoardWriteDate(writeDate);
-		board.setBoardLikeCount(1);
-		board.setBoardViewCount(1);
-		board.setBoardAdoptCategory(true);
-		board.setBoardAdoptDone(1);
+		if (picture != null && picture.getOriginalFilename().length() > 0) {
+			
+			String savedFileName = Util.makeUniqueFileName(picture.getOriginalFilename());
+			
+			System.out.println(picture.getOriginalFilename());
+			System.out.println(savedFileName);
+			
+			File file = new File(UPLOAD_PATH, savedFileName);
+			String imgUrl = "/images/" + savedFileName;		
 		
-//		git diff HEAD~2 HEAD 
+			MemberDto member = userDetails.getMember();
+			if(member != null) {
+				String id = member.getId();
+				System.out.printf("====================write Adoption ID\n" + id);
+			
+				try {
+								
+					board.setBoardWriteDate(writeDate);
+					board.setImgUrl(imgUrl);
+					board.setOriginalFileName(picture.getOriginalFilename());
+					board.setSavedFileName(savedFileName);
+					picture.transferTo(file);
+					board.setBoardLikeCount(2);
+					board.setBoardViewCount(2);					
+					
+					board.setBoardAdoptCategory(true);
+					board.setBoardAdoptDone(1);
+					
+//					git diff HEAD~2 HEAD 
+					
+					boardService.insertBoard(board);
+					boardService.insertBoardAdo(board);					
+					
+				}   catch (Exception ex) {
+					ex.printStackTrace();
+					
+				}
+			}
 		
-		boardService.insertBoard(board);
-		boardService.insertBoardAdo(board);
+		}		
 		return "redirect:/board/boardlist";		
 	}
 	
