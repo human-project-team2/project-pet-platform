@@ -16,6 +16,9 @@ public class BoardDto {
 	private int boardLikeCount;
 	private int boardViewCount;
 	private java.util.Date boardWriteDate;
+	private String savedFileName;
+	private String originalFileName;
+	private String imgUrl;
 	
 	//private String email;
 	//private MemberDto writer;

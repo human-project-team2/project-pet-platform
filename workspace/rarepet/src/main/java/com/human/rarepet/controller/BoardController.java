@@ -1,5 +1,6 @@
 package com.human.rarepet.controller;
 
+import java.io.File;
 import java.util.Date;
 import java.util.List;
 
@@ -11,7 +12,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
+import com.human.rarepet.common.Util;
 import com.human.rarepet.dto.AdoBoardDto;
 import com.human.rarepet.dto.BoardDto;
 import com.human.rarepet.dto.GenBoardDto;
@@ -47,8 +50,13 @@ public class BoardController {
 		return "board/write";		
 	}	
 	
+	final String UPLOAD_PATH = "d:\\uploaded_images";
+	
 	@PostMapping(path = {"/board/write"})
-	public String writeBoard(@AuthenticationPrincipal RarepetUserDetails userDetails , GenBoardDto board) {
+	public String writeBoard(
+			@AuthenticationPrincipal RarepetUserDetails userDetails , 
+			@RequestParam("picture") MultipartFile picture,
+			GenBoardDto board) {
 		Date writeDate = new Date();
 		
 		System.out.printf("-------------->Gen writetitle " + board.getBoardTitle());
@@ -58,18 +66,41 @@ public class BoardController {
 			return "redirect:/auth/login";		
 		}		
 		
-		MemberDto member = userDetails.getMember();
-		if(member != null) {
-			String id = member.getId();
-			System.out.printf("====================write Community ID\n" + id);
-		
-			board.setBoardWriteDate(writeDate);
-			board.setBoardLikeCount(1);
-			board.setBoardViewCount(1);
+		if (picture != null && picture.getOriginalFilename().length() > 0) {
 			
-			// board.getBoardWriteDate();
-			boardService.insertBoard(board);
-			boardService.insertBoardGen(board);
+			String savedFileName = Util.makeUniqueFileName(picture.getOriginalFilename());
+			
+			System.out.println(picture.getOriginalFilename());
+			System.out.println(savedFileName);
+			
+			File file = new File(UPLOAD_PATH, savedFileName);
+			String imgUrl = "/images/" + savedFileName;		
+		
+			MemberDto member = userDetails.getMember();
+			if(member != null) {
+				String id = member.getId();
+				System.out.printf("====================write Community ID\n" + id);
+			
+				try {
+								
+					board.setBoardWriteDate(writeDate);
+					board.setImgUrl(imgUrl);
+					board.setOriginalFileName(picture.getOriginalFilename());
+					board.setSavedFileName(savedFileName);
+					picture.transferTo(file);
+					board.setBoardLikeCount(1);
+					board.setBoardViewCount(1);
+					
+					// board.getBoardWriteDate();
+					boardService.insertBoard(board);
+					boardService.insertBoardGen(board);
+					
+				}   catch (Exception ex) {
+					ex.printStackTrace();
+					
+				}
+			}
+		
 		}
 		return "redirect:/board/community";		
 	}
