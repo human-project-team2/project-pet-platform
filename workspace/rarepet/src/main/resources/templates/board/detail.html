@@ -104,7 +104,7 @@
             <div class="col-md-8">
                 <label class="form-label">제목</label>
                 <input type="text" class="form-control-plaintext fs-4 fw-bold border-bottom mb-3" readonly th:value="${board.boardTitle}">
-            </div>
+            </div>            
             <div class="col-md-4">
                 <label class="form-label text-muted">작성자</label>
                 <div class="d-flex align-items-center">
@@ -112,12 +112,20 @@
                     <span class="fw-bold" th:text="${board.boardWriterId}">애니멀러버</span>
                 </div>
             </div>
+            <div class="col-12 mt-4" style=width:700px>            
+				<div class="card shadow">
+					<img
+						th:src="@{${board.imgUrl}}"
+						class="card-img-top">
+				</div>
+			</div>
             <div class="col-12 mt-4">
                 <label class="form-label">글 내용</label>
                 <div class="view-content shadow-sm" th:utext='${#strings.replace(board.boardContent, "\n", "<br>")}'>
                     내용이 표시되는 곳입니다.
                 </div>
-            </div>
+            </div>    
+                    
         </div>
 
         <!-- 버튼 그룹 -->

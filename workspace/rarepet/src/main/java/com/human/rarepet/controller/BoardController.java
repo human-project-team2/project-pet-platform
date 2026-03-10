@@ -528,11 +528,13 @@ public class BoardController {
 		 */		
 		// if(board.getBoardId() == adoboard.getBoardId())
 		// BoardDto board = boardService.showBoardById(boardId);
-				
-		BoardDto board = boardService.showGenBoardById(boardId);
-		if (board == null) {
+			
+		BoardDto board = boardService.showBoardById(boardId);
+		GenBoardDto genboard = boardService.showGenBoardById(boardId);
+		if (genboard == null) {
 			return "redirect:/board/boardlist";
 		}
+		//board.setBoardLikeCount(2);
 		
 		model.addAttribute("board", board);
 		model.addAttribute("pageNo", pageNo);
