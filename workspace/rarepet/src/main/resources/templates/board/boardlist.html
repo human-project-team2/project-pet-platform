@@ -3,135 +3,73 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>AnyZoo - 통합 게시판</title>
+<title>AnyZoo Marketplace</title>
 
-<!-- Bootstrap 5 CSS & JS -->
+<!-- Bootstrap JS -->
+	<script
+		src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+		
+<!-- Bootstrap 5 CSS -->
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<!-- Bootstrap CSS & Icons -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-
 <!-- Google Font -->
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
 
 <style>
-    :root {
-        --primary-color: #ff8e3c;    /* 메인 오렌지 */
-        --secondary-color: #eff0f3;  /* 연한 배경 */
-        --accent-color: #d9376e;     /* 포인트 핑크 */
-        --text-dark: #0d0d0d;
-    }
+body{
+    font-family:'Noto Sans KR',sans-serif;
+    background:#fdf6ee;
+}
 
-    body {
-        font-family: 'Noto Sans KR', sans-serif;
-        background-color: #fffaf5; /* 따뜻한 크림색 배경 */
-        color: var(--text-dark);
-        overflow-x: hidden;
-    }
+/* Hero */
+.hero{
+    background:
+    linear-gradient(rgba(230,180,150,0.45), rgba(245,210,185,0.55)),
+    url("https://images.unsplash.com/photo-1508672019048-805c876b67e2?auto=format&fit=crop&w=1600&q=80");
+    background-size:cover;
+    background-position:center;
+    height:60vh;
+}
 
-    /* Hero Section */
-    .hero-section {
-        background: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), 
-                    url('https://unsplash.com');
-        background-size: cover;
-        background-position: center;
-        height: 350px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: white;
-        text-align: center;
-        margin-bottom: -60px;
-        border-radius: 0 0 50px 50px;
-    }
+.hero-box{
+    background:rgba(255,250,245,0.92);
+    border-radius:30px;
+}
 
-    .main-container {
-        max-width: 1100px;
-        position: relative;
-        z-index: 10;
-        padding-bottom: 100px;
-    }
+/* Card */
+.card{
+    border:none;
+    border-radius:20px;
+}
 
-    /* 통합 게시판 카드 스타일 */
-    .section-card {
-        background: white;
-        border-radius: 25px;
-        padding: 40px 30px;
-        height: 100%;
-        text-align: center;
-        border: 1px solid rgba(255,142,60,0.1);
-        box-shadow: 0 10px 30px rgba(0,0,0,0.05);
-        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-    }
+.card img{
+    height:200px;
+    object-fit:cover;
+    border-radius:20px 20px 0 0;
+}
 
-    .section-card:hover {
-        transform: translateY(-15px);
-        box-shadow: 0 20px 40px rgba(255, 142, 60, 0.15);
-        border-color: var(--primary-color);
-    }
+.heart{
+    position:absolute;
+    top:15px;
+    right:15px;
+    font-size:22px;
+    cursor:pointer;
+    color:#ccc;
+}
 
-    /* 아이콘 스타일 */
-    .icon-box {
-        width: 80px;
-        height: 80px;
-        background: #fff5eb;
-        color: var(--primary-color);
-        border-radius: 20px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 32px;
-        margin: 0 auto 25px;
-        transition: 0.3s;
-    }
+.heart.active{color:#e76f51;}
 
-    .section-card:hover .icon-box {
-        background: var(--primary-color);
-        color: white;
-        transform: rotate(-10deg);
-    }
+.review-section{
+    background:url("https://images.unsplash.com/photo-1518717758536-85ae29035b6d?auto=format&fit=crop&w=1600&q=80");
+    background-size:cover;
+    background-position:center;
+}
 
-    .section-title {
-        font-weight: 700;
-        color: var(--text-dark);
-        margin-bottom: 15px;
-    }
-
-    .section-desc {
-        font-size: 0.95rem;
-        color: #666;
-        line-height: 1.6;
-        margin-bottom: 20px;
-    }
-
-    .btn-link-custom {
-        display: inline-block;
-        padding: 10px 25px;
-        background: var(--primary-color);
-        color: white;
-        border-radius: 50px;
-        font-weight: 600;
-        font-size: 0.9rem;
-        transition: 0.3s;
-        text-decoration: none;
-    }
-
-    .btn-link-custom:hover {
-        background: var(--text-dark);
-        color: white;
-    }
-
-    .badge-info {
-        font-size: 0.75rem;
-        background: #f8f9fa;
-        color: #888;
-        padding: 5px 12px;
-        border-radius: 10px;
-        display: block;
-        margin-bottom: 20px;
-    }
+.review-overlay{
+    background:rgba(90,60,50,0.75);
+    border-radius:25px;
+}
 </style>
 </head>
 
@@ -140,76 +78,58 @@
 <!-- NAVBAR -->
 <div th:replace="fragments/fragment :: header"></div>
 
-<!-- 상단 히로 영역 -->
-<section class="hero-section">
-    <div>
-        <h1 class="display-4 fw-bold mb-2">AnyZoo 커뮤니티</h1>
-        <p class="lead">반려동물과 함께하는 즐거운 소통의 공간</p>
-    </div>
-</section>
+<br><br><br><br>
 
-<div class="container main-container">
-    <div class="row g-4 mt-0">
-        
-        <!-- 커뮤니티 섹션 -->
-        <div class="col-md-4">
-            <a th:href="@{/board/community}" class="text-decoration-none h-100 d-block">
-                <div class="section-card">
-                    <div>
-                        <div class="icon-box shadow-sm">
-                            <i class="bi bi-chat-heart"></i>
-                        </div>
-                        <h4 class="section-title">커뮤니티</h4>
-                        <p class="section-desc">일상 공유부터 정보 나눔까지,<br>집사들의 자유로운 소통 공간</p>
-                        <span class="badge-info">인기 게시글 실시간 업데이트</span>
+<div class="container">
+    <div class="main-container mx-auto">
+        <h1 class="text-center mb-5 section-title">AnyZoo 통합 게시판</h1>
+        <p class="text-center text-muted mb-5">
+            각 메뉴에서 게시글, 질문/답변, 분양 리스트 등으로 이동할 수 있습니다.
+        </p>
+
+        <div class="row g-4">
+            <!-- 커뮤니티 섹션 -->
+            <div class="col-md-4">
+                <a th:href="@{/board/community}" class="text-decoration-none">
+                    <div class="section-card">
+                        <h4 class="mb-3">커뮤니티 게시글</h4>
+                        <p class="text-muted">자유로운 소통과 정보 공유를 위한 공간입니다.</p>
+                        <p class="small">추천 수, 조회 수를 기준으로 선별된 인기글 몇 개가 여기에 보일 수 있습니다.</p>
+                        <span class="btn-link-custom">게시글 리스트 조회 →</span>
                     </div>
-                    <span class="btn-link-custom">구경가기 <i class="bi bi-arrow-right ms-1"></i></span>
-                </div>
-            </a>
-        </div>
+                </a>
+            </div>
 
-        <!-- 질의응답 섹션 -->
-        <div class="col-md-4">
-            <a th:href="@{/board/qnalist}" class="text-decoration-none h-100 d-block">
-                <div class="section-card">
-                    <div>
-                        <div class="icon-box shadow-sm">
-                            <i class="bi bi-question-circle"></i>
-                        </div>
-                        <h4 class="section-title">질문/답변</h4>
-                        <p class="section-desc">전문가와 유저들이 알려주는<br>궁금증 해결 백과사전</p>
-                        <span class="badge-info">미답변 질문 우선 표시 중</span>
+            <!-- 질의응답 섹션 -->
+            <div class="col-md-4">
+                <a th:href="@{/board/qnalist}" class="text-decoration-none">
+                    <div class="section-card">
+                        <h4 class="mb-3">질문/답변</h4>
+                        <p class="text-muted">동물 관련 궁금증을 해결하는 Q&A 게시판입니다.</p>
+                        <p class="small">답변 선택이 되지 않은 글부터 우선적으로 표시됩니다.</p>
+                        <span class="btn-link-custom">질문 리스트 조회 →</span>
                     </div>
-                    <span class="btn-link-custom">질문하기 <i class="bi bi-arrow-right ms-1"></i></span>
-                </div>
-            </a>
-        </div>
+                </a>
+            </div>
 
-        <!-- 분양 리스트 섹션 -->
-        <div class="col-md-4">
-            <a th:href="@{/board/adoptionlist}" class="text-decoration-none h-100 d-block">
-                <div class="section-card border-accent">
-                    <div>
-                        <div class="icon-box shadow-sm" style="background: #fff0f5; color: #d9376e;">
-                            <i class="bi bi-house-heart"></i>
-                        </div>
-                        <h4 class="section-title">가족 찾기</h4>
-                        <p class="section-desc">따뜻한 손길을 기다리는<br>아이들의 새로운 가족이 되어주세요</p>
-                        <span class="badge-info">전국 분양 정보 상세 검색</span>
+            <!-- 분양 리스트 섹션 -->
+            <div class="col-md-4">
+                <a th:href="@{/board/adoptionlist}" class="text-decoration-none">
+                    <div class="section-card">
+                        <h4 class="mb-3">분양 리스트</h4>
+                        <p class="text-muted">소중한 가족을 만날 수 있는 분양 정보 목록입니다.</p>
+                        <p class="small">분양 글을 검색하고 상세 내용을 확인할 수 있습니다.</p>
+                        <span class="btn-link-custom">분양 리스트 조회 →</span>
                     </div>
-                    <span class="btn-link-custom" style="background: #d9376e;">분양 공고 <i class="bi bi-arrow-right ms-1"></i></span>
-                </div>
-            </a>
+                </a>
+            </div>
         </div>
-
     </div>
 </div>
 
-<!-- 기존 fragment 유지 -->
-<div th:replace="fragments/fragment :: footer"></div>
-<div th:replace="fragments/fragment :: message"></div>
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>	
-<script th:replace="fragments/fragment :: message_script"></script>
-
+	<div th:replace="fragments/fragment :: footer"></div>
+    <div th:replace="fragments/fragment :: message"></div>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>	
+    <script th:replace="fragments/fragment :: message_script"></script>
 </body>
 </html>
