@@ -66,7 +66,7 @@
     WHERE board_id = #{boardId}
 	</select>
 	
-    <select id="showGenBoardById" resultType="BoardDto" parameterType="int">
+    <select id="showGenBoardById" resultType="GenBoardDto" parameterType="int">
     SELECT b.board_id, b.board_title, b.board_writer_id
     FROM board b 
     INNER JOIN board_general ga
