@@ -315,7 +315,7 @@ public class BoardController {
 		
 		}				
 	
-		return "redirect:/board/boardlist";		
+		return "redirect:/board/qnalist";	
 	}
 	
 	@GetMapping (path = {"/board/qna"}) 
@@ -349,7 +349,7 @@ public class BoardController {
 		public String deleteqna(
 				@RequestParam(value = "boardId", defaultValue="-1") int boardId
 				) {
-			
+			System.out.println("deleteqna\n");
 			/*
 			if (boardId == -1 || pageNo == -1) {
 				return "redirect:/board/list";

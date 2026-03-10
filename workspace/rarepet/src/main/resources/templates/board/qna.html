@@ -105,11 +105,10 @@
             </div>
         </div>
 
-        <!-- 본문 내용 -->
+        <!-- 본문 내용 -->                 
         <div class="content-area mb-4" th:utext="${#strings.replace(board.boardContent, '\n', '<br>')}">
             질문 내용이 표시되는 영역입니다.
         </div>
-
         <div class="d-flex justify-content-between align-items-center">
             <div class="btn-group-area">
                 <button type="button" id="edit-btn" class="btn btn-outline-secondary btn-custom me-2">수정</button>
@@ -183,9 +182,9 @@ document.addEventListener('DOMContentLoaded', function() {
     const btnDelete = document.querySelector('#delete-btn');
     if (btnDelete) {
         btnDelete.addEventListener('click', function() {
-            if (confirm('이 문의 게시글을 삭제할까요?')) {
+            
                 location.href = 'deleteqna?boardId=' + [[${ board.boardId }]];
-            }
+            
         });	
     }
 
