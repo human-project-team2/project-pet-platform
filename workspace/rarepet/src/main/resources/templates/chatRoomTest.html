@@ -50,14 +50,15 @@
 	 function sendWsMessage() {
 		
 			const sender = 'User1';
-			const messageInput = document.getElementById('messageInput').value;
+			const messageInput = document.getElementById('messageInput')
+			const content =	messageInput.value.trim();
 			
 			if(stompClient) {
 				// Send the message to the server
 				stompClient.send('/app/sendWsMessage', {}, JSON.stringify({
 					chatRoomId: 'room1',
 					sender: sender,
-					content: messageInput,
+					content: content,
 					timestamp: new Date().toISOString()
 				}));
 
