@@ -505,7 +505,7 @@ public class BoardController {
 		}
 */
 		System.out.println(boardId);
-		System.out.println("delete QnA \n");
+		System.out.println("delete Ado \n");
 		boardService.deleteBoardAdoByBoardId(boardId);
 		boardService.deleteBoardByBoardId(boardId);						
 		
