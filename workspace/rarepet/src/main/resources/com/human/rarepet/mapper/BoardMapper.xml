@@ -5,8 +5,8 @@
 
     <insert id="insertBoard" parameterType="BoardDto" 
     		useGeneratedKeys="true" keyColumn="boardId" keyProperty="boardId">
-        INSERT INTO board (board_title, board_content, board_writer_id, board_like_count, board_view_count, board_write_date)
-        VALUES (#{boardTitle}, #{boardContent}, #{boardWriterId}, #{boardLikeCount}, #{boardViewCount}, #{boardWriteDate})
+        INSERT INTO board (board_title, board_content, board_writer_id, board_like_count, board_view_count, board_write_date, saved_file_name, original_file_name, img_url)
+        VALUES (#{boardTitle}, #{boardContent}, #{boardWriterId}, #{boardLikeCount}, #{boardViewCount}, #{boardWriteDate}, #{savedFileName}, #{originalFileName}, #{imgUrl})
     </insert>
     
 	<delete id="deleteBoard" parameterType="int">
@@ -66,7 +66,7 @@
     WHERE board_id = #{boardId}
 	</select>
 	
-    <select id="showGenBoardById" resultType="BoardDto" parameterType="int">
+    <select id="showGenBoardById" resultType="GenBoardDto" parameterType="int">
     SELECT b.board_id, b.board_title, b.board_writer_id
     FROM board b 
     INNER JOIN board_general ga

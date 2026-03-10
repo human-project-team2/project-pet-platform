@@ -1,5 +1,6 @@
 package com.human.rarepet.controller;
 
+import java.io.File;
 import java.util.Date;
 import java.util.List;
 
@@ -11,7 +12,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
+import com.human.rarepet.common.Util;
 import com.human.rarepet.dto.AdoBoardDto;
 import com.human.rarepet.dto.BoardDto;
 import com.human.rarepet.dto.GenBoardDto;
@@ -47,8 +50,13 @@ public class BoardController {
 		return "board/write";		
 	}	
 	
+	final String UPLOAD_PATH = "d:\\uploaded_images";
+	
 	@PostMapping(path = {"/board/write"})
-	public String writeBoard(@AuthenticationPrincipal RarepetUserDetails userDetails , GenBoardDto board) {
+	public String writeBoard(
+			@AuthenticationPrincipal RarepetUserDetails userDetails , 
+			@RequestParam("picture") MultipartFile picture,
+			GenBoardDto board) {
 		Date writeDate = new Date();
 		
 		System.out.printf("-------------->Gen writetitle " + board.getBoardTitle());
@@ -58,18 +66,41 @@ public class BoardController {
 			return "redirect:/auth/login";		
 		}		
 		
-		MemberDto member = userDetails.getMember();
-		if(member != null) {
-			String id = member.getId();
-			System.out.printf("====================write Community ID\n" + id);
-		
-			board.setBoardWriteDate(writeDate);
-			board.setBoardLikeCount(1);
-			board.setBoardViewCount(1);
+		if (picture != null && picture.getOriginalFilename().length() > 0) {
 			
-			// board.getBoardWriteDate();
-			boardService.insertBoard(board);
-			boardService.insertBoardGen(board);
+			String savedFileName = Util.makeUniqueFileName(picture.getOriginalFilename());
+			
+			System.out.println(picture.getOriginalFilename());
+			System.out.println(savedFileName);
+			
+			File file = new File(UPLOAD_PATH, savedFileName);
+			String imgUrl = "/images/" + savedFileName;		
+		
+			MemberDto member = userDetails.getMember();
+			if(member != null) {
+				String id = member.getId();
+				System.out.printf("====================write Community ID\n" + id);
+			
+				try {
+								
+					board.setBoardWriteDate(writeDate);
+					board.setImgUrl(imgUrl);
+					board.setOriginalFileName(picture.getOriginalFilename());
+					board.setSavedFileName(savedFileName);
+					picture.transferTo(file);
+					board.setBoardLikeCount(1);
+					board.setBoardViewCount(1);
+					
+					// board.getBoardWriteDate();
+					boardService.insertBoard(board);
+					boardService.insertBoardGen(board);
+					
+				}   catch (Exception ex) {
+					ex.printStackTrace();
+					
+				}
+			}
+		
 		}
 		return "redirect:/board/community";		
 	}
@@ -239,19 +270,52 @@ public class BoardController {
 	}
 	
 	@PostMapping(path = {"/board/qwrite"})
-	public String writeQBoard(QnaBoardDto board) {
+	public String writeQBoard(
+			@AuthenticationPrincipal RarepetUserDetails userDetails , 
+			@RequestParam("picture") MultipartFile picture,
+			QnaBoardDto board) {
 		Date writeDate = new Date();
-				
-		board.setBoardWriteDate(writeDate);
-		board.setBoardLikeCount(2);
-		board.setBoardViewCount(2);
 		
-		boardService.insertBoard(board);
+		if (picture != null && picture.getOriginalFilename().length() > 0) {
+			
+			String savedFileName = Util.makeUniqueFileName(picture.getOriginalFilename());
+			
+			System.out.println(picture.getOriginalFilename());
+			System.out.println(savedFileName);
+			
+			File file = new File(UPLOAD_PATH, savedFileName);
+			String imgUrl = "/images/" + savedFileName;		
 		
-		board.setAnswerSelected("1");
-		board.setBoardQuestionCategory(true);
-		boardService.insertBoardQnA(board);		
-		return "redirect:/board/boardlist";		
+			MemberDto member = userDetails.getMember();
+			if(member != null) {
+				String id = member.getId();
+				System.out.printf("====================write Community ID\n" + id);
+			
+				try {
+								
+					board.setBoardWriteDate(writeDate);
+					board.setImgUrl(imgUrl);
+					board.setOriginalFileName(picture.getOriginalFilename());
+					board.setSavedFileName(savedFileName);
+					picture.transferTo(file);
+					board.setBoardLikeCount(2);
+					board.setBoardViewCount(2);
+					
+					boardService.insertBoard(board);
+					
+					board.setAnswerSelected("1");
+					board.setBoardQuestionCategory(true);
+					boardService.insertBoardQnA(board);
+					
+				}   catch (Exception ex) {
+					ex.printStackTrace();
+					
+				}
+			}
+		
+		}				
+	
+		return "redirect:/board/qnalist";	
 	}
 	
 	@GetMapping (path = {"/board/qna"}) 
@@ -285,7 +349,7 @@ public class BoardController {
 		public String deleteqna(
 				@RequestParam(value = "boardId", defaultValue="-1") int boardId
 				) {
-			
+			System.out.println("deleteqna\n");
 			/*
 			if (boardId == -1 || pageNo == -1) {
 				return "redirect:/board/list";
@@ -354,19 +418,52 @@ public class BoardController {
 	}
 	
 	@PostMapping(path = {"/board/adoptionwrite"})
-	public String writeABoard(AdoBoardDto board) {
+	public String writeABoard(
+			@AuthenticationPrincipal RarepetUserDetails userDetails , 
+			@RequestParam("picture") MultipartFile picture,
+			AdoBoardDto board) {
 		Date writeDate = new Date();
 		
-		board.setBoardWriteDate(writeDate);
-		board.setBoardLikeCount(1);
-		board.setBoardViewCount(1);
-		board.setBoardAdoptCategory(true);
-		board.setBoardAdoptDone(1);
+		if (picture != null && picture.getOriginalFilename().length() > 0) {
+			
+			String savedFileName = Util.makeUniqueFileName(picture.getOriginalFilename());
+			
+			System.out.println(picture.getOriginalFilename());
+			System.out.println(savedFileName);
+			
+			File file = new File(UPLOAD_PATH, savedFileName);
+			String imgUrl = "/images/" + savedFileName;		
 		
-//		git diff HEAD~2 HEAD 
+			MemberDto member = userDetails.getMember();
+			if(member != null) {
+				String id = member.getId();
+				System.out.printf("====================write Adoption ID\n" + id);
+			
+				try {
+								
+					board.setBoardWriteDate(writeDate);
+					board.setImgUrl(imgUrl);
+					board.setOriginalFileName(picture.getOriginalFilename());
+					board.setSavedFileName(savedFileName);
+					picture.transferTo(file);
+					board.setBoardLikeCount(2);
+					board.setBoardViewCount(2);					
+					
+					board.setBoardAdoptCategory(true);
+					board.setBoardAdoptDone(1);
+					
+//					git diff HEAD~2 HEAD 
+					
+					boardService.insertBoard(board);
+					boardService.insertBoardAdo(board);					
+					
+				}   catch (Exception ex) {
+					ex.printStackTrace();
+					
+				}
+			}
 		
-		boardService.insertBoard(board);
-		boardService.insertBoardAdo(board);
+		}		
 		return "redirect:/board/boardlist";		
 	}
 	
@@ -408,7 +505,7 @@ public class BoardController {
 		}
 */
 		System.out.println(boardId);
-		System.out.println("delete QnA \n");
+		System.out.println("delete Ado \n");
 		boardService.deleteBoardAdoByBoardId(boardId);
 		boardService.deleteBoardByBoardId(boardId);						
 		
@@ -431,11 +528,13 @@ public class BoardController {
 		 */		
 		// if(board.getBoardId() == adoboard.getBoardId())
 		// BoardDto board = boardService.showBoardById(boardId);
-				
-		BoardDto board = boardService.showGenBoardById(boardId);
-		if (board == null) {
+			
+		BoardDto board = boardService.showBoardById(boardId);
+		GenBoardDto genboard = boardService.showGenBoardById(boardId);
+		if (genboard == null) {
 			return "redirect:/board/boardlist";
 		}
+		//board.setBoardLikeCount(2);
 		
 		model.addAttribute("board", board);
 		model.addAttribute("pageNo", pageNo);

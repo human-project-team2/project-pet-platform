@@ -69,9 +69,9 @@ public class BoardService {
 		return boardMapper.showAllAdoBoard();
 	}
 
-	public BoardDto showGenBoardById(int boardId) {		
+	public GenBoardDto showGenBoardById(int boardId) {		
 		
-		BoardDto dto = boardMapper.showGenBoardById(boardId);
+		GenBoardDto dto = boardMapper.showGenBoardById(boardId);
 		return dto;
 	}
 

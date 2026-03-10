@@ -15,7 +15,7 @@
 
 	<select id="selectAllReviews"
 		resultType="com.human.rarepet.dto.ReviewDto">
-		SELECT r.review_no, r.id, r.order_no, r.product_no, r.created_at,
+		SELECT r.review_no, r.id, r.order_no, r.product_no, r.created_at,r.content,
 		r.modified_at, r.rating, p.product_name, p.img_url
 		FROM review r
 		LEFT JOIN product_all p ON r.product_no = p.product_no

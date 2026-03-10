@@ -1,230 +1,117 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>AnyZoo Marketplace | Reviews</title>
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
 
-<title>AnyZoo Marketplace</title>
-
-
-
-<!-- Bootstrap 5 CSS -->
-<link
-	href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
-	rel="stylesheet">
-
-<!-- Bootstrap Icons -->
-<link rel="stylesheet"
-	href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-<!-- Google Font -->
-<link
-	href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap"
-	rel="stylesheet">
-
-<style>
-body {
-	font-family: 'Noto Sans KR', sans-serif;
-	background: #fdf6ee;
-}
-
-/* Hero */
-.hero {
-	background: linear-gradient(rgba(230, 180, 150, 0.45),
-		rgba(245, 210, 185, 0.55)),
-		url("https://images.unsplash.com/photo-1508672019048-805c876b67e2?auto=format&fit=crop&w=1600&q=80");
-	background-size: cover;
-	background-position: center;
-	height: 60vh;
-}
-
-.hero-box {
-	background: rgba(255, 250, 245, 0.92);
-	border-radius: 30px;
-}
-
-/* Card */
-.card {
-	border: none;
-	border-radius: 20px;
-}
-
-.card img {
-	height: 200px;
-	object-fit: cover;
-	border-radius: 20px 20px 0 0;
-}
-
-.heart {
-	position: absolute;
-	top: 15px;
-	right: 15px;
-	font-size: 22px;
-	cursor: pointer;
-	color: #ccc;
-}
-
-.heart.active {
-	color: #e76f51;
-}
-
-.review-section {
-	background:
-		url("https://images.unsplash.com/photo-1518717758536-85ae29035b6d?auto=format&fit=crop&w=1600&q=80");
-	background-size: cover;
-	background-position: center;
-}
-
-.review-overlay {
-	background: rgba(90, 60, 50, 0.75);
-	border-radius: 25px;
-}
-</style>
+    <style>
+        body { font-family: 'Noto Sans KR', sans-serif; background: #fdf6ee; }
+        .review-header {
+            background: linear-gradient(rgba(90, 60, 50, 0.6), rgba(90, 60, 50, 0.6)),
+                        url("https://images.unsplash.com/photo-1518717758536-85ae29035b6d?auto=format&fit=crop&w=1600&q=80");
+            background-size: cover; background-position: center;
+            color: white; padding: 100px 0 60px; text-align: center;
+        }
+        
+        .review-card { border: none; border-radius: 20px; transition: transform 0.3s; height: 100%; }
+        .review-card:hover { transform: translateY(-5px); }
+        .review-img { height: 200px; object-fit: cover; border-radius: 20px 20px 0 0; }
+        
+        /* --- 수정된 리뷰 내용 스타일 (스크롤 추가) --- */
+        .review-text-area {
+            white-space: pre-wrap;    
+            word-break: break-all;     
+            font-size: 15px;
+            line-height: 1.7;
+            color: #444;
+            margin-bottom: 20px;
+            
+            height: 70px;            /* 고정 높이 설정 (카드의 통일감 유지) */
+            overflow-y: auto;         /* 세로 스크롤 활성화 */
+            padding-right: 10px;      /* 스크롤바와 텍스트 사이 여백 */
+        }
+        
+        /* 스크롤바 커스텀 디자인 (AnyZoo 테마 컬러 적용) */
+        .review-text-area::-webkit-scrollbar {
+            width: 6px;               /* 스크롤바 두께 */
+        }
+        .review-text-area::-webkit-scrollbar-thumb {
+            background-color: #e76f51; /* AnyZoo 포인트 코랄색 */
+            border-radius: 10px;
+        }
+        .review-text-area::-webkit-scrollbar-track {
+            background-color: #f1f1f1; /* 스크롤바 배경 */
+            border-radius: 10px;
+        }
+        /* -------------------------------------- */
+        
+        .btn-write { background-color: #e76f51; color: white; border-radius: 10px; padding: 10px 25px; border: none; }
+        .btn-write:hover { background-color: #d65d41; color: white; }
+    </style>
 </head>
 
 <body>
+    <div th:replace="~{fragments/fragment :: header}"></div>
 
-	<!-- NAVBAR -->
-	<div th:replace="fragments/fragment :: header"></div>
-	<!-- --------------------- -->
-	<header class="review-header">
-		<div class="container">
-			<h1 class="fw-bold display-5">고객 리뷰</h1>
-			<p class="lead">AnyZoo와 함께한 소중한 경험을 공유해주세요.</p>
-		</div>
-	</header>
+    <header class="review-header">
+        <div class="container">
+            <h1 class="fw-bold display-5">고객 리뷰</h1>
+            <p class="lead">AnyZoo와 함께한 소중한 경험을 공유해주세요.</p>
+        </div>
+    </header>
 
-	<div class="container" style="margin-top: -40px; margin-bottom: 80px;">
-		<div class="row g-4">
+    <div class="container" style="margin-top: -30px; margin-bottom: 80px;">
+        <div class="row mb-4">
+            <div class="col-12 d-flex justify-content-between align-items-center bg-white p-3 shadow-sm" style="border-radius: 15px;">
+                <span class="fw-bold text-muted" th:text="|총 ${list.size()}개의 소중한 리뷰가 있습니다.|">총 0개</span>
+                <a th:href="@{/review/write}" class="btn btn-write shadow-sm">리뷰 쓰기</a>
+            </div>
+        </div>
 
-			<div
-				class="col-12 d-flex justify-content-between align-items-center mb-2">
-				<span class="text-muted"></span> <a href="/review/write"
-					class="btn btn-write shadow-sm">리뷰 쓰기</a>
-			</div>
+        <div class="row g-4">
+            <div class="col-md-4" th:each="review : ${list}">
+                <div class="card review-card shadow-sm">
+                    <img th:src="${review.imgUrl != null and review.imgUrl != '' ? review.imgUrl : 'https://via.placeholder.com/500x350'}" 
+                         class="card-img-top review-img" alt="리뷰 이미지">
 
-			<div class="container"
-				style="margin-top: -40px; margin-bottom: 80px;">
-				<div class="row g-4">
+                    <div class="card-body p-4 d-flex flex-column">
+                        <div class="star-rating mb-2" style="color: #ffb703;">
+                            <i class="bi" th:each="i : ${#numbers.sequence(1, 5)}" 
+                               th:classappend="${i <= review.rating} ? 'bi-star-fill' : 'bi-star'"></i>
+                        </div>
 
-					<div
-						class="col-12 d-flex justify-content-between align-items-center mb-2">
-						<span class="text-muted"
-							th:text="|총 ${list.size()}개의 소중한 리뷰가 있습니다.|"></span> <a
-							href="/review/write" class="btn btn-write shadow-sm"
-							style="background-color: #e76f51; color: white; border-radius: 10px;">리뷰
-							쓰기</a>
-					</div>
+                        <h5 class="card-title fw-bold" style="color: #5a3c32;" th:text="${review.productName}">상품명</h5>
+                        
+                        <div class="review-text-area" th:text="${review.content}">
+                            
+                        </div>
 
-					<div class="col-md-4" th:each="review : ${list}">
-						<div class="card review-card shadow-sm h-100">
-							<img
-								src="${review.imgUrl}"
-								class="card-img-top review-img" alt="리뷰 이미지">
+                        <div class="mt-auto"> <hr class="my-3" style="color: #eee;">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <span class="fw-bold" style="font-size: 14px;" th:text="${review.id} + ' 님'">작성자</span>
+                                    <br>
+                                    <small class="text-muted" th:text="${review.createdAt != null ? #temporals.format(review.createdAt, 'yyyy-MM-dd') : '날짜 없음'}">날짜</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
-							<div class="card-body p-4">
-								<div class="star-rating mb-2" style="color: #ffb703;">
-									<i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i
-										class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i
-										class="bi bi-star-fill"></i>
-								</div>
+            <div class="col-12 text-center py-5" th:if="${#lists.isEmpty(list)}">
+                <p class="text-muted">아직 등록된 리뷰가 없습니다. 첫 번째 리뷰를 남겨보세요!</p>
+            </div>
+        </div>
+    </div>
 
-								<h5 class="card-title fw-bold" style="color: #5a3c32;"
-									th:text="${review.productName}"></h5>
+    <div th:replace="~{fragments/fragment :: footer}"></div>
 
-								<p class="card-text text-muted"
-									style="font-size: 14px; line-height: 1.6;"
-									th:text="${review.content}"></p>
-
-								<hr class="my-3" style="color: #eee;">
-
-								<div class="author-info d-flex align-items-center">
-									<div>
-										<div class="fw-bold" style="font-size: 14px; color: #333;"
-											th:text="${review.id} + ' 님'"></div>
-										<div class="text-muted" style="font-size: 12px;"
-											th:text="${#temporals.format(review.createdAt, 'yyyy-MM-dd HH:mm')}"></div>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-					<div class="col-12 text-center py-5"
-						th:if="${#lists.isEmpty(list)}">
-						<p class="text-muted">아직 등록된 리뷰가 없습니다. 첫 번째 리뷰를 남겨보세요!</p>
-					</div>
-
-				</div>
-			</div>
-		</div>
-	</div+>
-	<!-- <div class="col-md-4">
-				<div class="card review-card shadow-sm h-100">
-					<img
-						src="https://images.unsplash.com/photo-1516733725897-1aa73b87c8e8?auto=format&fit=crop&w=500&q=60"
-						class="card-img-top review-img" alt="리뷰 이미지">
-					<div class="card-body p-4">
-						<div class="star-rating mb-2">
-							<i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i
-								class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i
-								class="bi bi-star-half"></i>
-						</div>
-						<h5 class="card-title fw-bold" style="color: #5a3c32;">친절한
-							서비스에 감동했습니다.</h5>
-						<p class="card-text text-muted"
-							style="font-size: 14px; line-height: 1.6;">궁금한 점이 많아 질문을 많이
-							드렸는데도 하나하나 친절하게 설명해주셔서 너무 감사했습니다. 굿즈들도 너무 귀여워요!</p>
-						<hr class="my-3" style="color: #eee;">
-						<div class="author-info">
-
-							<div>
-								<div class="fw-bold" style="font-size: 14px; color: #333;">이캣
-									님</div>
-								<div class="text-muted" style="font-size: 12px;">2024.05.18</div>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-
-			<div class="col-md-4">
-				<div class="card review-card shadow-sm h-100">
-					<img
-						src="https://images.unsplash.com/photo-1583337130417-3346a1be7dee?auto=format&fit=crop&w=500&q=60"
-						class="card-img-top review-img" alt="리뷰 이미지">
-					<div class="card-body p-4">
-						<div class="star-rating mb-2">
-							<i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i
-								class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i
-								class="bi bi-star"></i>
-						</div>
-						<h5 class="card-title fw-bold" style="color: #5a3c32;">주말엔
-							사람이 좀 많지만 좋음</h5>
-						<p class="card-text text-muted"
-							style="font-size: 14px; line-height: 1.6;">인기가 많아서 그런지 사람이 꽤
-							많았어요. 그래도 관리하시는 분들이 동선을 잘 짜주셔서 편하게 구경했습니다. 힐링하고 가요.</p>
-						<hr class="my-3" style="color: #eee;">
-						<div class="author-info">
-							<div>
-								<div class="fw-bold" style="font-size: 14px; color: #333;">박집사
-									님</div>
-								<div class="text-muted" style="font-size: 12px;">2024.05.15</div>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-
-		</div>
-	</div> -->
-
-	<div th:replace="fragments/fragment :: footer"></div>
-
-	<script
-		src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
-
-
-
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
