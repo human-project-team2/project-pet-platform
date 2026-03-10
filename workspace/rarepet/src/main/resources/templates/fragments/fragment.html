@@ -328,11 +328,15 @@
                     </div>
                    `      
                    )
-                });
+                });            
+               
                 // 전송 버튼에 현재 대화중인 아이디 저장.
                 $("#btnSendInChat").data("partner", partnerId);
              })
-             
+             setTimeout(() => {
+             $('#chatMessages')[0].scrollTop = $('#chatMessages')[0].scrollHeight;
+             }, 1000);
+            
             const partnerName = $(this).data('partner-id') || '대화 상대';
 
             $('#chatPartnerTitle').text(partnerId + ' 님과의 대화');
