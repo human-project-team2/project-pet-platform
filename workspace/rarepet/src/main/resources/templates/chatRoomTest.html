@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<style>
+        #chatMessages { border: 1px solid #ccc; padding: 10px; height: 300px; overflow-y: scroll; }
+        #chatMessages div { margin-bottom: 5px; }
+</style>
+</head>
+<body>
+<!-- SockJS client -->
+<script src="https://cdn.jsdelivr.net/npm/sockjs-client/dist/sockjs.min.js"></script>
+
+<!-- STOMP.js client -->
+<script src="https://cdn.jsdelivr.net/npm/stompjs/lib/stomp.min.js"></script>
+
+
+    <!-- WebSocket chat can be integrated here -->
+    
+    <div id="chatMessages"></div>
+    
+    <input type="text" id="messageInput" placeholder="Type a message">
+    <button id="sendBtn">Send</button>
+    
+<script>
+
+	let stompClient = null; // STOMP 클라이언트 변수, 전역에서 사용가능하게 하려고
+	
+	function connect() {
+		// Create a SockJS client
+		const socket = new SockJS('/ws');
+		// Create a STOMP client over the SockJS connection
+		stompClient = Stomp.over(socket); 
+		
+		stompClient.connect({}, function (frame) {
+			
+				console.log('Connected: ' + frame);
+	
+				// Subscribe to the topic for receiving messages
+				stompClient.subscribe('/topic/chatRoom', function (message) {
+					console.log('Received message: ' + message.body);
+					const msg = JSON.parse(message.body);
+					showMessage(msg.sender, msg.content, msg.timestamp);
+			});
+		});
+	}
+	
+	// 메시지 보내기
+	 function sendWsMessage() {
+		
+			const sender = 'User1';
+			const messageInput = document.getElementById('messageInput').value;
+			
+			if(stompClient) {
+				// Send the message to the server
+				stompClient.send('/app/sendWsMessage', {}, JSON.stringify({
+					chatRoomId: 'room1',
+					sender: sender,
+					content: messageInput,
+					timestamp: new Date().toISOString()
+				}));
+
+				// Clear the input field
+				messageInput.value = '';	
+			}
+			
+	}
+	
+	 function showMessage(sender, content, timestamp) {
+		   
+		 const chatMessages = document.getElementById('chatMessages');
+		 
+		 const div = document.createElement('div');
+		 
+		 const time = new Date(timestamp).toLocaleTimeString();
+		 
+		 div.textContent = `[${time}] ${sender}: ${content}`;
+		 
+		 chatMessages.appendChild(div);
+		 
+		 chatMessages.scrollTop = chatMessages.scrollHeight;
+	}
+	
+	document.getElementById('sendBtn').addEventListener('click', sendWsMessage);
+	document.getElementById('messageInput').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') sendWsMessage();
+    });
+	
+	connect();
+	
+</script>
+</body>
+</html>
