@@ -330,8 +330,9 @@ public class BoardController {
 		 * if (boardId == -1 || pageNo == -1) { return "redirect:/board/boardlist"; }
 		 */			
 		
-		BoardDto board = boardService.showQnaBoardById(boardId);		
-		if (board == null) {
+		BoardDto board = boardService.showBoardById(boardId);
+		BoardDto qnaboard = boardService.showQnaBoardById(boardId);		
+		if (qnaboard == null) {
 			System.out.println("--------------------Qna NULL--  ");	
 			return "redirect:/board/qnalist";
 		}
@@ -479,8 +480,9 @@ public class BoardController {
 		 * if (boardId == -1 || pageNo == -1) { return "redirect:/board/adoptionlist"; }
 		 */			
 		
-		BoardDto board = boardService.showAdoBoardById(boardId);		
-		if (board == null) {
+		BoardDto board = boardService.showBoardById(boardId);
+		BoardDto adoboard = boardService.showAdoBoardById(boardId);		
+		if (adoboard == null) {
 			System.out.println("--------------------Adoption NULL--  ");	
 			return "redirect:/board/adoptionlist";
 		}

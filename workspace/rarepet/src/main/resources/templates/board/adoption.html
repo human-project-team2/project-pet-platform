@@ -98,10 +98,16 @@
             </div>
             <div class="ms-3">
                 <div class="fw-bold" th:text="${board.boardWriterId}">작성자 아이디</div>
-                <div class="small text-muted">2024-05-20 · 조회 450</div>
+                <div class="small text-muted" th:text="${#dates.format(board.boardWriteDate, 'yyyy-MM-dd')}">2024-05-20 · 조회 450</div>
             </div>
         </div>
-
+        <div class="content-area mb-4" style=width:700px>            
+			<div class="card shadow">
+				<img
+					th:src="@{${board.imgUrl}}"
+					class="card-img-top">
+			</div>
+		</div>
         <div class="content-area mb-4" th:text="${board.boardContent}">
             게시글 내용이 여기에 표시됩니다.
         </div>
