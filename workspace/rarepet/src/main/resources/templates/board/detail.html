@@ -1,289 +1,208 @@
 <!DOCTYPE html>
-<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://thymeleaf.org">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>AnyZoo Marketplace</title>
+<title>AnyZoo 커뮤니티 - 상세 보기</title>
 
-<!-- Bootstrap 5 CSS -->
-<link
-	href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
-	rel="stylesheet">
-<!-- Bootstrap CSS & Icons -->
+<!-- Bootstrap 5 CSS & Icons -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 <!-- Google Font -->
-<link
-	href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap"
-	rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
 
 <style>
-body {
-	font-family: 'Noto Sans KR', sans-serif;
-	background: #fdf6ee;
-	padding-top: 80px; /* adjust to navbar height */
-}
+    :root {
+        --primary-color: #ff8e3c; /* AnyZoo 시그니처 오렌지 */
+        --bg-soft: #fdf6ee; /* 따뜻한 배경색 */
+        --text-dark: #2d3436;
+    }
 
-/* Hero */
-.hero {
-	background: linear-gradient(rgba(230, 180, 150, 0.45),
-		rgba(245, 210, 185, 0.55)),
-		url("https://images.unsplash.com/photo-1508672019048-805c876b67e2?auto=format&fit=crop&w=1600&q=80");
-	background-size: cover;
-	background-position: center;
-	height: 60vh;
-}
+    body {
+        font-family: 'Noto Sans KR', sans-serif;
+        background-color: var(--bg-soft);
+        color: var(--text-dark);
+        padding-top: 20px;
+    }
 
-.hero-box {
-	background: rgba(255, 250, 245, 0.92);
-	border-radius: 30px;
-}
+    /* 메인 컨테이너 카드 */
+    .content-card {
+        background: white;
+        border-radius: 30px;
+        border: none;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.05);
+        padding: 40px;
+        margin-bottom: 30px;
+    }
 
-/* Card */
-.card {
-	border: none;
-	border-radius: 20px;
-}
+    /* 본문 텍스트 영역 */
+    .view-content {
+        min-height: 300px;
+        background: #fffcf9;
+        border-radius: 20px;
+        padding: 30px;
+        line-height: 1.8;
+        white-space: pre-wrap;
+        color: #444;
+        border: 1px solid #f1f1f1;
+    }
 
-.card img {
-	height: 200px;
-	object-fit: cover;
-	border-radius: 20px 20px 0 0;
-}
+    /* 라벨 및 입력창 스타일 */
+    .form-label { font-weight: 700; color: #555; margin-bottom: 8px; }
+    .form-control[readonly] { background-color: #f8f9fa; border: none; font-weight: 600; }
+    .form-control:focus { border-color: var(--primary-color); box-shadow: none; }
 
-.heart {
-	position: absolute;
-	top: 15px;
-	right: 15px;
-	font-size: 22px;
-	cursor: pointer;
-	color: #ccc;
-}
+    /* 버튼 스타일 커스텀 */
+    .btn-anyzoo { background-color: var(--primary-color); color: white; border-radius: 50px; padding: 10px 25px; font-weight: 600; border: none; transition: 0.3s; }
+    .btn-anyzoo:hover { background-color: #e67e22; color: white; transform: translateY(-2px); }
+    
+    .btn-outline-anyzoo { border: 2px solid var(--primary-color); color: var(--primary-color); border-radius: 50px; font-weight: 600; transition: 0.3s; }
+    .btn-outline-anyzoo:hover { background: var(--primary-color); color: white; }
 
-.heart.active {
-	color: #e76f51;
-}
+    /* 댓글 영역 스타일 */
+    .comment-box {
+        background: #fff;
+        border-radius: 25px;
+        padding: 30px;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.02);
+    }
+    .comment-input-wrapper {
+        background: #fdfaf7;
+        padding: 20px;
+        border-radius: 20px;
+        border: 1px solid #eee;
+    }
 
-.review-section {
-	background:
-		url("https://images.unsplash.com/photo-1518717758536-85ae29035b6d?auto=format&fit=crop&w=1600&q=80");
-	background-size: cover;
-	background-position: center;
-}
-
-.review-overlay {
-	background: rgba(90, 60, 50, 0.75);
-	border-radius: 25px;
-}
-
-.view-toggle .btn.active {
-	background: #ffc107;
-	border-color: #ffc107;
-}
-
-.price-badge {
-	font-size: 18px;
-	font-weight: 700;
-	color: #dc3545;
-}
-
-.list-view .card {
-	flex-direction: row;
-	align-items: center;
-}
-
-.list-view .card img {
-	width: 200px;
-	height: 150px;
-	object-fit: cover;
-}
+    /* 댓글 리스트 아이템 */
+    .comment-item {
+        padding: 15px 0;
+        border-bottom: 1px solid #f1f1f1;
+    }
 </style>
-
 </head>
 
 <body>
 
-	<!-- NAVBAR -->
-	<div th:replace="fragments/fragment :: header"></div>
-	
-	
+<div th:replace="fragments/fragment :: header"></div>
 
-	
-
-	<div class="container my-5">
-		
-		<div class="mb-3">
-		    <a th:href="@{/board/community}" 
-		       class="btn btn-outline-secondary rounded-pill px-4">
-		        ← 목록으로 돌아가기
-		    </a>
-		</div>
-
-	<!-- #Main ============================ -->
-	<div>
-      <div class="page-container">
-        <main class="main-content bgc-grey-100">
-          <div id="mainContent">
-            <div class="container-fluid">
-          	  <div class="row">
-                <div class="col-md-12">
-                  <div class="bgc-white p-20 bd">
-                  <h6 class="c-grey-900">게시글 내용</h6>
-                  <div  class="mT-30">
-                      <div class="mb-3">
-                        <label class="form-label" for="title">제목</label>
-                        <input type="text" class="form-control" id="title" readonly th:value="${ board.boardTitle }">
-                      </div>
-                      <div class="mb-3">
-                        <label class="form-label" for="writer">작성자(email)</label>
-                        <input type="text" class="form-control" id="writer" readonly th:value="${ board.boardWriterId }">
-                      </div>                      
-                      <div class="mb-3">
-                        <label class="form-label" for="content">글내용</label>
-                        <textarea id="content" class="form-control" rows="10" readonly th:text='${ #strings.replace(board.boardContent, "\n", "<br>") }'></textarea>
-                      </div>        
-		              <div>
-					  <button type="button" id="edit-btn" class="btn btn-primary btn-color btn-sm">수정</button>
-					  <button type="button" id="delete-btn" class="btn btn-primary btn-color btn-sm">삭제</button>
-					  <button type="button" id="to-list-btn" class="btn btn-primary btn-color btn-sm">목록</button>
-					  </div>                                        
-                  </div>
-                </div>
-                </div>
-              </div>              
-              
-              <!-- 댓글 쓰기 영역 시작 -->
-              <!-- 
-              <th:block th:if="${loggedIn}">
-               -->
-              <div class="row">
-                <div class="col-md-12">
-                  <div class="bgc-white p-20 bd">                  
-                  <div class="mT-10">
-                  
-                    <th:block sec:authorize="isAuthenticated()">
-                  	<form id="commentform" action="write-comment" method="post">
-					  
-					  <input type="hidden" name="boardId" th:value="${ board.boardId }" />
-					  <input type="hidden" name="writer" th:value="${ board.boardWriterId }" /> 
-					  
-					  <!-- 
-					  <input type="hidden" name="writer" th:value="${ session.loginuser.id }" />
-					  <input type="hidden" name="pageNo" th:value="${ pageNo }" />
-                      -->
-                      
-                      <div class="mb-3">
-                        <label class="form-label" for="content">댓글내용</label>
-                        <textarea id="comment_content" name="content" class="form-control" rows="5"></textarea>
-                      </div>
-                      <div>
-	                    <button type="button" id="writecomment" class="btn btn-primary btn-color btn-sm">댓글쓰기</button>
-                      </div>
-					</form>
-					</th:block>
-					
-					
-					
-                  </div>
-                </div>
-                </div>
-              </div>
-              <!--  댓글 쓰기 영역 끝 -->
-              
-              <!--  댓글 목록 영역 시작 -->
-              <div class="row">
-                <div class="col-md-12">
-                  <div class="bgc-white p-20 bd">                  
-                  <div id="comment-list" class="mT-10">
-                  	
-                  </div>
-                </div>
-                </div>
-              </div>
-              <!-- 댓글 목록 영역 끝 -->
-              <!-- 
-              </th:block>
-               -->
-             
-             </div>
-          </div>
-        </main>        
-      </div>      
+<div class="container my-5 pt-4">
+    <!-- 상단 네비게이션 -->
+    <div class="mb-4 d-flex justify-content-between align-items-center">
+        <a th:href="@{/board/community}" class="btn btn-outline-secondary rounded-pill px-4">
+            <i class="bi bi-arrow-left me-1"></i> 목록으로 돌아가기
+        </a>
     </div>
-	
-<!-- 
-		<div class="row g-5">
-			<div class="col-lg-6">
-				<div class="card shadow">
-					<img
-						th:src="@{${product.imgUrl}}"
-						class="card-img-top">
-				</div>
-			</div>
-			<div class="col-lg-6">
-				<div class="card shadow p-4">
-					<div class="price-badge mb-3" th:text="|₩${board.boardContent}|" ></div>
-					<ul class="list-unstyled mb-4">
-						<li><strong>타입:</strong>
-						<span th:text="${board.boardId}" ></span>
-						</li>
-					</ul>
-				</div>
-			</div>
-		</div>
-		 -->
-		
-	<!-- Modal -->
-	
-  
-	<div class="modal fade" id="recomment-modal" 
-		 data-bs-backdrop="static" data-bs-keyboard="false" 
-		 tabindex="-1" aria-labelledby="recomment-modal-label" aria-hidden="true">
-	  <div class="modal-dialog">
-	    <div class="modal-content">
-	      <div class="modal-header">
-	        <h1 class="modal-title fs-5" id="recomment-modal-label">댓글 쓰기</h1>
-	      </div>
-	      <div class="modal-body">
-	      
-			<form id="recommentform" action="write-recomment" method="post">				
-				<input type="hidden" name="writer" th:value="${ board.boardWriterId }" />				
-				<input type="hidden" name="boardId" th:value="${ board.boardId }" />		
-				<textarea class="form-control" name="content" rows="3" style="resize: none;"></textarea>             	
-	        </form>
-		  
-	      </div>
-	      <div class="modal-footer">
-	        <button type="button" class="btn btn-secondary cancel-button" data-bs-dismiss="modal">취소</button>
-	        <button type="button" class="btn btn-primary write-button">쓰기</button>
-	      </div>
-	    </div>
-	  </div>
-	</div>
-  
-	
-	<div th:replace="fragments/fragment :: message"></div>
-	<div th:replace="fragments/fragment :: footer"></div>
 
-	<!-- Bootstrap JS -->
-	
-	<script th:replace="fragments/fragment :: message_script"></script>
-	
-	<script src="http://code.jquery.com/jquery-3.7.1.js"></script>    
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>    
-    <script th:inline='javascript'>
-	document.addEventListener('DOMContentLoaded', function() {
-		const btnDelete = document.querySelector('#delete-btn');
-		if (btnDelete) {
-			btnDelete.addEventListener('click', function(event) {
-				const isOk = window.confirm('삭제할까요?');
-				if (isOk) {
-					location.href = 'delete?boardId=' + [[${ board.boardId }]];
-				}
-			});	
-		}
-		
-		
-		
+    <!-- [Main Content Card] -->
+    <div class="content-card">
+        <div class="d-flex justify-content-between align-items-end mb-4">
+            <h4 class="fw-bold mb-0 text-primary"><i class="bi bi-file-text me-2"></i>게시글 상세</h4>
+            <div class="small text-muted">AnyZoo Community</div>
+        </div>
+
+        <div class="row g-3">
+            <div class="col-md-8">
+                <label class="form-label">제목</label>
+                <input type="text" class="form-control-plaintext fs-4 fw-bold border-bottom mb-3" readonly th:value="${board.boardTitle}">
+            </div>
+            <div class="col-md-4">
+                <label class="form-label text-muted">작성자</label>
+                <div class="d-flex align-items-center">
+                    <i class="bi bi-person-circle fs-5 me-2 text-secondary"></i>
+                    <span class="fw-bold" th:text="${board.boardWriterId}">애니멀러버</span>
+                </div>
+            </div>
+            <div class="col-12 mt-4">
+                <label class="form-label">글 내용</label>
+                <div class="view-content shadow-sm" th:utext='${#strings.replace(board.boardContent, "\n", "<br>")}'>
+                    내용이 표시되는 곳입니다.
+                </div>
+            </div>
+        </div>
+
+        <!-- 버튼 그룹 -->
+        <div class="mt-5 d-flex justify-content-between border-top pt-4">
+            <div>
+                <button type="button" id="edit-btn" class="btn btn-outline-anyzoo px-4 me-2">수정하기</button>
+                <button type="button" id="delete-btn" class="btn btn-outline-danger rounded-pill px-4">삭제</button>
+            </div>
+            <button type="button" id="to-list-btn" class="btn btn-dark rounded-pill px-4">목록보기</button>
+        </div>
+    </div>
+
+    <!-- [Comment Section] -->
+    <div class="comment-box">
+        <h5 class="fw-bold mb-4"><i class="bi bi-chat-dots-fill text-primary me-2"></i>따뜻한 댓글</h5>
+
+        <!-- 댓글 쓰기 (로그인 시 노출) -->
+        <div class="comment-input-wrapper mb-5" sec:authorize="isAuthenticated()">
+            <form id="commentform" action="write-comment" method="post">
+                <input type="hidden" name="boardId" th:value="${board.boardId}" />
+                <input type="hidden" name="writer" th:value="${board.boardWriterId}" />
+                <div class="mb-3">
+                    <textarea id="comment_content" name="content" class="form-control" rows="4" 
+                              placeholder="서로를 배려하는 따뜻한 댓글을 남겨주세요."></textarea>
+                </div>
+                <div class="text-end">
+                    <button type="button" id="writecomment" class="btn btn-anyzoo shadow-sm">댓글쓰기</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- 댓글 목록 (AJAX로 데이터가 들어오는 영역) -->
+        <div id="comment-list" class="mt-2">
+            <!-- 예시 아이템 (실제 데이터는 스크립트로 로드) -->
+            <div class="comment-item text-center py-5 text-muted">
+                <i class="bi bi-chat-dots fs-1 mb-3 d-block opacity-25"></i>
+                댓글을 불러오고 있습니다...
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="recomment-modal" data-bs-backdrop="static" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content shadow-lg border-0 rounded-4">
+            <div class="modal-header bg-primary text-white border-0 py-3">
+                <h5 class="modal-title fw-bold">답글 달기</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body p-4">
+                <form id="recommentform" action="write-recomment" method="post">				
+                    <input type="hidden" name="writer" th:value="${board.boardWriterId}" />				
+                    <input type="hidden" name="boardId" th:value="${board.boardId}" />		
+                    <textarea class="form-control border-0 bg-light" name="content" rows="4" 
+                              style="resize: none;" placeholder="답글 내용을 입력하세요."></textarea>             	
+                </form>
+            </div>
+            <div class="modal-footer border-0 p-3">
+                <button type="button" class="btn btn-light rounded-pill px-4 cancel-button" data-bs-dismiss="modal">취소</button>
+                <button type="button" class="btn btn-primary rounded-pill px-4 write-button">답글 등록</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div th:replace="fragments/fragment :: footer"></div>
+
+<!-- Scripts -->
+<script src="http://code.jquery.com/jquery-3.7.1.js"></script>    
+<script src="https://jsdelivr.net"></script>
+<script th:inline='javascript'>
+    document.addEventListener('DOMContentLoaded', function() {
+        // 기존의 게시글 제어 스크립트 유지
+        $('#delete-btn').on('click', function() {
+            if(confirm('게시글을 삭제하시겠습니까?')) {
+                location.href = 'deletecomm?boardId=' + [[${board.boardId}]];
+            }
+        });
+        
+        // 목록 버튼
+        $('#to-list-btn').on('click', function() {
+            location.href = 'community';
+        });
+
 		//////////////댓글추가/////////////////
 		
 		// # id="comment-list" 요소에 comment-list 요청 결과를 삽입 ( 비동기 )
@@ -380,8 +299,8 @@ body {
 			});			
 		
 		});
-	});
-		
-	</script>
+    });
+</script>
+
 </body>
 </html>
