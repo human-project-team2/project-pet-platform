@@ -35,7 +35,7 @@ public class MyPageController {
     public String myPage(@AuthenticationPrincipal RarepetUserDetails userDetails , Model model) {
        
     	// 1. 세션에서 로그인한 유저 정보 가져오기 (소문자 loginuser 확인)
-    	// Spring Security 로 바꿈.
+    	// -> Spring Security 로 바꿈.
         MemberDto loginUser = userDetails.getMember();
 
         // 2. 로그인 안 되어 있으면 로그인 페이지로 강제 이동
@@ -50,6 +50,7 @@ public class MyPageController {
         ShopDto shop = (ShopDto)shopService.showShopInfo(user.getId());
         
         // 4. 화면(HTML)으로 데이터 전달
+        
         model.addAttribute("user", user);
         model.addAttribute("myProducts", myProducts);
         model.addAttribute("productCount", myProducts.size());

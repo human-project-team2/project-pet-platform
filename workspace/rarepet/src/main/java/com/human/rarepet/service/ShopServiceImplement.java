@@ -1,5 +1,7 @@
 package com.human.rarepet.service;
 
+import java.util.List;
+
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Service;
 
@@ -35,6 +37,12 @@ public class ShopServiceImplement implements ShopService {
 	public void updateShop(ShopDto shop) {
 		
 		shopMapper.updateShop(shop);
+	}
+
+	@Override
+	public List<ShopDto> selectAllShops() {
+		return shopMapper.selectAllShops();
+		
 	}
 
 }
