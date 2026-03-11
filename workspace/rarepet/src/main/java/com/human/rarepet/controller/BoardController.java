@@ -217,7 +217,42 @@ public class BoardController {
 		 */
 	}
 	
+	@GetMapping(path = { "/board/edit" })
+	public String showEditForm(	@RequestParam(value = "boardId", defaultValue="-1") int boardId,						 		
+						 		Model model) {
+		
+		if (boardId == -1) {
+			return "redirect:/board/boardlist";
+		}
+		
+		BoardDto board = boardService.showBoardById(boardId);
+		
+		if (board == null) {
+			return "redirect:/board/boardlist";
+		}
+		System.out.println(board);
+		
+		model.addAttribute("board", board);		
+			
+		return "board/edit";
+	}
 	
+	@PostMapping(path = { "/board/update" })
+	public String doUpdate(
+			BoardDto board) {
+		
+		BoardDto orgboard = boardService.showBoardById(board.getBoardId());
+		orgboard.setBoardContent(board.getBoardContent());
+		orgboard.setBoardTitle(board.getBoardTitle());
+		//System.out.println("update GEN \n");
+		System.out.println(orgboard);
+		//System.out.println(board);
+		
+		System.out.println("update\n");
+		boardService.updateBoard(orgboard);
+					
+		return "redirect:/board/detail?boardId=" + board.getBoardId();
+	}
 	
 	
 	@GetMapping (path = {"/board/qnalist"}) 

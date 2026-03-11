@@ -206,6 +206,13 @@
             }
         });
         
+        const btnEdit = document.querySelector('#edit-btn');
+		if (btnEdit) {
+			btnEdit.addEventListener('click', function(event) {
+				location.href = 'edit?boardId=' + [[${ board.boardId }]];
+			});	
+		}
+        
         // 목록 버튼
         $('#to-list-btn').on('click', function() {
             location.href = 'community';
