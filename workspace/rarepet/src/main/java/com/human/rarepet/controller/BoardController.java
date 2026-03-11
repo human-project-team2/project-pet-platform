@@ -276,6 +276,11 @@ public class BoardController {
 			QnaBoardDto board) {
 		Date writeDate = new Date();
 		
+		if(userDetails == null)
+		{
+			return "redirect:/auth/login";		
+		}		
+		
 		if (picture != null && picture.getOriginalFilename().length() > 0) {
 			
 			String savedFileName = Util.makeUniqueFileName(picture.getOriginalFilename());
@@ -425,6 +430,11 @@ public class BoardController {
 			AdoBoardDto board) {
 		Date writeDate = new Date();
 		
+		if(userDetails == null) 
+		{
+			return "redirect:/auth/login";		
+		}		
+		
 		if (picture != null && picture.getOriginalFilename().length() > 0) {
 			
 			String savedFileName = Util.makeUniqueFileName(picture.getOriginalFilename());
@@ -465,7 +475,7 @@ public class BoardController {
 			}
 		
 		}		
-		return "redirect:/board/boardlist";		
+		return "redirect:/board/adoptionlist";		
 	}
 	
 	@GetMapping (path = {"/board/adoption"}) 
