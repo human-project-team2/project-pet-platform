@@ -9,6 +9,13 @@
         VALUES (#{boardTitle}, #{boardContent}, #{boardWriterId}, #{boardLikeCount}, #{boardViewCount}, #{boardWriteDate}, #{savedFileName}, #{originalFileName}, #{imgUrl})
     </insert>
     
+    <update id="updateBoard" parameterType="BoardDto">
+    UPDATE board 
+    SET board_title = #{boardTitle}, 
+        board_content = #{boardContent}
+    WHERE board_id = #{boardId}
+	</update>
+    
 	<delete id="deleteBoard" parameterType="int">
         DELETE from board WHERE board_id = #{boardId}
     </delete>

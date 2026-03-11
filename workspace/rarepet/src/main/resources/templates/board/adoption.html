@@ -188,9 +188,17 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // 수정 및 목록 버튼
-    document.querySelector('#edit-btn')?.addEventListener('click', () => {
-        location.href = 'editado?boardId=' + [[${ board.boardId }]];
-    });
+    //document.querySelector('#edit-btn')?.addEventListener('click', () => {
+        //location.href = 'editado?boardId=' + [[${ board.boardId }]];
+    //});
+    
+    const btnEdit = document.querySelector('#edit-btn');
+	if (btnEdit) {
+		btnEdit.addEventListener('click', function(event) {
+			location.href = 'adoedit?boardId=' + [[${ board.boardId }]];
+		});	
+	}
+	
 });
 </script>
 

@@ -43,5 +43,7 @@ public interface BoardMapper {
 	void deleteBoardQnA(int boardId);
 
 	void deleteBoardAdo(int boardId);
+
+	void updateBoard(BoardDto board);
 	
 }

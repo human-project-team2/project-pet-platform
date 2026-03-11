@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AnyZoo | 게시글 쓰기</title>
+
+<link
+	href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+	rel="stylesheet">
+<link
+	href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&family=Jua&display=swap"
+	rel="stylesheet">
+<!-- Bootstrap CSS & Icons -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+<link rel="stylesheet" th:href="@{/css/floating-chat.css}">
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+<style>
+body {
+	font-family: 'Noto Sans KR', sans-serif;
+	background: #fdf6ee;
+	padding-top: 80px;
+}
+
+.register-container {
+	max-width: 900px;
+	background: white;
+	border-radius: 30px;
+	padding: 30px;
+	box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+}
+
+.form-label {
+	font-weight: 600;
+	color: #5a3c32;
+}
+
+/* 이미지 업로드 영역 */
+.image-upload-wrapper {
+	display: flex;
+	gap: 15px;
+	flex-wrap: wrap;
+	margin-bottom: 10px;
+}
+
+.image-preview {
+	position: relative;
+	width: 140px;
+	height: 140px;
+	border: 2px dashed #ddd;
+	border-radius: 20px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	overflow: hidden;
+	background: #fafafa;
+	cursor: pointer;
+}
+
+@media ( max-width : 576px) {
+	.image-preview {
+		width: 100px;
+		height: 100px;
+	}
+}
+
+.image-preview img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+}
+
+.remove-btn {
+	position: absolute;
+	top: 8px;
+	right: 8px;
+	background: rgba(231, 111, 81, 0.9);
+	color: white;
+	border: none;
+	border-radius: 50%;
+	width: 24px;
+	height: 24px;
+	font-size: 12px;
+	cursor: pointer;
+	z-index: 5;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+/* 모달 내 이미지 그리드 스타일 */
+.summary-img-box {
+	position: relative;
+	width: 100px;
+	height: 100px;
+	border-radius: 12px;
+	overflow: hidden;
+	border: 1px solid #ddd;
+}
+
+.summary-img-box img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+}
+
+.more-overlay {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background: rgba(0, 0, 0, 0.5);
+	color: white;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-size: 1.2rem;
+	font-weight: bold;
+	backdrop-filter: blur(2px);
+}
+
+/* 입력창 및 버튼 */
+input[name="title"], textarea[name="content"], #priceDisplay {
+	font-family: 'Jua', sans-serif !important;
+	color: #5a3c32;
+}
+
+.btn-submit {
+	background-color: #ffc107;
+	border: none;
+	padding: 15px;
+	border-radius: 15px;
+	font-weight: bold;
+	color: #5a3c32;
+	width: 100%;
+	transition: all 0.2s;
+}
+
+.btn-submit:hover {
+	background-color: #e6ae06;
+	transform: translateY(-2px);
+}
+
+/* 에러 피드백 */
+.is-invalid {
+	border-color: #e76f51 !important;
+	box-shadow: 0 0 0 0.25rem rgba(231, 111, 81, 0.25) !important;
+}
+
+.error-msg {
+	color: #e76f51;
+	font-size: 0.85rem;
+	margin-top: 5px;
+	display: none;
+}
+</style>
+</head>
+<body>
+
+	<div th:replace="fragments/fragment :: header"></div>
+
+	<div class="container my-4">
+		<div class="register-container mx-auto">
+			<h3 class="fw-bold mb-4 text-center">🐾 글 수정</h3>
+
+			<form action="/board/qnaupdate" method="post"
+				enctype="multipart/form-data">
+				<input type="hidden" name="boardId" th:value="${ board.boardId }">
+				
+				<div class="row g-3">
+					<div class="col-12 col-md-8">
+						<label class="form-label" for="boardTitle">제목</label> 
+						<input type="text" class="form-control" id="boardTitle" name="boardTitle" placeholder="글 제목을 작성하세요" th:value="${ board.boardTitle }">						
+						<div class="error-msg">글 제목을 작성하세요!</div>
+					</div>					
+					<div class="col-12">
+						<label class="form-label" for="boardContent">글내용</label>
+						<textarea class="form-control" id="boardContent" name="boardContent"
+							rows="5" maxlength="1000" th:text="${ board.boardContent }"></textarea>						
+					</div>
+				</div>
+
+				<div class="mt-5 row g-2">
+					<div class="col-6 col-md-3">
+						<button type="button" class="btn btn-outline-secondary w-100 p-3"
+							onclick="history.back();">취소</button>
+					</div>
+					<div class="col-6 col-md-9">
+						<button type="submit" class="btn btn-submit">글 수정</button>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+
+</body>
+</html>

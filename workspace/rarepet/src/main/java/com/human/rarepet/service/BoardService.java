@@ -101,6 +101,11 @@ public class BoardService {
 
 	public void deleteBoardAdoByBoardId(int boardId) {
 		boardMapper.deleteBoardAdo(boardId);		
+	}
+
+	public void updateBoard(BoardDto board) {
+		//boardMapper.insertBoard(board);
+		boardMapper.updateBoard(board);
 	}	
 
 }
