@@ -1,5 +1,7 @@
 package com.human.rarepet.mapper;
 
+import java.util.List;
+
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
@@ -14,7 +16,12 @@ public interface ShopMapper {
 			+ "values (#{id}, #{shopContent}, #{verified}, #{rating}, #{businessRegNo}, #{shopName}, #{savedFileName}, #{originalFileName}, #{imgUrlShop})")
 	void insertShop(ShopDto shop);
 	
-	@Select("select shop_content, shop_content, verified, rating, business_reg_no, shop_name, saved_file_name, original_file_name, img_url_shop from "
+	@Select("select shop_content, verified, rating, shop_name, "
+			+ "saved_file_name, original_file_name, img_url_shop "
+			+ "from shop")
+	List<ShopDto> selectAllShops();
+	
+	@Select("select shop_content, verified, rating, business_reg_no, shop_name, saved_file_name, original_file_name, img_url_shop from "
 			+ "shop where id = #{id}")
 	ShopDto showShopInfo(String id);
 	

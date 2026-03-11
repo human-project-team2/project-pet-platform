@@ -227,7 +227,7 @@ body {
 		<!-- MARKET GRID -->
 		<div id="marketContainer" class="row g-4">
 			
-			<div id="marketContainer" class="row g-4">
+			
 			<!-- 상품 리스트 반복문 -->
 				<div class="col-md-4 market-item" th:each="product:${products}">
 					<div class="card shadow">
@@ -274,24 +274,80 @@ body {
 				</nav>
 			</div>
 			</div>
-<!-- Tab 2: 샵 분양 (아직 placeholder - 실제 구현 시 교체) -->
+<!-- Tab 2: 샵 분양  -->
     <div class="tab-pane fade" id="shop" role="tabpanel" aria-labelledby="shop-tab">
-        <div class="my-5 text-center">
-            <h3 class="fw-bold mb-4">전문 샵 · 브리더 분양 목록</h3>
-            <p class="lead text-muted mb-5">신뢰할 수 있는 인증된 샵에서 분양 중인 희귀 동물들을 만나보세요</p>
+         <div class="my-5">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h3 class="fw-bold">전문 샵 · 브리더 분양</h3>
+        </div>
 
-            <!-- 여기에 샵 목록을 위한 카드 그리드 또는 다른 레이아웃 추가 가능 -->
-            <div class="row g-4 justify-content-center">
-                <div class="col-md-8">
-                    <div class="alert alert-info">
-                        <h5>샵 목록 준비 중입니다</h5>
-                        <p>현재 샵 전용 페이지를 구성 중입니다. 곧 다양한 브리더·샵의 상품이 표시됩니다.</p>
+        <!-- SHOP GRID -->
+        <div class="row g-4">
+
+            <!-- shop 반복문 -->
+            <div class="col-md-4" th:each="shop : ${shops}">
+
+                <div class="card shadow h-100">
+
+                    <!-- shop image -->
+                    <img th:src="@{${shop.imgUrlShop}}"
+                         class="card-img-top"
+                         style="height:200px; object-fit:cover;">
+
+                    <div class="card-body">
+
+                        <!-- shop name -->
+                        <h5 class="card-title"
+                            th:text="${shop.shopName}">
+                        </h5>
+
+                        <!-- shop description -->
+                        <p class="card-text text-muted"
+                           th:text="${shop.shopContent}">
+                        </p>
+
+                        <!-- rating -->
+                        <div class="mb-2">
+
+                            <span class="text-warning">
+                                <i class="bi bi-star-fill"
+                                   th:each="i : ${#numbers.sequence(1, shop.rating)}">
+                                </i>
+                            </span>
+
+                            <span class="text-muted small"
+                                  th:text="'(' + ${shop.rating} + ')'">
+                            </span>
+
+                        </div>
+
+                        <!-- verify badge -->
+                        <span th:if="${shop.verified}"
+                              class="badge bg-success">
+                              인증샵
+                        </span>
+
                     </div>
+
+                    <div class="card-footer bg-white border-0">
+
+                        <!-- shop page link -->
+                        <!-- <a th:href="@{/shop/{id}(id=${shop.id})}" -->
+                        <a href="#"
+                           class="btn btn-warning w-100 rounded-pill">
+                           샵 방문
+                        </a>
+
+                    </div>
+
                 </div>
+
             </div>
 
-            <!-- 샵 전용 검색/필터 영역 등을 여기에 추가 가능 -->
         </div>
+
+    </div>
+        
     </div>
 
 </div>

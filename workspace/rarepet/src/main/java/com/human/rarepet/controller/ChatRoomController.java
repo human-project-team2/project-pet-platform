@@ -10,9 +10,9 @@ import com.human.rarepet.dto.ChatMessageDto;
 @Controller
 public class ChatRoomController {
 
-	@GetMapping(path = {"/chatRoomTest"})
+	@GetMapping(path = {"/chatRoom"})
 	public String chatRoomTest() {
-		return "chatRoomTest";
+		return "chatRoom";
 	}
 	
 	@MessageMapping("/sendWsMessage")

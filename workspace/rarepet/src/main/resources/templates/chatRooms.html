@@ -26,6 +26,7 @@
 <script>
 
 	let stompClient = null; // STOMP 클라이언트 변수, 전역에서 사용가능하게 하려고
+	const currentUser = "[[${#authentication.principal.username}]]"
 	
 	function connect() {
 		// Create a SockJS client
@@ -49,7 +50,7 @@
 	// 메시지 보내기
 	 function sendWsMessage() {
 		
-			const sender = 'User1';
+			const sender = currentUser;
 			const messageInput = document.getElementById('messageInput')
 			const content =	messageInput.value.trim();
 			

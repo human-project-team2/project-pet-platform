@@ -3,6 +3,7 @@
 <body>
 
 <div th:fragment="header">
+	
     <nav class="navbar navbar-expand-lg shadow-sm fixed-top" 
          style="background-color: var(--bs-body-bg); border-bottom: 1px solid rgba(0,0,0,0.1); transition: 0.3s;">
         <div class="container">
@@ -121,9 +122,63 @@
 </div>
 
 <div th:fragment="footer">
+
+	
+	<th:block sec:authorize="isAuthenticated()">"
+		<div id="chatButton">
+		    <i class="bi bi-chat-dots-fill"></i>
+		</div>
+		<div id="chatPopup">
+	
+	    <div class="chat-header">
+	        커뮤니티
+	        <span id="closeChat">✖</span>
+	    </div>
+	    
+	
+	    <!-- CHAT ROOM LIST -->
+	    <div id="chatRoomList">
+	
+	        <div class="chat-room">
+	            <div class="chat-room-name">Rare Reptile Shop</div>
+	            <div class="chat-room-preview">Last message preview...</div>
+	        </div>
+	
+	        <div class="chat-room">
+	            <div class="chat-room-name">Golden Gecko Seller</div>
+	            <div class="chat-room-preview">Is it still available?</div>
+	        </div>
+	
+	    </div>
+	
+	</div>
+	</th:block>
     <footer class="text-center py-4 border-top" style="background-color: var(--bs-tertiary-bg);">
         <p class="mb-0 text-muted small">© 2026 AnyZoo. 소중한 생명을 위한 희귀 반려동물 마켓</p>
     </footer>
+    
+    <script>
+    
+    $(function(){
+
+        $("#chatButton").click(function(){
+            $("#chatPopup").toggle();
+        });
+
+        $("#closeChat").click(function(){
+            $("#chatPopup").hide();
+        });
+        
+        $(".chat-room").click(function(){
+
+            let chatRoomId = $(this).data("chatRoomId");
+
+            openChat(chatRoomId);
+
+        });
+
+    });
+    </script>
 </div>
 
 <div th:fragment="message">

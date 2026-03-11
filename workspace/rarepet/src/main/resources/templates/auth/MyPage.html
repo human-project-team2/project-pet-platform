@@ -119,18 +119,24 @@ body {
 					<div class="d-grid gap-2">
 					<!-- 판매자 등록 버튼 -->
 					    <th:block sec:authorize=hasRole("member")>
-					    <a th:href="@{/shop-register}"
-					       class="btn btn-warning rounded-pill">
+				    	<a	th:if="${shop == null}" 
+					    	th:href="@{/shop-register}"
+					        class="btn btn-warning rounded-pill">
 					        판매자 등록
 					    </a>
-					    </th:block>
-					   <a th:if="${session.loginuser != null and shop != null and shop.verified == false}"
+					    <a th:if="${shop != null and shop.verified == false}"
 					   	   th:href="@{/shop/shopmain}"
 						   class="btn btn-secondary rounded-pill" tabindex="-1" aria-disabled="true">
 						   판매자 승인 대기중
 						</a>
+						<a th:if="${shop != null and shop.verified == true}"
+					   	   th:href="@{/shop/shopmain}"
+						   class="btn btn-secondary rounded-pill" tabindex="-1" aria-disabled="true">
+						   판매자 정보 수정
+						</a>
 						<a th:href="@{/editProfile}"
 							class="btn btn-outline-dark rounded-pill">정보 수정</a>
+					    </th:block>
 					</div>
 				</div>
 			</div>
