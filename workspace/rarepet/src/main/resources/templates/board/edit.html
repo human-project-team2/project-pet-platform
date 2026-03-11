@@ -178,7 +178,7 @@ input[name="title"], textarea[name="content"], #priceDisplay {
 						<label class="form-label" for="boardContent">글내용</label>
 						<textarea class="form-control" id="boardContent" name="boardContent"
 							rows="5" maxlength="1000" th:text="${ board.boardContent }"></textarea>						
-					</div>				
+					</div>		
                      
 				</div>
 
@@ -194,9 +194,6 @@ input[name="title"], textarea[name="content"], #priceDisplay {
 			</form>
 		</div>
 	</div>
-
-	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>	
-	<script th:replace="fragments/fragment :: message_script"></script>
 
 </body>
 </html>
