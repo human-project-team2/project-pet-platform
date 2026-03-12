@@ -164,18 +164,26 @@
             </div>
         </div>
 
-        <!-- 내용 -->
+        <!-- 내용 -->         
+        <!-- 
+        <div class="content-area mb-4" th:text="${user.name}">
+            게시글 내용이 여기에 표시됩니다.
+        </div>
+         -->
         <div class="content-area mb-4" th:text="${board.boardContent}">
             게시글 내용이 여기에 표시됩니다.
         </div>
-
+ 
         <div class="d-flex justify-content-between align-items-center">
         	<th:block sec:authorize="isAuthenticated()">
+        	<!-- 
+        	<th:block sec:authorize="hasRole('admin')">
+        	 -->
             <div class="btn-group-area">
                 <button type="button" id="edit-btn" class="btn btn-outline-secondary btn-custom me-2">수정</button>
                 <button type="button" id="delete-btn" class="btn btn-outline-danger btn-custom">삭제</button>
             </div>
-
+            
             <!-- 입양 신청 모달 트리거 버튼 -->
             <button type="button"
                     class="btn btn-anyzoo btn-custom shadow"

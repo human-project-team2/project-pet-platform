@@ -22,6 +22,7 @@ import com.human.rarepet.dto.GenBoardDto;
 import com.human.rarepet.dto.MemberDto;
 import com.human.rarepet.service.BoardService;
 import com.human.rarepet.service.MarketService;
+import com.human.rarepet.service.MemberService;
 
 import jakarta.servlet.http.HttpSession;
 
@@ -41,6 +42,9 @@ public class BoardController {
 	
 	@Autowired
 	private MarketService marketService;
+	
+	@Autowired
+	private MemberService memberService;
 	
 	@GetMapping(path = {"/board/write"})
 	public String showWriteForm(BoardDto board) {
@@ -592,6 +596,7 @@ public class BoardController {
 	
 	@GetMapping (path = {"/board/adoption"}) 
 	public String boardadoption(
+			@AuthenticationPrincipal RarepetUserDetails userDetails ,
 			@RequestParam(value = "boardId", defaultValue = "-1") int boardId, 
 			@RequestParam(value = "pageNo", defaultValue = "-1") int pageNo,
 			Model model) {
@@ -613,9 +618,15 @@ public class BoardController {
 		BoardAdoptionDto adoapply = boardService.showAdoApplyBoardById(boardId);	
 		System.out.println(adoapply);
 		
+		if (userDetails != null) {
+			MemberDto loginUser = userDetails.getMember();
+			MemberDto user = memberService.getUserById(loginUser.getId());
+			model.addAttribute("user", user);
+		}
+		
 		model.addAttribute("board", board);
 		model.addAttribute("pageNo", pageNo);
-		model.addAttribute("adoapply", adoapply);
+		model.addAttribute("adoapply", adoapply);		
 			
 		return "board/adoption"; 
 		
@@ -624,6 +635,7 @@ public class BoardController {
 	// adoption.html deleteado
 	@GetMapping(path = { "/board/deleteado" })
 	public String deleteado(
+			@AuthenticationPrincipal RarepetUserDetails userDetails ,
 			@RequestParam(value = "boardId", defaultValue="-1") int boardId
 			) {
 		
@@ -632,6 +644,28 @@ public class BoardController {
 			return "redirect:/board/list";
 		}
 */
+		if (userDetails != null) {
+			String name = null;
+			String writer = null;
+			
+			MemberDto loginUser = userDetails.getMember();
+			MemberDto user = memberService.getUserById(loginUser.getId());
+			BoardDto board = boardService.showBoardById(boardId);
+			
+			name = user.getId();
+			writer = board.getBoardWriterId();
+			if(!name.equals(writer))
+			{
+				System.out.println(user.getId());
+				System.out.println(board.getBoardWriterId());
+				System.out.println("name not match \n");
+				
+				return "redirect:adoptionlist";
+			}					
+			System.out.println(user.getName());						
+			System.out.println(board.getBoardWriterId());
+		}
+		
 		System.out.println(boardId);
 		System.out.println("delete Ado \n");
 		boardService.deleteBoardAdoByBoardId(boardId);
