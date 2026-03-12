@@ -95,7 +95,17 @@
     INNER JOIN board_question qa
     ON b.board_id = qa.board_id 
     WHERE b.board_id=#{boardId}
-	</select>
+	</select>	
 	
+    <insert id="insertBoardAdoApply" parameterType="BoardAdoptionDto">
+        INSERT INTO adopt_apply_list (board_id, id, adopt_apply_message)
+        VALUES (#{boardId}, #{id}, #{adoptApplyMessage})
+    </insert>    
+    
+    <select id="showAdoApplyBoardById" resultType="BoardAdoptionDto" parameterType="int">
+    SELECT *
+    FROM adopt_apply_list
+    WHERE board_id=#{boardId}
+	</select>
    
 </mapper>

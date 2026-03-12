@@ -8,12 +8,13 @@
 <!-- Bootstrap 5 CSS & Icons -->
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
 <!-- Google Font -->
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
 
 <style>
     :root {
-        --primary-color: #ff8e3c; /* AnyZoo 시그니처 오렌지 */
+        --primary-color: #ff8e3c;
         --bg-soft: #fdf6ee;
         --text-dark: #2d3436;
     }
@@ -24,7 +25,6 @@
         color: var(--text-dark);
     }
 
-    /* 상세 페이지 메인 카드 */
     .detail-card {
         background: white;
         border-radius: 30px;
@@ -40,31 +40,85 @@
         border-radius: 20px;
         padding: 25px;
         line-height: 1.8;
-        white-space: pre-wrap; /* 줄바꿈 유지 */
+        white-space: pre-wrap;
     }
 
-    /* 버튼 스타일 커스텀 */
-    .btn-custom { border-radius: 50px; padding: 10px 25px; font-weight: 600; transition: 0.3s; }
-    .btn-anyzoo { background-color: var(--primary-color); color: white; border: none; }
-    .btn-anyzoo:hover { background-color: #e67e22; color: white; transform: translateY(-2px); }
-    
-    .btn-outline-anyzoo { border: 2px solid var(--primary-color); color: var(--primary-color); background: transparent; }
-    .btn-outline-anyzoo:hover { background: var(--primary-color); color: white; }
+    .image-area {
+        background: #f9f9f9;
+        border-radius: 20px;
+        padding: 20px;
+    }
 
-    /* 답변 리스트 스타일 */
+    .image-area img {
+        width: 100%;
+        max-height: 420px;
+        object-fit: contain;
+        border-radius: 20px;
+    }
+
+    .btn-custom {
+        border-radius: 50px;
+        padding: 10px 25px;
+        font-weight: 600;
+        transition: 0.3s;
+    }
+
+    .btn-anyzoo {
+        background-color: var(--primary-color);
+        color: white;
+        border: none;
+    }
+
+    .btn-anyzoo:hover {
+        background-color: #e67e22;
+        color: white;
+        transform: translateY(-2px);
+    }
+
+    .btn-outline-anyzoo {
+        border: 2px solid var(--primary-color);
+        color: var(--primary-color);
+        background: transparent;
+    }
+
+    .btn-outline-anyzoo:hover {
+        background: var(--primary-color);
+        color: white;
+    }
+
     .reply-card {
         border-radius: 20px;
         border: 1px solid rgba(255, 142, 60, 0.2);
         background: #fff;
         transition: 0.3s;
     }
-    .reply-card:hover { border-color: var(--primary-color); }
 
-    /* 모달 스타일 */
-    .modal-content { border-radius: 30px; border: none; overflow: hidden; }
-    .modal-header { background: var(--primary-color); color: white; border: none; padding: 25px; }
-    .modal-body { padding: 35px; }
-    .form-control { border-radius: 12px; padding: 12px; border: 1px solid #eee; }
+    .reply-card:hover {
+        border-color: var(--primary-color);
+    }
+
+    .modal-content {
+        border-radius: 30px;
+        border: none;
+        overflow: hidden;
+    }
+
+    .modal-header {
+        background: var(--primary-color);
+        color: white;
+        border: none;
+        padding: 25px;
+    }
+
+    .modal-body {
+        padding: 35px;
+    }
+
+    .form-control {
+        border-radius: 12px;
+        padding: 12px;
+        border: 1px solid #eee;
+    }
 </style>
 </head>
 
@@ -76,7 +130,7 @@
 <br><br><br>
 
 <div class="container my-5" style="max-width: 900px;">
-    
+
     <!-- 상단 네비게이션 -->
     <div class="d-flex justify-content-between align-items-center mb-4">
         <a th:href="@{/board/adoptionlist}" class="text-decoration-none text-muted fw-bold">
@@ -91,44 +145,78 @@
     <div class="detail-card mb-5">
         <h6 class="text-muted mb-2">분양 게시글 상세</h6>
         <h2 class="fw-bold mb-4" th:text="${board.boardTitle}">제목을 불러오는 중...</h2>
-        
+
         <div class="d-flex align-items-center mb-4 pb-4 border-bottom">
             <div class="flex-shrink-0">
                 <i class="bi bi-person-circle fs-1 text-secondary"></i>
             </div>
             <div class="ms-3">
                 <div class="fw-bold" th:text="${board.boardWriterId}">작성자 아이디</div>
-                <div class="small text-muted" th:text="${#dates.format(board.boardWriteDate, 'yyyy-MM-dd')}">2024-05-20 · 조회 450</div>
+                <div class="small text-muted"
+                     th:text="${#dates.format(board.boardWriteDate, 'yyyy-MM-dd')}">2024-05-20</div>
             </div>
         </div>
-        <div class="content-area mb-4" style=width:700px>            
-			<div class="card shadow">
-				<img
-					th:src="@{${board.imgUrl}}"
-					class="card-img-top">
-			</div>
-		</div>
+
+        <!-- 이미지 영역 -->
+        <div class="image-area mb-4">
+            <div class="card shadow border-0">
+                <img th:src="@{${board.imgUrl}}" class="card-img-top" alt="분양 동물 이미지">
+            </div>
+        </div>
+
+        <!-- 내용 -->
         <div class="content-area mb-4" th:text="${board.boardContent}">
             게시글 내용이 여기에 표시됩니다.
         </div>
 
         <div class="d-flex justify-content-between align-items-center">
+        	<th:block sec:authorize="isAuthenticated()">
             <div class="btn-group-area">
                 <button type="button" id="edit-btn" class="btn btn-outline-secondary btn-custom me-2">수정</button>
                 <button type="button" id="delete-btn" class="btn btn-outline-danger btn-custom">삭제</button>
             </div>
+
             <!-- 입양 신청 모달 트리거 버튼 -->
-            <button type="button" class="btn btn-anyzoo btn-custom shadow" data-bs-toggle="modal" data-bs-target="#adoptionModal">
-                <i class="bi bi-heart-fill me-2"></i>입양 신청하기
+            <button type="button"
+                    class="btn btn-anyzoo btn-custom shadow"
+                    id="openAdoptionModalBtn"
+                    data-bs-toggle="modal"
+                    data-bs-target="#adoptionModal">
+                <i class="bi bi-heart-fill me-2"></i>입양신청
             </button>
+            </th:block>
         </div>
     </div>
 
     <!-- 등록된 답변 섹션 -->
     <div class="reply-section mt-5">
-        <h5 class="fw-bold mb-4 px-2"><i class="bi bi-chat-left-dots me-2"></i>등록된 답변</h5>
+        <h5 class="fw-bold mb-4 px-2">
+            <i class="bi bi-chat-left-dots me-2"></i>등록된 답변
+        </h5>
         
-        <!-- 답변 아이템 (예시) -->
+        <!--  adoptionApply list show here adoapply
+        <div class="fw-bold" th:text="${board.boardWriterId}">작성자 아이디</div>
+         -->
+        
+        <!--  adoptionApply list show here
+         -->
+
+        <div class="card reply-card mb-3 shadow-sm">
+            <div class="card-body p-4">
+                <div class="d-flex justify-content-between align-items-start mb-3">
+                    <div>
+                        <span class="fw-bold text-primary" th:text="${adoapply.id}">신청자 A</span>
+                        <small class="text-muted ms-2">1시간 전</small>
+                    </div>
+                    <button class="btn btn-sm btn-outline-warning rounded-pill px-3">답변 채택</button>
+                </div>
+                <p class="mb-0 text-secondary" th:text="${adoapply.adoptApplyMessage}">
+                    안녕하세요! 꼭 분양받고 싶어서 신청 남깁니다. 환경은 준비되어 있습니다.
+                </p>
+            </div>
+        </div>
+        
+        <!--  adoptionApply list show here
         <div class="card reply-card mb-3 shadow-sm">
             <div class="card-body p-4">
                 <div class="d-flex justify-content-between align-items-start mb-3">
@@ -138,9 +226,14 @@
                     </div>
                     <button class="btn btn-sm btn-outline-warning rounded-pill px-3">답변 채택</button>
                 </div>
-                <p class="mb-0 text-secondary">안녕하세요! 꼭 분양받고 싶어서 신청 남깁니다. 환경은 준비되어 있습니다.</p>
+                <p class="mb-0 text-secondary">
+                    안녕하세요! 꼭 분양받고 싶어서 신청 남깁니다. 환경은 준비되어 있습니다.
+                </p>
             </div>
         </div>
+        
+         -->
+         
     </div>
 </div>
 
@@ -150,55 +243,138 @@
         <div class="modal-content shadow-lg">
             <div class="modal-header">
                 <h5 class="modal-title fw-bold" id="adoptionModalLabel">입양 신청서 작성</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="닫기"></button>
             </div>
+
             <div class="modal-body">
                 <div class="alert alert-info border-0 rounded-4 small mb-4">
-                    <i class="bi bi-info-circle me-2"></i>작성하신 정보는 작성자에게만 안전하게 전달됩니다.
+                    <i class="bi bi-info-circle me-2"></i>
+                    작성하신 정보는 작성자에게만 안전하게 전달됩니다.
                 </div>
-                <form id="applyForm">
+
+                <!-- 실제 전송용 폼 -->
+                <form id="applyForm" th:action="@{/board/adoptionapply}" method="post">
+                    <!-- 게시글 번호 -->
+                    <input type="hidden" name="boardId" th:value="${board.boardId}">
+
+                    <!-- 로그인 사용자 아이디가 있다면 같이 전달 -->
+                    <!-- 
+                    <input type="hidden" name="applicantId" th:value="${session.loginMember != null ? session.loginMember.memberId : ''}">
+ -->
                     <div class="mb-3">
-                        <label class="form-label fw-bold">신청 동물 정보</label>
-                        <input type="text" class="form-control bg-light" value="[포유류] 알비노 고슴도치" readonly>
+                        <label for="animalInfo" class="form-label fw-bold">신청 게시글</label>
+                        <input type="text"
+                               id="animalInfo"
+                               class="form-control bg-light"
+                               th:value="${board.boardTitle}"
+                               readonly>
                     </div>
+
+                    <div class="mb-3">
+                        <label for="adoptMessage" class="form-label fw-bold">보내는 메시지</label>
+                        <textarea id="adoptMessage"
+                                  name="adoptMessage"
+                                  class="form-control"
+                                  rows="5"
+                                  maxlength="1000"
+                                  placeholder="분양 희망 이유나 아이가 살게 될 환경 등을 자세히 적어주세요."
+                                  required></textarea>
+                        <div class="form-text">
+                            최소 10자 이상 입력해주세요.
+                        </div>
+                    </div>
+<!-- 
                     <div class="mb-4">
-                        <label class="form-label fw-bold">보내는 메시지</label>
-                        <textarea class="form-control" rows="5" placeholder="분양 희망 이유나 아이가 살게 될 환경 등을 자세히 적어주시면 채택 확률이 높아져요!"></textarea>
+                        <label for="phoneNumber" class="form-label fw-bold">연락처</label>
+                        <input type="text"
+                               id="phoneNumber"
+                               name="phoneNumber"
+                               class="form-control"
+                               placeholder="예: 010-1234-5678"
+                               required>
                     </div>
-                    <button type="submit" class="btn btn-anyzoo w-100 py-3 fw-bold">신청서 제출하기</button>
+ -->
+                    <button type="submit" class="btn btn-anyzoo w-100 py-3 fw-bold">
+                        신청서 제출하기
+                    </button>
                 </form>
             </div>
         </div>
     </div>
 </div>
 
-<!-- 기존 스크립트 유지 -->
-<script src="http://code.jquery.com/jquery-3.7.1.js"></script>    
-<!-- <script src="https://jsdelivr.net"></script>     -->
-<script th:inline='javascript'>
+<!-- jQuery -->
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+<!-- Bootstrap JS Bundle: modal 동작에 필수 -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<script th:inline="javascript">
 document.addEventListener('DOMContentLoaded', function() {
-    // 삭제 버튼 로직
+
+    const boardId = [[${board.boardId}]];
+    const isLoggedIn = [[${session.loginMember != null}]];
+
+    // 삭제 버튼
     const btnDelete = document.querySelector('#delete-btn');
     if (btnDelete) {
         btnDelete.addEventListener('click', function() {
-            
-                location.href = 'deleteado?boardId=' + [[${ board.boardId }]];
-            
-        });	
+            if (confirm('정말 삭제하시겠습니까?')) {
+                location.href = 'deleteado?boardId=' + boardId;
+            }
+        });
     }
 
-    // 수정 및 목록 버튼
-    //document.querySelector('#edit-btn')?.addEventListener('click', () => {
-        //location.href = 'editado?boardId=' + [[${ board.boardId }]];
-    //});
-    
+    // 수정 버튼
     const btnEdit = document.querySelector('#edit-btn');
-	if (btnEdit) {
-		btnEdit.addEventListener('click', function(event) {
-			location.href = 'adoedit?boardId=' + [[${ board.boardId }]];
-		});	
-	}
-	
+    if (btnEdit) {
+        btnEdit.addEventListener('click', function() {
+            location.href = 'adoedit?boardId=' + boardId;
+        });
+    }
+
+    // 입양신청 버튼 클릭 시 로그인 체크
+    const openAdoptionModalBtn = document.querySelector('#openAdoptionModalBtn');
+    if (openAdoptionModalBtn) {
+        openAdoptionModalBtn.addEventListener('click', function(event) {
+        	/* 
+            if (!isLoggedIn) {
+                event.preventDefault();
+                alert('입양신청은 로그인 후 이용할 수 있습니다.');
+                location.href = '/member/login';
+            }
+             */
+        });
+    }
+
+    // 신청 폼 유효성 검사
+    const applyForm = document.querySelector('#applyForm');
+    if (applyForm) {
+        applyForm.addEventListener('submit', function(event) {
+            const message = document.querySelector('#adoptMessage').value.trim();
+            /* 
+            const phoneNumber = document.querySelector('#phoneNumber').value.trim();
+ */
+            if (message.length < 10) {
+                event.preventDefault();
+                alert('신청 메시지는 10자 이상 입력해주세요.');
+                document.querySelector('#adoptMessage').focus();
+                return;
+            }
+/* 
+            if (phoneNumber === '') {
+                event.preventDefault();
+                alert('연락처를 입력해주세요.');
+                document.querySelector('#phoneNumber').focus();
+                return;
+            }
+ */
+            const confirmSubmit = confirm('입양 신청서를 제출하시겠습니까?');
+            if (!confirmSubmit) {
+                event.preventDefault();
+            }
+        });
+    }
 });
 </script>
 

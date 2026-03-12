@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.human.rarepet.dto.AdoBoardDto;
+import com.human.rarepet.dto.BoardAdoptionDto;
 import com.human.rarepet.dto.BoardDto;
 import com.human.rarepet.dto.GenBoardDto;
 import com.human.rarepet.dto.QnaBoardDto;
@@ -106,6 +107,15 @@ public class BoardService {
 	public void updateBoard(BoardDto board) {
 		//boardMapper.insertBoard(board);
 		boardMapper.updateBoard(board);
+	}
+
+	public void insertAdoApplyBoard(BoardAdoptionDto adoptapply) {
+		boardMapper.insertBoardAdoApply(adoptapply);
+	}
+
+	public BoardAdoptionDto showAdoApplyBoardById(int boardId) {
+		BoardAdoptionDto dto = boardMapper.showAdoApplyBoardById(boardId);
+		return dto;
 	}	
 
 }

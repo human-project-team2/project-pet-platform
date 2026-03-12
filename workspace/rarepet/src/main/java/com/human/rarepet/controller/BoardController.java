@@ -16,6 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.human.rarepet.common.Util;
 import com.human.rarepet.dto.AdoBoardDto;
+import com.human.rarepet.dto.BoardAdoptionDto;
 import com.human.rarepet.dto.BoardDto;
 import com.human.rarepet.dto.GenBoardDto;
 import com.human.rarepet.dto.MemberDto;
@@ -550,6 +551,45 @@ public class BoardController {
 		return "redirect:/board/adoptionlist";		
 	}
 	
+	
+	@PostMapping(path = {"/board/adoptionapply"})
+	public String adoptionApply(
+			@AuthenticationPrincipal RarepetUserDetails userDetails , 
+			@RequestParam(value = "boardId", defaultValue = "-1") int boardId,
+			@RequestParam(value = "adoptMessage", defaultValue = "") String adoptMessage
+			) {
+		Date writeDate = new Date();
+		
+		System.out.println(adoptMessage);
+		
+		if(userDetails == null) 
+		{
+			return "redirect:/auth/login";		
+		}		
+		
+		System.out.printf("adoptApply boardId\n" + boardId);
+		
+		BoardDto orgboard = boardService.showBoardById(boardId);
+		MemberDto member = userDetails.getMember();
+		BoardAdoptionDto adoptapply = new BoardAdoptionDto();
+		if(member != null) {
+			String id = member.getId();
+			System.out.printf("====================write Adoption ID\n" + id);
+		
+			adoptapply.setAdoptApplyMessage(adoptMessage);
+			adoptapply.setBoardId(boardId);
+			adoptapply.setId(id);
+		
+			boardService.insertAdoApplyBoard(adoptapply);
+			//boardService.insertBoardAdo(board);					
+				
+		}
+		
+		return "redirect:/board/adoptionlist";		
+	}
+	
+	
+	
 	@GetMapping (path = {"/board/adoption"}) 
 	public String boardadoption(
 			@RequestParam(value = "boardId", defaultValue = "-1") int boardId, 
@@ -570,8 +610,12 @@ public class BoardController {
 		}
 		System.out.println("Adoption Ok");
 		
+		BoardAdoptionDto adoapply = boardService.showAdoApplyBoardById(boardId);	
+		System.out.println(adoapply);
+		
 		model.addAttribute("board", board);
 		model.addAttribute("pageNo", pageNo);
+		model.addAttribute("adoapply", adoapply);
 			
 		return "board/adoption"; 
 		
@@ -635,6 +679,7 @@ public class BoardController {
 					
 		return "redirect:/board/adoption?boardId=" + board.getBoardId();
 	}
+		
 	
 	@GetMapping (path = {"/board/detail"}) 
 	public String boarddetail(
