@@ -28,6 +28,7 @@ import jakarta.servlet.http.HttpSession;
 
 import com.human.rarepet.dto.PagerDto;
 import com.human.rarepet.dto.ProductDto;
+import com.human.rarepet.dto.QnaBoardAnswerDto;
 import com.human.rarepet.dto.QnaBoardDto;
 import com.human.rarepet.security.RarepetUserDetails;
 
@@ -431,6 +432,49 @@ public class BoardController {
 			
 		return "board/qnaedit";
 	}
+	
+	@PostMapping(path = {"/board/qnaapply"})
+	public String qnaApply(
+			@AuthenticationPrincipal RarepetUserDetails userDetails , 
+			@RequestParam(value = "boardId", defaultValue = "-1") int boardId,
+			@RequestParam(value = "qnaMessage", defaultValue = "") String qnaMessage
+			) {
+		Date writeDate = new Date();
+		
+		System.out.println(qnaMessage);
+		
+		if(userDetails == null) 
+		{
+			return "redirect:/auth/login";		
+		}		
+		
+		System.out.printf("qnaApply boardId\n" + boardId);
+		System.out.printf("qnaApply message\n" + boardId);
+		
+		BoardDto orgboard = boardService.showBoardById(boardId);
+		MemberDto member = userDetails.getMember();
+		// BoardAdoptionDto adoptapply = new BoardAdoptionDto();
+		
+		QnaBoardAnswerDto qnaapply = new QnaBoardAnswerDto();
+		if(member != null) {
+			String id = member.getId();
+			System.out.printf("====================write Adoption ID\n" + id);
+		
+			qnaapply.setContent(qnaMessage);
+			qnaapply.setBoardId(boardId);
+			qnaapply.setId(id);
+			
+			System.out.println(qnaapply);
+		
+			boardService.insertQnaApplyBoard(qnaapply);
+			//boardService.insertAdoApplyBoard(adoptapply);
+			//boardService.insertBoardAdo(board);					
+				
+		}
+		
+		return "redirect:/board/adoptionlist";		
+	}
+	// qnaapply
 	
 	@PostMapping(path = { "/board/qnaupdate" })
 	public String doUpdateQna(

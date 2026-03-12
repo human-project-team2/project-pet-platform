@@ -111,5 +111,11 @@
     FROM adopt_apply_list
     WHERE board_id=#{boardId}
 	</select>
+	
+	<insert id="insertBoardQnaApply" parameterType="BoardAdoptionDto"
+		useGeneratedKeys="true" keyColumn="answerId" keyProperty="answerId">
+        INSERT INTO answer (id, board_id, content)
+        VALUES (#{id}, #{boardId}, #{content})
+    </insert>   
    
 </mapper>

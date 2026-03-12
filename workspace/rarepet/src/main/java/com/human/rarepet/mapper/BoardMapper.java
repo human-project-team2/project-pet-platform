@@ -8,6 +8,7 @@ import com.human.rarepet.dto.AdoBoardDto;
 import com.human.rarepet.dto.BoardAdoptionDto;
 import com.human.rarepet.dto.BoardDto;
 import com.human.rarepet.dto.GenBoardDto;
+import com.human.rarepet.dto.QnaBoardAnswerDto;
 import com.human.rarepet.dto.QnaBoardDto;
 
 @Mapper
@@ -52,5 +53,7 @@ public interface BoardMapper {
 	BoardAdoptionDto showAdoApplyBoardById(int boardId);
 
 	void updateBoardAdo(AdoBoardDto adoapply);
+
+	void insertBoardQnaApply(QnaBoardAnswerDto qnaapply);
 	
 }
