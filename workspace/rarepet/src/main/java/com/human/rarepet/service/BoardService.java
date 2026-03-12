@@ -82,9 +82,9 @@ public class BoardService {
 		return dto;
 	}
 
-	public BoardDto showAdoBoardById(int boardId) {
+	public AdoBoardDto showAdoBoardById(int boardId) {
 		
-		BoardDto dto = boardMapper.showAdoBoardById(boardId);
+		AdoBoardDto dto = boardMapper.showAdoBoardById(boardId);
 		return dto;
 	}
 
@@ -116,6 +116,10 @@ public class BoardService {
 	public BoardAdoptionDto showAdoApplyBoardById(int boardId) {
 		BoardAdoptionDto dto = boardMapper.showAdoApplyBoardById(boardId);
 		return dto;
+	}
+
+	public void updateAdoBoardById(AdoBoardDto adoapply) {
+		boardMapper.updateBoardAdo(adoapply);		
 	}	
 
 }

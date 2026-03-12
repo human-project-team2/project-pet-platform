@@ -592,7 +592,109 @@ public class BoardController {
 		return "redirect:/board/adoptionlist";		
 	}
 	
+	@GetMapping (path = {"/board/adoaprove"}) 
+	public String adoptionAproveForm(
+			@AuthenticationPrincipal RarepetUserDetails userDetails ,
+			@RequestParam(value = "boardId", defaultValue = "-1") int boardId, 
+			@RequestParam(value = "pageNo", defaultValue = "-1") int pageNo,
+			Model model) {
+				
+		System.out.println("--------------------Adoption Prove Form");
+		
+		/*
+		 * if (boardId == -1 || pageNo == -1) { return "redirect:/board/adoptionlist"; }
+		 */			
+		
+		BoardDto board = boardService.showBoardById(boardId);
+		BoardDto adoboard = boardService.showAdoBoardById(boardId);		
+		if (adoboard == null) {
+			System.out.println("--------------------Adoption NULL--  ");	
+			return "redirect:/board/adoptionlist";
+		}
+		
+		System.out.println(adoboard);
+		
+		BoardAdoptionDto adoapply = boardService.showAdoApplyBoardById(boardId);	
+		System.out.println(adoapply);
+		
+		if (userDetails != null) {
+			MemberDto loginUser = userDetails.getMember();
+			MemberDto user = memberService.getUserById(loginUser.getId());
+			model.addAttribute("user", user);
+		}
+		
+		model.addAttribute("board", board);
+		model.addAttribute("pageNo", pageNo);
+		model.addAttribute("adoboard", adoboard);
+		model.addAttribute("adoapply", adoapply);	
+		System.out.println("Adoption prove Form \n");
+			
+		return "board/adoption"; 
+		
+	}
 	
+	@PostMapping(path = {"/board/adoaprove"})
+	public String adoptionAprove(
+			@AuthenticationPrincipal RarepetUserDetails userDetails , 
+			@RequestParam(value = "boardId", defaultValue = "-1") int boardId
+			) {
+		Date writeDate = new Date();
+		String name = null;
+		String writer = null;
+		
+		if(userDetails == null) 
+		{
+			return "redirect:/auth/login";		
+		}		
+		
+		System.out.printf("adoptAprove boardId\n" + boardId);
+		
+		BoardDto board = boardService.showBoardById(boardId);
+		AdoBoardDto adoboard = boardService.showAdoBoardById(boardId);	
+		
+		if (adoboard == null) {
+			System.out.println("--------------------Adoption NULL--  ");	
+			return "redirect:/board/adoptionlist";
+		}
+		
+		System.out.println("Adoption prove");
+		System.out.println(adoboard);
+		
+		BoardAdoptionDto adoapply = boardService.showAdoApplyBoardById(boardId);	
+		System.out.println(adoapply);
+		int adoptDone = adoapply.getBoardAdoptDone();
+		if (adoptDone == 2)
+		{
+			System.out.println("분양완료 상태임 \n");
+			return "redirect:adoptionlist";
+		}
+		
+		System.out.println("Adoption prove Done 1");
+		
+		if (userDetails != null) {
+			MemberDto loginUser = userDetails.getMember();
+			MemberDto user = memberService.getUserById(loginUser.getId());		
+			
+			name = user.getId();
+			writer = board.getBoardWriterId();
+			if(!name.equals(writer))
+			{
+				System.out.println(user.getId());
+				System.out.println(board.getBoardWriterId());
+				System.out.println("name not match \n");
+				
+				return "redirect:adoptionlist";
+			}
+			adoapply.setBoardAdoptDone(2);
+			// update api 
+			boardService.updateAdoBoardById(adoapply);
+			System.out.println("Adoption prove Done 2");
+		}
+		
+		// boardAdoptDone to 2
+		
+		return "redirect:/board/adoptionlist";		
+	}
 	
 	@GetMapping (path = {"/board/adoption"}) 
 	public String boardadoption(
@@ -600,7 +702,7 @@ public class BoardController {
 			@RequestParam(value = "boardId", defaultValue = "-1") int boardId, 
 			@RequestParam(value = "pageNo", defaultValue = "-1") int pageNo,
 			Model model) {
-		
+				
 		System.out.println("--------------------Adoption");
 		
 		/*
@@ -614,6 +716,7 @@ public class BoardController {
 			return "redirect:/board/adoptionlist";
 		}
 		System.out.println("Adoption Ok");
+		System.out.println(adoboard);
 		
 		BoardAdoptionDto adoapply = boardService.showAdoApplyBoardById(boardId);	
 		System.out.println(adoapply);
@@ -626,7 +729,8 @@ public class BoardController {
 		
 		model.addAttribute("board", board);
 		model.addAttribute("pageNo", pageNo);
-		model.addAttribute("adoapply", adoapply);		
+		model.addAttribute("adoboard", adoboard);
+		model.addAttribute("adoapply", adoapply);			
 			
 		return "board/adoption"; 
 		

@@ -136,8 +136,11 @@
         <a th:href="@{/board/adoptionlist}" class="text-decoration-none text-muted fw-bold">
             <i class="bi bi-arrow-left-circle me-1"></i> 목록으로 돌아가기
         </a>
-        <div>
-            <span class="badge bg-warning text-dark rounded-pill px-3 py-2">답변 대기</span>
+        <div th:if="${adoboard.boardAdoptDone == 1}">
+            <span class="badge bg-warning text-dark rounded-pill px-3 py-2">분양 진행중</span> 
+        </div>
+        <div th:if="${adoboard.boardAdoptDone == 2}">
+            <span class="badge bg-warning text-dark rounded-pill px-3 py-2">분양 완료</span> 
         </div>
     </div>
 
@@ -184,6 +187,7 @@
                 <button type="button" id="delete-btn" class="btn btn-outline-danger btn-custom">삭제</button>
             </div>
             
+            <div th:if="${adoboard.boardAdoptDone == 1}">            
             <!-- 입양 신청 모달 트리거 버튼 -->
             <button type="button"
                     class="btn btn-anyzoo btn-custom shadow"
@@ -192,6 +196,7 @@
                     data-bs-target="#adoptionModal">
                 <i class="bi bi-heart-fill me-2"></i>입양신청
             </button>
+            </div> 
             </th:block>
         </div>
     </div>
@@ -211,16 +216,24 @@
 
         <div class="card reply-card mb-3 shadow-sm">
             <div class="card-body p-4" th:if="${adoapply}">
+              <form id="applyProveForm" th:action="@{/board/adoaprove}" method="post">
+                <input type="hidden" name="boardId" th:value="${board.boardId}">
                 <div class="d-flex justify-content-between align-items-start mb-3">
                     <div>
                         <span class="fw-bold text-primary" text="${adoapply.id}">신청자 A</span>
                         <small class="text-muted ms-2">1시간 전</small>
                     </div>
-                    <button class="btn btn-sm btn-outline-warning rounded-pill px-3">답변 채택</button>
+                    <!-- 
+                    <button id="okAdoptionBtn" class="btn btn-sm btn-outline-warning rounded-pill px-3">신청 승인</button>
+                     -->
+                    <button type="submit" class="btn btn-sm btn-outline-warning rounded-pill px-3">
+                        신청 승인
+                    </button>
                 </div>
                 <p class="mb-0 text-secondary" th:text="${adoapply.adoptApplyMessage}">
                     안녕하세요! 꼭 분양받고 싶어서 신청 남깁니다. 환경은 준비되어 있습니다.
-                </p>
+                </p>                
+              </form>
             </div>
         </div>
         
@@ -339,8 +352,8 @@ document.addEventListener('DOMContentLoaded', function() {
         btnEdit.addEventListener('click', function() {
             location.href = 'adoedit?boardId=' + boardId;
         });
-    }
-
+    }    
+ 
     // 입양신청 버튼 클릭 시 로그인 체크
     const openAdoptionModalBtn = document.querySelector('#openAdoptionModalBtn');
     if (openAdoptionModalBtn) {
