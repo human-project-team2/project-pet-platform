@@ -1,6 +1,6 @@
 <!DOCTYPE html>
-<html>
-<head>
+<html xmlns:th="http://www.thymeleaf.org">
+<head >
 <meta charset="UTF-8">
 <title>Insert title here</title>
 <style>
@@ -18,7 +18,7 @@
 
     <!-- WebSocket chat can be integrated here -->
     
-    <div id="chatMessages"></div>
+    <div id="chatBox"></div>
     
     <input type="text" id="messageInput" placeholder="Type a message">
     <button id="sendBtn">Send</button>
@@ -26,38 +26,78 @@
 <script>
 
 	let stompClient = null; // STOMP 클라이언트 변수, 전역에서 사용가능하게 하려고
-	const currentUser = "[[${#authentication.principal.username}]]"
+	let subscription = null;
+	let currentChatRoomId = null;
+	
+	const currentUser = /*[[${member.id}]]*/""
 	
 	function connect() {
+		
 		// Create a SockJS client
+		//SockJS is a WebSocket fallback library, 
+		//so if the browser or network doesn’t support native WebSockets, 
+		//it will use alternative protocols (like XHR streaming or long polling).
 		const socket = new SockJS('/ws');
 		// Create a STOMP client over the SockJS connection
+		//STOMP (Simple Text Oriented Messaging Protocol) sits on top of the WebSocket.
+		//This allows you to subscribe to topics and send messages to endpoints on the server.
 		stompClient = Stomp.over(socket); 
 		
 		stompClient.connect({}, function (frame) {
 			
 				console.log('Connected: ' + frame);
 	
-				// Subscribe to the topic for receiving messages
-				stompClient.subscribe('/topic/chatRoom', function (message) {
-					console.log('Received message: ' + message.body);
-					const msg = JSON.parse(message.body);
-					showMessage(msg.sender, msg.content, msg.timestamp);
-			});
 		});
 	}
 	
-	// 메시지 보내기
-	 function sendWsMessage() {
+	function subscribeTo(chatRoomId){
 		
+		// 다른 채널 듣고 있는 그 채널 종료
+		if(subscription){
+			subscription.unsubscribe();
+		}
+		currentChatRoomId = chatRoomId;
+		
+		// 특정 채널 듣기
+		subscription = stompClient.subscribe(`/topic/chatRoom/${chatRoomId}`, function (message) {
+			const text = JSON.parse(message.body);
+			showMessage(text.sender, text.content, text.timestamp)
+		})
+		
+		// 특정 채널 메시지 불러오기
+		fetch(`/chatRoom/${chatRoomId}`).then(response => response.json())
+		.then(messages => {
+			messages.forEach(message => showMessage(message.sender, message.content, message.timestamp));
+		})
+		
+	}
+	
+	function showMessage(sender, content, timestamp){
+		
+		 const chatBox = document.querySelector("#chatBox")
+		 const div = document.createElement('div');
+		 
+		 const timeString = new Date(timestamp).toLocaleTimeString();
+		 
+		 div.textContent = `[${timeString}] ${sender}: ${content}`;
+		 
+		 chatBox.appendChild(div);
+		 
+		 chatBox.scrollTop = chatBox.scrollHeight;
+	}
+	
+	// 메시지 보내기
+	 function sendWsMessage(chatRoomId) {
+		
+			currentRoomId = chatRoomId;
 			const sender = currentUser;
-			const messageInput = document.getElementById('messageInput')
+			const messageInput = document.querySelector('#messageInput')
 			const content =	messageInput.value.trim();
 			
 			if(stompClient) {
 				// Send the message to the server
-				stompClient.send('/app/sendWsMessage', {}, JSON.stringify({
-					chatRoomId: 'room1',
+				stompClient.send(`/app/sendWsMessage/${currentRoomId}`, {}, JSON.stringify({
+					chatRoomId: currentRoomId,
 					sender: sender,
 					content: content,
 					timestamp: new Date().toISOString()
@@ -69,24 +109,11 @@
 			
 	}
 	
-	 function showMessage(sender, content, timestamp) {
-		   
-		 const chatMessages = document.getElementById('chatMessages');
-		 
-		 const div = document.createElement('div');
-		 
-		 const time = new Date(timestamp).toLocaleTimeString();
-		 
-		 div.textContent = `[${time}] ${sender}: ${content}`;
-		 
-		 chatMessages.appendChild(div);
-		 
-		 chatMessages.scrollTop = chatMessages.scrollHeight;
-	}
 	
-	document.getElementById('sendBtn').addEventListener('click', sendWsMessage);
-	document.getElementById('messageInput').addEventListener('keypress', function(e) {
-        if (e.key === 'Enter') sendWsMessage();
+	document.querySelector('#sendBtn').addEventListener('click', sendWsMessage(chatRoomId));
+	
+	document.querySelector('#messageInput').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') sendWsMessage(chatRoomId);
     });
 	
 	connect();

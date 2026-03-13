@@ -25,7 +25,7 @@ public class RarepetSecurityConfig {
 		http.csrf(AbstractHttpConfigurer::disable)
 				.authorizeHttpRequests(
 						auth -> auth
-									
+									.requestMatchers("/chatRoom").authenticated()
 									.requestMatchers("/market/register","/market/shoppingCart",
 											"/market/deleteShoppingCart","/market/updateShoppingCart","/mypage").hasRole("member")
 									.requestMatchers("/messages/**").hasRole("member")

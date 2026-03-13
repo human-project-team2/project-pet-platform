@@ -31,33 +31,34 @@ public class MemberController {
 		return "/auth/login";
 	}
 
-	
-	@PostMapping(path = {"/login"})
-	public String loginProcess(@RequestParam("memberId") String memberId,
-							   @RequestParam("passwd") String passwd,
-							   HttpSession session){
-		
-		MemberDto member = memberService.checkMember(memberId, passwd); 
-		if (member != null) {
-			session.setAttribute("loginuser", member);
-			
-			String redirectUrl = (String)session.getAttribute("redirectUrl");
-			if (redirectUrl != null) {
-				session.removeAttribute("redirectUrl");
-				return "redirect:" + redirectUrl;
-			}
-			return "redirect:/";
-		} else {
-			return "auth/login";
-		}
-	}
+// spring security 이용하여 대체됨.
+//	@PostMapping(path = {"/login"})
+//	public String loginProcess(@RequestParam("memberId") String memberId,
+//							   @RequestParam("passwd") String passwd,
+//							   HttpSession session){
+//		
+//		MemberDto member = memberService.checkMember(memberId, passwd); 
+//		if (member != null) {
+//			session.setAttribute("loginuser", member);
+//			
+//			String redirectUrl = (String)session.getAttribute("redirectUrl");
+//			if (redirectUrl != null) {
+//				session.removeAttribute("redirectUrl");
+//				return "redirect:" + redirectUrl;
+//			}
+//			return "redirect:/";
+//		} else {
+//			return "auth/login";
+//		}
+//	}
 
-	@GetMapping(path = {"/logout"})
-	public String logout(HttpSession session) {
-		session.removeAttribute("loginuser");
-		session.removeAttribute("redirectUrl");
-		return "redirect:login";
-	}
+	// spring security 이용하여 대체됨.
+//	@GetMapping(path = {"/logout"})
+//	public String logout(HttpSession session) {
+//		session.removeAttribute("loginuser");
+//		session.removeAttribute("redirectUrl");
+//		return "redirect:login";
+//	}
 
 	@GetMapping(path = { "/register" })
 	public String register() {

@@ -18,7 +18,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
 	@Override
 	public void configureMessageBroker(MessageBrokerRegistry registry) {
-		registry.enableSimpleBroker("/topic");
+		registry.enableSimpleBroker("/topic"); // 클라이언트로 메시지를 보낼 때 사용할 접두사, 후에 채널 이름 추가
 		registry.setApplicationDestinationPrefixes("/app");
 	}
 

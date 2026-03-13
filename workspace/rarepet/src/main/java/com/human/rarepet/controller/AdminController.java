@@ -27,7 +27,7 @@ public class AdminController {
 	}
 	
 	@GetMapping(path = {"/admin"})
-	public String admin(Model model, HttpSession session,
+	public String admin(Model model,
 				       @RequestParam(required = false, value = "memberKeyword") String memberKeyword,
 				       @RequestParam(required = false, value = "shopKeyword") String shopKeyword) {
 		List<MemberDto> members;
