@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.human.rarepet.mapper.OrderMapper">
+
+    <select id="selectProductDetail" resultType="com.human.rarepet.dto.ProductDto">
+        SELECT * FROM products 
+        WHERE productNo = #{productNo}
+    </select>
+
+    <insert id="insertOrderMaster" parameterType="com.human.rarepet.dto.OrderDto" 
+            useGeneratedKeys="true" keyProperty="orderNo">
+        INSERT INTO orders (
+            id, 
+            order_addr, 
+            order_phone, 
+            order_date, 
+            total_price
+        ) VALUES (
+            #{id}, 
+            #{orderAddr}, 
+            #{orderPhone}, 
+            NOW(), 
+            #{totalPrice}
+        )
+    </insert>
+
+   <insert id="insertOrderDetail" parameterType="com.human.rarepet.dto.OrderItemDto">
+    INSERT INTO order_details (
+        order_no, 
+        product_no, 
+        product_order_count  ) VALUES (
+        #{orderNo}, 
+        #{productNo}, 
+        #{productOrderCount} )
+</insert>
+
+    <update id="decreaseStock">
+        UPDATE products 
+        SET stock = stock - #{quantity}
+        WHERE productNo = #{productNo}
+    </update>
+
+</mapper>

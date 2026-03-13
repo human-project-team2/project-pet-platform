@@ -5,8 +5,10 @@ import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
 
 import com.human.rarepet.dto.AdoBoardDto;
+import com.human.rarepet.dto.BoardAdoptionDto;
 import com.human.rarepet.dto.BoardDto;
 import com.human.rarepet.dto.GenBoardDto;
+import com.human.rarepet.dto.QnaBoardAnswerDto;
 import com.human.rarepet.dto.QnaBoardDto;
 
 @Mapper
@@ -34,7 +36,7 @@ public interface BoardMapper {
 
 	BoardDto showQnaBoardById(int boardId);
 
-	BoardDto showAdoBoardById(int boardId);
+	AdoBoardDto showAdoBoardById(int boardId);
 
 	void deleteBoard(int boardId);
 
@@ -43,5 +45,15 @@ public interface BoardMapper {
 	void deleteBoardQnA(int boardId);
 
 	void deleteBoardAdo(int boardId);
+
+	void updateBoard(BoardDto board);
+
+	void insertBoardAdoApply(BoardAdoptionDto adoptapply);
+
+	BoardAdoptionDto showAdoApplyBoardById(int boardId);
+
+	void updateBoardAdo(AdoBoardDto adoapply);
+
+	void insertBoardQnaApply(QnaBoardAnswerDto qnaapply);
 	
 }

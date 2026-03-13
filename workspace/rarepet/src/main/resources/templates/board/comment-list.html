@@ -1,30 +1,19 @@
 		<table th:each="comment: ${ comments }" xmlns:th="http://www.thymeleaf.org" class="table table-hover">			
 				
 						<tr>
-						<!-- 
 							<td th:style="|width:${comment.depth * 40}px;text-align: right;|">
 								<img th:if="${ comment.depth > 0 }" th:src="@{/image/re.gif}">
-							</td>
-						 -->	
+							</td>	
 							<td>
 								<div th:id="|comment-view-area-${ comment.commentNo }|">
-									<!-- 
 									<th:fragment th:if="${ comment.deleted }">
-									 -->
-									<th:fragment th:if="${ comment.commentNo }">
 										<br><br>
 										<span style='color:gray'>삭제된 글입니다.</span>
 										<br><br>
 									</th:fragment>
-									<!-- 
-									<th:fragment th:unless="${ comment.deleted }">
-									 -->
-									<th:fragment th:unless="${ comment.commendNo }">
-									<!-- 
-										[[${ comment.writer }]] &nbsp;&nbsp; [[(${ #dates.format(comment.writeDate, 'yyyy-MM-dd HH:mm:ss') })]]
-									 -->	
-										[[${ comment.writer }]] &nbsp;&nbsp;
-									    <br /><br />
+									<th:fragment th:unless="${ comment.deleted }"> 
+										[[${ comment.writer }]] &nbsp;&nbsp; [[(${ #dates.format(comment.writeDate, 'yyyy-MM-dd HH:mm:ss') })]]									 
+										<br /><br />
 									    <span th:text="${ #strings.replace(comment.content, '
 ', '<br>') }"></span>
 										<br /><br />
@@ -41,12 +30,8 @@
 								</div>	               
 								 
 								
-								<div th:id="${ 'comment-edit-area-' + comment.commentNo }" style="display: none">
-									<!-- 
+								<div th:id="${ 'comment-edit-area-' + comment.commentNo }" style="display: none"> 
 									[[${ comment.writer }]] &nbsp;&nbsp; [[(${ #dates.format(comment.writeDate, 'yyyy-MM-dd HH:mm:ss') })]]
-									 -->
-									
-									[[${ comment.writer }]] &nbsp;&nbsp;
 									<br /><br />
 									<form>
 									<input type="hidden" name="commentNo" th:value="${ comment.commentNo }" />

@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>주문/결제 | AnyZoo Marketplace</title>
+	<link rel="stylesheet" th:href="@{/css/floating-chat.css}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+    <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+
+    <style>
+        body { font-family: 'Noto Sans KR', sans-serif; background: #fdf6ee; padding-top: 80px; }
+        .order-card { border: none; border-radius: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); background: white; }
+        .product-img { width: 80px; height: 80px; object-fit: cover; border-radius: 15px; }
+        .price-text { color: #dc3545; font-weight: 700; }
+        .sticky-sidebar { position: sticky; top: 100px; }
+        .btn-pay { background-color: #e76f51; color: white; border-radius: 30px; border: none; padding: 15px; font-weight: 700; transition: 0.3s; }
+        .btn-pay:hover { background-color: #cf5d42; transform: translateY(-2px); color: white; }
+        .qty-input { width: 60px; text-align: center; border: 1px solid #ddd; border-radius: 8px; }
+    </style>
+</head>
+<body>
+
+    <div th:replace="~{fragments/fragment :: header}"></div>
+
+    <div class="container my-5">
+        <h3 class="fw-bold mb-4">💳 주문 / 결제</h3>
+
+        <form th:action="@{/order/process}" method="post" id="orderForm">
+            <input type="hidden" name="totalPrice" id="hiddenTotalPrice" th:value="${isCartOrder ? totalPrice : product.price}">
+
+            <div class="row g-4">
+                <div class="col-lg-8">
+                    <div class="card order-card p-4 mb-4">
+                        <h5 class="fw-bold mb-4">주문 상품 정보</h5>
+
+                        <div th:if="${isCartOrder}">
+                            <div th:each="item, iterStat : ${cartList}" class="d-flex align-items-center mb-3 pb-3 border-bottom">
+                                <img th:src="${item.product.imgUrl}" class="product-img me-3">
+                                <div class="flex-grow-1">
+                                    <h6 class="fw-bold mb-1" th:text="${item.product.productName}">상품명</h6>
+                                    <small class="text-muted" th:text="|수량: ${item.cartQuantity}개|"></small>
+                                </div>
+                                <div class="text-end">
+                                    <span class="price-text" th:text="|₩${item.product.price * item.cartQuantity}|"></span>
+                                </div>
+                                <input type="hidden" th:name="'orderItems[' + ${iterStat.index} + '].productNo'" th:value="${item.product.productNo}">
+                                <input type="hidden" th:name="'orderItems[' + ${iterStat.index} + '].quantity'" th:value="${item.cartQuantity}">
+                                <input type="hidden" th:name="'orderItems[' + ${iterStat.index} + '].price'" th:value="${item.product.price}">
+                            </div>
+                        </div>
+
+                        <div th:if="${!isCartOrder}" class="d-flex align-items-center">
+                            <img th:src="${product.imgUrl}" class="product-img me-3">
+                            <div class="flex-grow-1">
+                                <h6 class="fw-bold mb-1" th:text="${product.productName}">상품명</h6>
+                                <div class="d-flex align-items-center gap-2">
+                                    <small class="text-muted">수량:</small>
+                                    <input type="number" name="orderItems.quantity" id="directQty" 
+                                           class="qty-input" value="1" min="1" 
+                                           th:data-price="${product.price}">
+                                </div>
+                            </div>
+                            <div class="text-end">
+                                <span class="price-text fs-5" id="directTotalPrice" th:text="|₩${product.price}|"></span>
+                            </div>
+                            <input type="hidden" name="orderItems.productNo" th:value="${product.productNo}">
+                            <input type="hidden" name="orderItems.price" th:value="${product.price}">
+                        </div>
+                    </div>
+
+                    <div class="card order-card p-4">
+                        <h5 class="fw-bold mb-4">🚚 배송 정보</h5>
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">주문자 성함</label>
+                            <input type="text" class="form-control rounded-pill" th:value="${member.name}" readonly>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">연락처</label>
+                            <input type="text" name="orderPhone" class="form-control rounded-pill" th:value="${member.phone}" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">배송지 주소 <span class="text-danger">*</span></label>
+                            <div class="input-group mb-2">
+                                <input type="text" id="postcode" class="form-control" style="border-top-left-radius: 20px; border-bottom-left-radius: 20px;" placeholder="우편번호" readonly>
+                                <button type="button" class="btn btn-dark" style="border-top-right-radius: 20px; border-bottom-right-radius: 20px;" onclick="execDaumPostcode()">주소 찾기</button>
+                            </div>
+                            <input type="text" id="address" name="orderAddr" class="form-control rounded-pill mb-2" placeholder="기본 주소" required readonly>
+                            <input type="text" id="detailAddress" name="orderAddrDetail" class="form-control rounded-pill" placeholder="상세 주소를 입력하세요">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-4">
+                    <div class="card order-card p-4 sticky-sidebar">
+                        <h5 class="fw-bold mb-4">결제 요약</h5>
+                        <div class="d-flex justify-content-between mb-3">
+                            <span class="text-muted">총 상품 금액</span>
+                            <span class="fw-bold" id="summaryProductPrice" th:text="|₩${isCartOrder ? totalPrice : product.price}|"></span>
+                        </div>
+                        <div class="d-flex justify-content-between mb-3">
+                            <span class="text-muted">배송비</span>
+                            <span class="text-success fw-bold">무료</span>
+                        </div>
+                        <hr class="my-4">
+                        <div class="d-flex justify-content-between mb-4">
+                            <span class="fw-bold fs-5">최종 결제 금액</span>
+                            <span class="price-text fs-4" id="finalDisplayPrice" th:text="|₩${isCartOrder ? totalPrice : product.price}|"></span>
+                        </div>
+                        <button type="submit" class="btn btn-pay w-100 fs-5">결제하기</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <div th:replace="~{fragments/fragment :: footer}"></div>
+
+    <script th:inline="javascript">
+        function execDaumPostcode() {
+            new daum.Postcode({
+                oncomplete: function(data) {
+                    var addr = data.userSelectedType === 'R' ? data.roadAddress : data.jibunAddress;
+                    document.getElementById('postcode').value = data.zonecode;
+                    document.getElementById("address").value = addr;
+                    document.getElementById("detailAddress").focus();
+                }
+            }).open();
+        }
+
+        const qtyInput = document.getElementById('directQty');
+        if(qtyInput) {
+            qtyInput.addEventListener('input', function() {
+                const price = parseInt(this.getAttribute('data-price'));
+                const qty = parseInt(this.value) || 1;
+                const total = price * qty;
+                
+                const formatted = "₩" + total.toLocaleString();
+                document.getElementById('directTotalPrice').innerText = formatted;
+                document.getElementById('summaryProductPrice').innerText = formatted;
+                document.getElementById('finalDisplayPrice').innerText = formatted;
+                // [중요] 히든 필드 가격도 업데이트
+                document.getElementById('hiddenTotalPrice').value = total;
+            });
+        }
+    </script>
+</body>
+</html>

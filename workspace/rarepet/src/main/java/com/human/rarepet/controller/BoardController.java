@@ -16,16 +16,19 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.human.rarepet.common.Util;
 import com.human.rarepet.dto.AdoBoardDto;
+import com.human.rarepet.dto.BoardAdoptionDto;
 import com.human.rarepet.dto.BoardDto;
 import com.human.rarepet.dto.GenBoardDto;
 import com.human.rarepet.dto.MemberDto;
 import com.human.rarepet.service.BoardService;
 import com.human.rarepet.service.MarketService;
+import com.human.rarepet.service.MemberService;
 
 import jakarta.servlet.http.HttpSession;
 
 import com.human.rarepet.dto.PagerDto;
 import com.human.rarepet.dto.ProductDto;
+import com.human.rarepet.dto.QnaBoardAnswerDto;
 import com.human.rarepet.dto.QnaBoardDto;
 import com.human.rarepet.security.RarepetUserDetails;
 
@@ -40,6 +43,9 @@ public class BoardController {
 	
 	@Autowired
 	private MarketService marketService;
+	
+	@Autowired
+	private MemberService memberService;
 	
 	@GetMapping(path = {"/board/write"})
 	public String showWriteForm(BoardDto board) {
@@ -217,7 +223,42 @@ public class BoardController {
 		 */
 	}
 	
+	@GetMapping(path = { "/board/edit" })
+	public String showEditForm(	@RequestParam(value = "boardId", defaultValue="-1") int boardId,						 		
+						 		Model model) {
+		
+		if (boardId == -1) {
+			return "redirect:/board/boardlist";
+		}
+		
+		BoardDto board = boardService.showBoardById(boardId);
+		
+		if (board == null) {
+			return "redirect:/board/boardlist";
+		}
+		System.out.println(board);
+		
+		model.addAttribute("board", board);		
+			
+		return "board/edit";
+	}
 	
+	@PostMapping(path = { "/board/update" })
+	public String doUpdate(
+			BoardDto board) {
+		
+		BoardDto orgboard = boardService.showBoardById(board.getBoardId());
+		orgboard.setBoardContent(board.getBoardContent());
+		orgboard.setBoardTitle(board.getBoardTitle());
+		//System.out.println("update GEN \n");
+		System.out.println(orgboard);
+		//System.out.println(board);
+		
+		System.out.println("update\n");
+		boardService.updateBoard(orgboard);
+					
+		return "redirect:/board/detail?boardId=" + board.getBoardId();
+	}
 	
 	
 	@GetMapping (path = {"/board/qnalist"}) 
@@ -372,6 +413,86 @@ public class BoardController {
 			 */
 		}
 	
+	@GetMapping(path = { "/board/editqna" })
+	public String showEditFormQna(	@RequestParam(value = "boardId", defaultValue="-1") int boardId,						 		
+						 		Model model) {
+		
+		if (boardId == -1) {
+			return "redirect:/board/boardlist";
+		}
+		
+		BoardDto board = boardService.showBoardById(boardId);
+		
+		if (board == null) {
+			return "redirect:/board/boardlist";
+		}
+		System.out.println(board);
+		
+		model.addAttribute("board", board);		
+			
+		return "board/qnaedit";
+	}
+	
+	@PostMapping(path = {"/board/qnaapply"})
+	public String qnaApply(
+			@AuthenticationPrincipal RarepetUserDetails userDetails , 
+			@RequestParam(value = "boardId", defaultValue = "-1") int boardId,
+			@RequestParam(value = "qnaMessage", defaultValue = "") String qnaMessage
+			) {
+		Date writeDate = new Date();
+		
+		System.out.println(qnaMessage);
+		
+		if(userDetails == null) 
+		{
+			return "redirect:/auth/login";		
+		}		
+		
+		System.out.printf("qnaApply boardId\n" + boardId);
+		System.out.printf("qnaApply message\n" + boardId);
+		
+		BoardDto orgboard = boardService.showBoardById(boardId);
+		MemberDto member = userDetails.getMember();
+		// BoardAdoptionDto adoptapply = new BoardAdoptionDto();
+		
+		QnaBoardAnswerDto qnaapply = new QnaBoardAnswerDto();
+		if(member != null) {
+			String id = member.getId();
+			System.out.printf("====================write Adoption ID\n" + id);
+		
+			qnaapply.setContent(qnaMessage);
+			qnaapply.setBoardId(boardId);
+			qnaapply.setId(id);
+			
+			System.out.println(qnaapply);
+		
+			boardService.insertQnaApplyBoard(qnaapply);
+			//boardService.insertAdoApplyBoard(adoptapply);
+			//boardService.insertBoardAdo(board);					
+				
+		}
+		
+		return "redirect:/board/adoptionlist";		
+	}
+	// qnaapply
+	
+	@PostMapping(path = { "/board/qnaupdate" })
+	public String doUpdateQna(
+			BoardDto board) {
+		
+		BoardDto orgboard = boardService.showBoardById(board.getBoardId());
+		orgboard.setBoardContent(board.getBoardContent());
+		orgboard.setBoardTitle(board.getBoardTitle());
+		//System.out.println("update GEN \n");
+		System.out.println(orgboard);
+		//System.out.println(board);
+		
+		System.out.println("update\n");
+		boardService.updateBoard(orgboard);
+					
+		return "redirect:/board/qna?boardId=" + board.getBoardId();
+	}
+	
 	@GetMapping (path = {"/board/adoptionlist"}) 
 	public String boardadoptionlist(Model model) {
 
@@ -478,12 +599,154 @@ public class BoardController {
 		return "redirect:/board/adoptionlist";		
 	}
 	
-	@GetMapping (path = {"/board/adoption"}) 
-	public String boardadoption(
+	
+	@PostMapping(path = {"/board/adoptionapply"})
+	public String adoptionApply(
+			@AuthenticationPrincipal RarepetUserDetails userDetails , 
+			@RequestParam(value = "boardId", defaultValue = "-1") int boardId,
+			@RequestParam(value = "adoptMessage", defaultValue = "") String adoptMessage
+			) {
+		Date writeDate = new Date();
+		
+		System.out.println(adoptMessage);
+		
+		if(userDetails == null) 
+		{
+			return "redirect:/auth/login";		
+		}		
+		
+		System.out.printf("adoptApply boardId\n" + boardId);
+		
+		BoardDto orgboard = boardService.showBoardById(boardId);
+		MemberDto member = userDetails.getMember();
+		BoardAdoptionDto adoptapply = new BoardAdoptionDto();
+		if(member != null) {
+			String id = member.getId();
+			System.out.printf("====================write Adoption ID\n" + id);
+		
+			adoptapply.setAdoptApplyMessage(adoptMessage);
+			adoptapply.setBoardId(boardId);
+			adoptapply.setId(id);
+		
+			boardService.insertAdoApplyBoard(adoptapply);
+			//boardService.insertBoardAdo(board);					
+				
+		}
+		
+		return "redirect:/board/adoptionlist";		
+	}
+	
+	@GetMapping (path = {"/board/adoaprove"}) 
+	public String adoptionAproveForm(
+			@AuthenticationPrincipal RarepetUserDetails userDetails ,
 			@RequestParam(value = "boardId", defaultValue = "-1") int boardId, 
 			@RequestParam(value = "pageNo", defaultValue = "-1") int pageNo,
 			Model model) {
+				
+		System.out.println("--------------------Adoption Prove Form");
 		
+		/*
+		 * if (boardId == -1 || pageNo == -1) { return "redirect:/board/adoptionlist"; }
+		 */			
+		
+		BoardDto board = boardService.showBoardById(boardId);
+		BoardDto adoboard = boardService.showAdoBoardById(boardId);		
+		if (adoboard == null) {
+			System.out.println("--------------------Adoption NULL--  ");	
+			return "redirect:/board/adoptionlist";
+		}
+		
+		System.out.println(adoboard);
+		
+		BoardAdoptionDto adoapply = boardService.showAdoApplyBoardById(boardId);	
+		System.out.println(adoapply);
+		
+		if (userDetails != null) {
+			MemberDto loginUser = userDetails.getMember();
+			MemberDto user = memberService.getUserById(loginUser.getId());
+			model.addAttribute("user", user);
+		}
+		
+		model.addAttribute("board", board);
+		model.addAttribute("pageNo", pageNo);
+		model.addAttribute("adoboard", adoboard);
+		model.addAttribute("adoapply", adoapply);	
+		System.out.println("Adoption prove Form \n");
+			
+		return "board/adoption"; 
+		
+	}
+	
+	@PostMapping(path = {"/board/adoaprove"})
+	public String adoptionAprove(
+			@AuthenticationPrincipal RarepetUserDetails userDetails , 
+			@RequestParam(value = "boardId", defaultValue = "-1") int boardId
+			) {
+		Date writeDate = new Date();
+		String name = null;
+		String writer = null;
+		
+		if(userDetails == null) 
+		{
+			return "redirect:/auth/login";		
+		}		
+		
+		System.out.printf("adoptAprove boardId\n" + boardId);
+		
+		BoardDto board = boardService.showBoardById(boardId);
+		AdoBoardDto adoboard = boardService.showAdoBoardById(boardId);	
+		
+		if (adoboard == null) {
+			System.out.println("--------------------Adoption NULL--  ");	
+			return "redirect:/board/adoptionlist";
+		}
+		
+		System.out.println("Adoption prove");
+		System.out.println(adoboard);
+		
+		BoardAdoptionDto adoapply = boardService.showAdoApplyBoardById(boardId);	
+		System.out.println(adoapply);
+		int adoptDone = adoapply.getBoardAdoptDone();
+		if (adoptDone == 2)
+		{
+			System.out.println("분양완료 상태임 \n");
+			return "redirect:adoptionlist";
+		}
+		
+		System.out.println("Adoption prove Done 1");
+		
+		if (userDetails != null) {
+			MemberDto loginUser = userDetails.getMember();
+			MemberDto user = memberService.getUserById(loginUser.getId());		
+			
+			name = user.getId();
+			writer = board.getBoardWriterId();
+			if(!name.equals(writer))
+			{
+				System.out.println(user.getId());
+				System.out.println(board.getBoardWriterId());
+				System.out.println("name not match \n");
+				
+				return "redirect:adoptionlist";
+			}
+			adoapply.setBoardAdoptDone(2);
+			// update api 
+			boardService.updateAdoBoardById(adoapply);
+			System.out.println("Adoption prove Done 2");
+		}
+		
+		// boardAdoptDone to 2
+		
+		return "redirect:/board/adoptionlist";		
+	}
+	
+	@GetMapping (path = {"/board/adoption"}) 
+	public String boardadoption(
+			@AuthenticationPrincipal RarepetUserDetails userDetails ,
+			@RequestParam(value = "boardId", defaultValue = "-1") int boardId, 
+			@RequestParam(value = "pageNo", defaultValue = "-1") int pageNo,
+			Model model) {
+				
 		System.out.println("--------------------Adoption");
 		
 		/*
@@ -497,9 +760,21 @@ public class BoardController {
 			return "redirect:/board/adoptionlist";
 		}
 		System.out.println("Adoption Ok");
+		System.out.println(adoboard);
+		
+		BoardAdoptionDto adoapply = boardService.showAdoApplyBoardById(boardId);	
+		System.out.println(adoapply);
+		
+		if (userDetails != null) {
+			MemberDto loginUser = userDetails.getMember();
+			MemberDto user = memberService.getUserById(loginUser.getId());
+			model.addAttribute("user", user);
+		}
 		
 		model.addAttribute("board", board);
 		model.addAttribute("pageNo", pageNo);
+		model.addAttribute("adoboard", adoboard);
+		model.addAttribute("adoapply", adoapply);			
 			
 		return "board/adoption"; 
 		
@@ -508,6 +783,7 @@ public class BoardController {
 	// adoption.html deleteado
 	@GetMapping(path = { "/board/deleteado" })
 	public String deleteado(
+			@AuthenticationPrincipal RarepetUserDetails userDetails ,
 			@RequestParam(value = "boardId", defaultValue="-1") int boardId
 			) {
 		
@@ -516,6 +792,28 @@ public class BoardController {
 			return "redirect:/board/list";
 		}
 */
+		if (userDetails != null) {
+			String name = null;
+			String writer = null;
+			
+			MemberDto loginUser = userDetails.getMember();
+			MemberDto user = memberService.getUserById(loginUser.getId());
+			BoardDto board = boardService.showBoardById(boardId);
+			
+			name = user.getId();
+			writer = board.getBoardWriterId();
+			if(!name.equals(writer))
+			{
+				System.out.println(user.getId());
+				System.out.println(board.getBoardWriterId());
+				System.out.println("name not match \n");
+				
+				return "redirect:adoptionlist";
+			}					
+			System.out.println(user.getName());						
+			System.out.println(board.getBoardWriterId());
+		}
+		
 		System.out.println(boardId);
 		System.out.println("delete Ado \n");
 		boardService.deleteBoardAdoByBoardId(boardId);
@@ -526,6 +824,44 @@ public class BoardController {
 		 * return "redirect:adolist?pageNo=" + pageNo;
 		 */
 	}
+	
+	@GetMapping(path = { "/board/adoedit" })
+	public String showEditFormAdo(	@RequestParam(value = "boardId", defaultValue="-1") int boardId,						 		
+						 		Model model) {
+		
+		if (boardId == -1) {
+			return "redirect:/board/boardlist";
+		}
+		
+		BoardDto board = boardService.showBoardById(boardId);
+		
+		if (board == null) {
+			return "redirect:/board/boardlist";
+		}
+		System.out.println(board);
+		
+		model.addAttribute("board", board);		
+			
+		return "board/adoedit";
+	}
+	
+	@PostMapping(path = { "/board/adoupdate" })
+	public String doUpdateAdo(
+			BoardDto board) {
+		
+		BoardDto orgboard = boardService.showBoardById(board.getBoardId());
+		orgboard.setBoardContent(board.getBoardContent());
+		orgboard.setBoardTitle(board.getBoardTitle());
+		//System.out.println("update GEN \n");
+		System.out.println(orgboard);
+		//System.out.println(board);
+		
+		System.out.println("update\n");
+		boardService.updateBoard(orgboard);
+					
+		return "redirect:/board/adoption?boardId=" + board.getBoardId();
+	}
+		
 	
 	@GetMapping (path = {"/board/detail"}) 
 	public String boarddetail(

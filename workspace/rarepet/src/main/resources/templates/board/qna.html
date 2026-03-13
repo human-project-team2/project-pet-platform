@@ -81,119 +81,171 @@
 <div class="container my-5" style="max-width: 900px;">
 
 <br><br><br>
-    
+  
+
+<div class="container my-5" style="max-width: 900px;">
+
     <!-- 상단 네비게이션 -->
     <div class="d-flex justify-content-between align-items-center mb-4">
         <a th:href="@{/board/qnalist}" class="text-decoration-none text-muted fw-bold">
-            <i class="bi bi-arrow-left-circle me-1"></i> 질문 목록으로
-        </a>
-        <span class="badge bg-success rounded-pill px-3 py-2">답변 완료</span>
+            <i class="bi bi-arrow-left-circle me-1"></i> 목록으로 돌아가기
+        </a>        
     </div>
 
-    <!-- Q&A 게시글 카드 -->
+    <!-- 메인 게시글 카드 -->
     <div class="detail-card mb-5">
-        <div class="mb-2 text-primary fw-bold small text-uppercase">Question</div>
-        <h2 class="fw-bold mb-4" th:text="${board.boardTitle}">제목이 이곳에 표시됩니다</h2>
-        
+        <h6 class="text-muted mb-2">분양 게시글 상세</h6>
+        <h2 class="fw-bold mb-4" th:text="${board.boardTitle}">제목을 불러오는 중...</h2>
+
         <div class="d-flex align-items-center mb-4 pb-4 border-bottom">
             <div class="flex-shrink-0">
-                <div class="rounded-circle bg-light d-flex align-items-center justify-content-center" style="width:50px; height:50px;">
-                    <i class="bi bi-person text-secondary fs-4"></i>
-                </div>
+                <i class="bi bi-person-circle fs-1 text-secondary"></i>
             </div>
             <div class="ms-3">
-                <div class="fw-bold" th:text="${board.boardWriterId}">작성자 ID</div>
-                <div class="small text-muted" th:text="${#dates.format(board.boardWriteDate, 'yyyy-MM-dd')}">2024.05.20</div>
+                <div class="fw-bold" th:text="${board.boardWriterId}">작성자 아이디</div>
+                <div class="small text-muted"
+                     th:text="${#dates.format(board.boardWriteDate, 'yyyy-MM-dd')}">2024-05-20</div>                
             </div>
         </div>
-        <div class="d-flex align-items-center mb-4 pb-4" style=width:700px>            
-			<div class="card shadow">
-				<img
-					th:src="@{${board.imgUrl}}"
-					class="card-img-top">
-			</div>
-		</div>
 
-        <!-- 본문 내용 -->                 
-        <div class="content-area mb-4" th:utext="${#strings.replace(board.boardContent, '\n', '<br>')}">
-            질문 내용이 표시되는 영역입니다.
+        <!-- 이미지 영역 -->
+        <div class="image-area mb-4">
+            <div class="card shadow border-0">
+                <img th:src="@{${board.imgUrl}}" class="card-img-top" alt="동물 이미지">
+            </div>
         </div>
+
+        <!-- 내용 -->         
+        
+        <div class="content-area mb-4" th:text="${board.boardContent}">
+            게시글 내용이 여기에 표시됩니다.
+        </div>
+ 
         <div class="d-flex justify-content-between align-items-center">
+        	<th:block sec:authorize="isAuthenticated()">
+        	
             <div class="btn-group-area">
                 <button type="button" id="edit-btn" class="btn btn-outline-secondary btn-custom me-2">수정</button>
                 <button type="button" id="delete-btn" class="btn btn-outline-danger btn-custom">삭제</button>
             </div>
-            <!-- 답변 작성 모달 트리거 -->
-            <button type="button" class="btn btn-anyzoo btn-custom shadow" data-bs-toggle="modal" data-bs-target="#replyModal">
-                <i class="bi bi-chat-dots-fill me-2"></i>답변 남기기
+            
+                        
+            <!-- 입양 신청 모달 트리거 버튼 -->
+            <button type="button"
+                    class="btn btn-anyzoo btn-custom shadow"
+                    id="openAdoptionModalBtn"
+                    data-bs-toggle="modal"
+                    data-bs-target="#adoptionModal">
+                <i class="bi bi-heart-fill me-2"></i>답변달기
             </button>
+             
+            </th:block>
         </div>
     </div>
 
-    <!-- 답변 리스트 섹션 -->
+    <!-- 등록된 답변 섹션 -->
     <div class="reply-section mt-5">
-        <h5 class="fw-bold mb-4 px-2"><i class="bi bi-check2-circle me-2 text-success"></i>등록된 답변</h5>
+        <h5 class="fw-bold mb-4 px-2">
+            <i class="bi bi-chat-left-dots me-2"></i>등록된 답변
+        </h5>
         
-        <!-- 답변 아이템 -->
-        <div class="card reply-card official mb-4 shadow-sm">
-            <div class="card-body p-4">
-                <div class="d-flex justify-content-between align-items-center mb-3">
-                    <div class="d-flex align-items-center">
-                        <span class="badge bg-primary me-2">AnyZoo 업체</span>
-                        <span class="fw-bold">운영팀 답변</span>
+
+        <div class="card reply-card mb-3 shadow-sm">
+            <div class="card-body p-4" >
+              <form id="applyProveForm" method="post">
+                <input type="hidden" name="boardId" th:value="${board.boardId}">
+                <div class="d-flex justify-content-between align-items-start mb-3">
+                    <div>
+                        <span class="fw-bold text-primary" text="${adoapply.id}">신청자 A</span>
+                        <small class="text-muted ms-2">1시간 전</small>
                     </div>
-                    <button class="btn btn-sm btn-outline-warning rounded-pill px-3">베스트 채택</button>
+                    
+                    <button type="submit" class="btn btn-sm btn-outline-warning rounded-pill px-3">
+                        신청 승인
+                    </button>
                 </div>
-                <p class="mb-0 text-secondary" style="line-height: 1.7;">
+                <p class="mb-0 text-secondary">
                     적응 기간에는 아이들이 환경 변화에 민감하여 활동량이 잠시 줄어들 수 있습니다. 
                     식사량이 평소와 같다면 며칠 더 지켜보셔도 좋습니다.
-                </p>
+                </p>                
+              </form>
             </div>
-        </div>
+        </div>        
+        
     </div>
 </div>
 
 <!-- [MODAL] 답변 작성 팝업 -->
-<div class="modal fade" id="replyModal" tabindex="-1" aria-labelledby="replyModalLabel" aria-hidden="true">
+<div class="modal fade" id="adoptionModal" tabindex="-1" aria-labelledby="adoptionModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content shadow-lg">
             <div class="modal-header">
-                <h5 class="modal-title fw-bold" id="replyModalLabel">궁금증 해결해주기</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                <h5 class="modal-title fw-bold" id="adoptionModalLabel">입양 신청서 작성</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="닫기"></button>
             </div>
+
             <div class="modal-body">
-                <form id="replyForm" th:action="@{/board/qnareply}" method="post">
+                <div class="alert alert-info border-0 rounded-4 small mb-4">
+                    <i class="bi bi-info-circle me-2"></i>
+                    작성하신 정보는 작성자에게만 안전하게 전달됩니다.
+                </div>
+
+                <!-- 실제 전송용 폼 -->
+                <form id="applyForm" th:action="@{/board/qnaapply}" method="post">
+                    <!-- 게시글 번호 -->
                     <input type="hidden" name="boardId" th:value="${board.boardId}">
-                    
+    
                     <div class="mb-3">
-                        <label class="form-label fw-bold">문의 제목</label>
-                        <input type="text" class="form-control bg-light" th:value="${board.boardTitle}" readonly>
+                        <label for="animalInfo" class="form-label fw-bold">신청 게시글</label>
+                        <input type="text"
+                               id="animalInfo"
+                               class="form-control bg-light"
+                               th:value="${board.boardTitle}"
+                               readonly>
                     </div>
-                    
-                    <div class="mb-4">
-                        <label class="form-label fw-bold">답변 내용</label>
-                        <textarea class="form-control" name="replyContent" rows="6" placeholder="도움이 되는 따뜻한 답변을 남겨주세요."></textarea>
+
+                    <div class="mb-3">
+                        <label for="qnaMessage" class="form-label fw-bold">보내는 메시지</label>
+                        <textarea id="qnaMessage"
+                                  name="qnaMessage"
+                                  class="form-control"
+                                  rows="5"
+                                  maxlength="1000"
+                                  placeholder="답변을 자세히 적어주세요."
+                                  required></textarea>
+                        <div class="form-text">
+                            최소 10자 이상 입력해주세요.
+                        </div>
                     </div>
-                    
-                    <button type="submit" class="btn btn-anyzoo w-100 py-3 fw-bold shadow-sm">답변 등록하기</button>
+
+                    <button type="submit" class="btn btn-anyzoo w-100 py-3 fw-bold">
+                        답변 제출하기
+                    </button>
                 </form>
             </div>
         </div>
     </div>
 </div>
 
-<!-- 기존 스크립트 구조 유지 -->
-<script src="https://jquery.com"></script>    
-<!-- <script src="https://jsdelivr.net"></script>   -->  
-<script th:inline='javascript'>
+<!-- jQuery -->
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+<!-- Bootstrap JS Bundle: modal 동작에 필수 -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<script th:inline="javascript">
 document.addEventListener('DOMContentLoaded', function() {
-    // 삭제 버튼 로직
+
+    const boardId = [[${board.boardId}]];
+    const isLoggedIn = [[${session.loginMember != null}]];
+ 
+ 	// 삭제 버튼 로직
     const btnDelete = document.querySelector('#delete-btn');
     if (btnDelete) {
         btnDelete.addEventListener('click', function() {
-            
+        	if (confirm('정말 삭제하시겠습니까?')) {
                 location.href = 'deleteqna?boardId=' + [[${ board.boardId }]];
-            
+        	}
         });	
     }
 
@@ -201,6 +253,34 @@ document.addEventListener('DOMContentLoaded', function() {
     document.querySelector('#edit-btn')?.addEventListener('click', () => {
         location.href = 'editqna?boardId=' + [[${ board.boardId }]];
     });
+ 
+    // 입양신청 버튼 클릭 시 로그인 체크
+    const openAdoptionModalBtn = document.querySelector('#openAdoptionModalBtn');
+    if (openAdoptionModalBtn) {
+        openAdoptionModalBtn.addEventListener('click', function(event) {
+        	
+        });
+    }
+
+    // 신청 폼 유효성 검사
+    const applyForm = document.querySelector('#applyForm');
+    if (applyForm) {
+        applyForm.addEventListener('submit', function(event) {
+            const message = document.querySelector('#qnaMessage').value.trim();
+   
+            if (message.length < 10) {
+                event.preventDefault();
+                alert('신청 메시지는 10자 이상 입력해주세요.');
+                document.querySelector('#qnaMessage').focus();
+                return;
+            }
+
+            const confirmSubmit = confirm('답변을 제출하시겠습니까?');
+            if (!confirmSubmit) {
+                event.preventDefault();
+            }
+        });
+    }
 });
 </script>
 

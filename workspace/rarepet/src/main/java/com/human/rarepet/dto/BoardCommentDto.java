@@ -11,10 +11,10 @@ public class BoardCommentDto extends GenBoardDto {
 	private String writer; 		// FK
 	private int boardId;   		// FK
 	
-//	private String content;
-//	private Date writeDate = new Date();
-//	private Date modifyDate = new Date();
-//	private boolean deleted = false;
+	private String content;
+	private Date writeDate = new Date();
+	private Date modifyDate = new Date();
+	private boolean deleted = false;
 //	
 //	// 아래 세 개의 변수는 글의 논리적인 순서를 관리
 //	private int groupNo;	// 그룹 번호

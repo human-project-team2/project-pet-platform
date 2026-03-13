@@ -15,7 +15,7 @@ import com.human.rarepet.dto.BoardCommentDto;
 public interface BoardCommentMapper {
 
 	// @Insert("sql") // ~Mapper.xml 파일의 내용을 대체
-	@Insert("INSERT INTO comment (id, board_id)	VALUES ( #{ writer }, #{ boardId } )")
+	@Insert("INSERT INTO comment (id, board_id, content, write_date, modify_date, deleted)	VALUES ( #{ writer }, #{ boardId }, #{ content }, #{ writeDate }, #{ modifyDate }, #{ deleted } )")
 	@Options(useGeneratedKeys = true, keyColumn = "comment_id", keyProperty = "commentNo")
 		// comment_id 에 자동 증가 넣으라는 모습 
 		// db:comment_id, dto:private int commentNo;
@@ -40,7 +40,7 @@ public interface BoardCommentMapper {
 			"WHERE comment_id = #{ commentNo }")
 	void updateGroupNo(@Param("commentNo")int commentNo, @Param("groupNo")int groupNo);
 	
-	@Select("SELECT comment_id, id, board_id " + 
+	@Select("SELECT comment_id, id, board_id, content, write_date, modify_date, deleted " + 
 			"FROM comment " +
 			"WHERE comment_id = #{ commentNo }")
 	List<BoardCommentDto> selectCommentByBoardNo(int boardNo);

@@ -55,6 +55,7 @@ public class BoardCommentController {
 		
 		List<BoardDto> boards = boardService.showAllBoard();
 		List<GenBoardDto> genboards = boardService.showAllGenBoard();
+		List<BoardCommentDto> comments = boardCommentService.findBoardCommentByBoardNo(boardNo);
 		
 		for(GenBoardDto genboard : genboards) {
 			if(genboard != null) {
@@ -79,6 +80,9 @@ public class BoardCommentController {
 		if(board_exist == 1) {
 			System.out.println("-------------->genboard OK\n");
 			model.addAttribute("boards", genboards);
+			if(comments != null) {
+				model.addAttribute("comments", comments);
+			}
 			// TODOTODOTODO TODO model.addAttribute("comments", comments);
 		} else {
 			System.out.println("-------------->genboard null\n");
