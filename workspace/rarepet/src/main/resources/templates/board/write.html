@@ -287,12 +287,28 @@ $(document).ready(function() {
 
     // 이미지 핸들링
     $('#btnUploadTrigger').on('click', () => $('#fileInput').click());
-    $('#fileInput').on('change', function(e) {
-        const files = Array.from(e.target.files);
-        files.forEach(file => selectedFiles.push(file));
-        $('#imageError').hide();
-        updatePreview();
-        syncFiles();
+    $('#fileInput').on('change', function() {
+    	const file = this.files[0];
+        if(!file) return;
+
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            // 기존 이미지 제거 (1장만 유지)
+            imageContainer.innerHTML = "";
+
+            const imgDiv = document.createElement("div");
+            imgDiv.className = "image-preview";
+
+            const img = document.createElement("img");
+            img.src = e.target.result;
+            img.style.width = "100%";
+            img.style.height = "100%";
+            img.style.objectFit = "cover";
+
+            imgDiv.appendChild(img);
+            imageContainer.appendChild(imgDiv);
+        }
+        reader.readAsDataURL(file);
     });
 
     function updatePreview() {
