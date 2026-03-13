@@ -1,9 +1,6 @@
 		<table th:each="comment: ${ comments }" xmlns:th="http://www.thymeleaf.org" class="table table-hover">			
 				
-						<tr>
-							<td th:style="|width:${comment.depth * 40}px;text-align: right;|">
-								<img th:if="${ comment.depth > 0 }" th:src="@{/image/re.gif}">
-							</td>	
+						<tr>	
 							<td>
 								<div th:id="|comment-view-area-${ comment.commentNo }|">
 									<th:fragment th:if="${ comment.deleted }">

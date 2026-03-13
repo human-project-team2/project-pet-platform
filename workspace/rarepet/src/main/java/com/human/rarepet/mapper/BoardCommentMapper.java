@@ -42,15 +42,15 @@ public interface BoardCommentMapper {
 	
 	@Select("SELECT comment_id, id, board_id, content, write_date, modify_date, deleted " + 
 			"FROM comment " +
-			"WHERE comment_id = #{ commentNo }")
-	List<BoardCommentDto> selectCommentByBoardNo(int boardNo);
+			"WHERE board_id = #{ boardId }")
+	List<BoardCommentDto> selectCommentByBoardNo(int boardId);
 	
 	//alias as 생략가능
 	//@Select("SELECT comment_no, board_no, email as writer, content, write_date, modify_date, group_no, step, depth " + 
 			//"FROM tbl_boardcomment " +
 			//"WHERE comment_no = #{ commentNo }")
 	
-	@Select("SELECT comment_id, id, board_id " + 
+	@Select("SELECT *comment_id, id, board_id, content, write_date, modify_date, deleted " + 
 			"FROM comment " +
 			"WHERE comment_id = #{ commentNo }")
 	BoardCommentDto selectCommentByCommentNo(int commentNo);
