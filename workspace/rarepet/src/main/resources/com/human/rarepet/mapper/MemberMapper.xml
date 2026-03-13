@@ -14,7 +14,7 @@
 	
 
 	<select id="selectMemberById" parameterType="string" resultType="com.human.rarepet.dto.MemberDto">
-	    SELECT id, password passwd, name, phone, address, email, not_user, is_shop FROM member 
+	    SELECT id, password passwd, name, phone, address, email, not_user, is_shop, img_url, saved_file_name, original_file_name FROM member 
 	    WHERE id = #{id}
 	</select>
     
@@ -22,7 +22,7 @@
 	
     
     <select id="getUserById" resultType="MemberDto">
-    SELECT id, name, phone, address, email, not_user, is_shop
+    SELECT id, name, phone, address, email, not_user, is_shop, img_url, saved_file_name, original_file_name
     FROM member 
     WHERE id = #{id} AND not_user = 0
 	</select>
@@ -32,7 +32,10 @@
     SET name = #{name}, 
         address = #{address}, 
         phone = #{phone},
-        email = #{email}
+        email = #{email},
+        img_url = #{imgUrl},
+        saved_file_name = #{savedFileName},
+        original_file_name = #{originalFileName}
     WHERE id = #{id}
 	</update>
 

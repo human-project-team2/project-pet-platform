@@ -33,6 +33,7 @@ public class AdminController {
 		List<MemberDto> members;
 		List<ShopDto> shops;
 		
+		
 		if (memberKeyword != null && !memberKeyword.isBlank()) {
 			members = adminService.searchMembers(memberKeyword);
 		} else {
@@ -44,6 +45,14 @@ public class AdminController {
 		} else {
 			shops = adminService.getAllShops();
 		}
+		
+		// stream : 데이터를 처리하기 위한 파이프라인 , filter 로 가공, 다시 리스트화
+		shops = shops.stream()
+		.filter(shop -> !shop.getId().equals("administrator"))
+		.toList();
+		members = members.stream()
+		.filter(member -> !member.getId().equals("administrator"))
+		.toList();
 		
 		model.addAttribute("members",members);
 		model.addAttribute("shops", shops);

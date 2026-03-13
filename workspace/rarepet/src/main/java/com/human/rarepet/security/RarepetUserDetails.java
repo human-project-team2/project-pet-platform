@@ -15,7 +15,7 @@ import com.human.rarepet.dto.RoleDto;
 public class RarepetUserDetails implements UserDetails {
 
 	private MemberDto member;
-
+	
 	public RarepetUserDetails(MemberDto member) {
 		this.member = member;
 	}

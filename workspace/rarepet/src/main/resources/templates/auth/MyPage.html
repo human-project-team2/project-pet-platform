@@ -14,6 +14,8 @@
 	rel="stylesheet">
 <link rel="stylesheet"
 	href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+<link rel="stylesheet" th:href="@{/css/floating-chat.css}">
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <style>
 body {
 	font-family: 'Noto Sans KR', sans-serif;
@@ -83,12 +85,14 @@ body {
 	<script th:inline="javascript" th:if="${shopRegisterMessage}">
 		alert(/*[[${shopRegisterMessage}]]*/"")
 	</script>
+	
 	<div class="container mb-5">
 		<div class="row g-4">
 			<div class="col-lg-4">
 				<div class="profile-card">
 					<div class="text-center mb-4">
-						<img src="https://cdn-icons-png.flaticon.com/512/1998/1998627.png"
+						
+						<img th:src="@{${userImgUrl}}" alt="Profile Image"
 							class="profile-img shadow-sm">
 						<h3 class="user-name mt-3" th:text="${user.name}">집사님</h3>
 						<p class="text-muted small" th:text="${user.email}">user@email.com</p>
@@ -182,7 +186,7 @@ body {
 	</div>
 	<div th:replace="fragments/fragment :: footer"></div>
 	<div th:replace="fragments/fragment :: message"></div>
-	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>	
+	
 	<script
 		src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 	<script th:replace="fragments/fragment :: message_script"></script>

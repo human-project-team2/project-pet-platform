@@ -1,5 +1,6 @@
 package com.human.rarepet.controller;
 
+import java.io.File;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -7,7 +8,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
+import com.human.rarepet.common.Util;
 import com.human.rarepet.dto.MemberDto;
 import com.human.rarepet.dto.ProductDto;
 import com.human.rarepet.dto.ShopDto;
@@ -72,16 +76,39 @@ public class MyPageController {
 	    return "auth/editProfile"; // templates/auth/editProfile.html
 	}
 
+	final String UPLOAD_PATH = "d:\\uploaded_images";
+	
 	// 2. 수정 실행
 	@PostMapping("/updateProfile")
-	public String updateProfile(MemberDto member, HttpSession session) {
+	public String updateProfile(MemberDto member,
+								@RequestParam("picture") MultipartFile picture) {
+		
+		if(picture != null && !picture.isEmpty()) {
+			
+			String savedFileName = Util.makeUniqueFileName(picture.getOriginalFilename());
+			File file = new File(UPLOAD_PATH, savedFileName);
+			String imgUrl = "/images/" + savedFileName;
+			
+			try {
+				member.setImgUrl(imgUrl);
+				member.setOriginalFileName(picture.getOriginalFilename());
+				member.setSavedFileName(savedFileName);
+				picture.transferTo(file);
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
+		}
+		
 	    // 1. DB 업데이트
 	    memberService.updateMember(member);
 	    
+	    // Spring Security로 로그인한 유저 정보 가져오기 로 대체
 	    // 2. [추천] DB에서 최신 정보를 다시 가져와서 세션에 저장
 	    // 이렇게 하면 폼에 없던 다른 정보들까지 누락 없이 세션에 유지됩니다.
-	    MemberDto updatedUser = memberService.getUserById(member.getId());
-	    session.setAttribute("loginuser", updatedUser);
+	    //MemberDto updatedUser = memberService.getUserById(member.getId());
+	    //session.setAttribute("loginuser", updatedUser);
+	    
+	    
 	    
 	    return "redirect:/mypage";
 	}

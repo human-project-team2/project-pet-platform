@@ -16,17 +16,20 @@ import com.human.rarepet.dto.ChatMessageDto;
 import com.human.rarepet.dto.MemberDto;
 import com.human.rarepet.security.RarepetUserDetails;
 import com.human.rarepet.service.ChatRoomService;
+import com.human.rarepet.service.MemberService;
 
 @Controller
 public class ChatRoomController {
 
 	private final ChatRoomService chatRoomService;
 	private final SimpMessagingTemplate messagingTemplate;
-	
+	private final MemberService memberService;
 
 	public ChatRoomController(ChatRoomService chatRoomService, 
+								MemberService memberService,
 			                  SimpMessagingTemplate messagingTemplate) {
 		this.chatRoomService = chatRoomService;
+		this.memberService = memberService;
 		this.messagingTemplate = messagingTemplate;
 	}
 	
@@ -40,7 +43,13 @@ public class ChatRoomController {
 			MemberDto member = userDetails.getMember();
 			model.addAttribute("member", member);
 			
-			return chatRoomService.getChatMessagesByChatRoomId(chatRoomId);
+			List<ChatMessageDto> chatHistory = chatRoomService.getChatMessagesByChatRoomId(chatRoomId);
+			chatHistory.forEach(message -> {
+				MemberDto sender = memberService.selectMember(message.getSender());
+				message.setSenderImgUrl(sender.getImgUrl());
+			});
+			
+			return chatHistory;
 			
 		} else {
 			return List.of(); // 인증되지 않은 사용자는 빈 리스트 반환
@@ -50,8 +59,12 @@ public class ChatRoomController {
 	
 	@MessageMapping("/sendWsMessage/{chatRoomId}")
 	public void sendWsMessage(@DestinationVariable("chatRoomId") String chatRoomId, // websocket 에서는 @PathVariable 대신 @DestinationVariable 사용
-										ChatMessageDto message) {
-		 messagingTemplate.convertAndSend("/topic/chatRoom/" + chatRoomId, message);
+							
+			ChatMessageDto message) {
+		
+		messagingTemplate.convertAndSend("/topic/chatRoom/" + chatRoomId, message);
+		 
+		 
 		 chatRoomService.insertChatMessage(message); // 메시지를 데이터베이스에 저장
 		// messagingTemplate.convertAndSend : 메시지를 WebSocket을 통해 해당 채팅방에게만 전송
 		// return message; -> 이렇게 하면 클라이언트로 메시지를 반환하여 실시간 업데이트, 위와 같은 다른 방식으로 해야함.

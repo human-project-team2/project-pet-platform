@@ -17,8 +17,8 @@ public interface ChatRoomMapper {
 			+ "LIMIT 100")
 	List<ChatMessageDto> getChatMessagesByChatRoomId(String chatRoomId);
 	
-	@Insert("INSERT INTO chat_message (chat_room_id, sender, content, timestamp) "
-            + "VALUES (#{chatRoomId}, #{sender}, #{content}, #{timestamp})")
+	@Insert("INSERT INTO chat_message (chat_room_id, sender, content, timestamp, sender_img_url) "
+            + "VALUES (#{chatRoomId}, #{sender}, #{content}, #{timestamp}, #{senderImgUrl})")
 	void insertChatMessage(ChatMessageDto chatMessage);
 	
 }

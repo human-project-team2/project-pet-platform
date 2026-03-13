@@ -16,6 +16,9 @@ public class MemberDto {
 	private boolean notUser;
 
 	private boolean isShop;
+	private String imgUrl;
+	private String savedFileName;
+	private String originalFileName;
 	
 	private List<RoleDto> roles;
 

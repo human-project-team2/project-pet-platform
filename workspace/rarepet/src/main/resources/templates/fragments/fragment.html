@@ -59,8 +59,11 @@
 								data-bs-toggle="dropdown">
 									<div
 										class="rounded-circle overflow-hidden me-2 border border-secondary"
-										style="width: 36px; height: 36px; background: rgba(0, 0, 0, 0.05); display: flex; align-items: center; justify-content: center;">
-										<i class="bi bi-person-circle fs-4 text-secondary"></i>
+										style="width: 36px; height: 36px;">
+
+										<img
+											th:src="@{${userImgUrl}}"
+											style="width: 100%; height: 100%; object-fit: cover;">
 									</div>
 							</a>
 								<ul class="dropdown-menu dropdown-menu-end shadow-sm"
@@ -147,73 +150,72 @@
 </style>
 	</div>
 
-<div th:fragment="footer">
-	
-	<!-- SockJS client -->
-	<script src="https://cdn.jsdelivr.net/npm/sockjs-client/dist/sockjs.min.js"></script>
-	
-	<!-- STOMP.js client -->
-	<script src="https://cdn.jsdelivr.net/npm/stompjs/lib/stomp.min.js"></script>
-		
-		<th:block sec:authorize="isAuthenticated()">
-			
-			<div id="chatButton">
-			    <i class="bi bi-chat-dots-fill"></i>
-			</div>
-			
-		<!-- 채팅방 리스트 팝업 -->
-			<div id="chatPopup">
-		    
-			    <div class="chat-header">
-			        커뮤니티
-			        <span id="closeChat">✖</span>
-			    </div>
-			    
-			
-			    <!-- CHAT ROOM LIST -->
-			    <div id="chatRoomList">
-			
-			        <div class="chat-room" data-chat-room-id="testChat">
-			            <div class="chat-room-name">Rare Reptile Shop</div>
-			            <div class="chat-room-preview">Last message preview...</div>
-			        </div>
-			
-			        <div class="chat-room" data-chat-room-id="testChat2">
-			            <div class="chat-room-name">Golden Gecko Seller</div>
-			            <div class="chat-room-preview">Is it still available?</div>
-			        </div>
-			
-			    </div>
-		
-			</div>
-			
-		<!-- 채팅 상세 팝업 -->
-			
-		<div id="chatDetailPopup">
+	<div th:fragment="footer">
 
-		    <div class="chat-header">
-		        <span id="backToList">←</span>
-		        <span id="chatRoomTitle">Chat</span>
-		    </div>
-		
-		    <div id="chatBox"></div>
-		
-		    <div class="chat-input">
-		        <input type="text" id="messageInput" placeholder="Type message...">
-		        <button id="sendBtn">Send</button>
-		    </div>
-		
-		</div>	
-			
+		<!-- SockJS client -->
+		<script
+			src="https://cdn.jsdelivr.net/npm/sockjs-client/dist/sockjs.min.js"></script>
+
+		<!-- STOMP.js client -->
+		<script src="https://cdn.jsdelivr.net/npm/stompjs/lib/stomp.min.js"></script>
+
+		<th:block sec:authorize="isAuthenticated()">
+
+			<div id="chatButton">
+				<i class="bi bi-chat-dots-fill"></i>
+			</div>
+
+			<!-- 채팅방 리스트 팝업 -->
+			<div id="chatPopup">
+
+				<div class="chat-header">
+					커뮤니티 <span id="closeChat">✖</span>
+				</div>
+
+
+				<!-- CHAT ROOM LIST -->
+				<div id="chatRoomList">
+
+					<div class="chat-room" data-chat-room-id="testChat">
+						<div class="chat-room-name">Rare Reptile Shop</div>
+						<div class="chat-room-preview">Last message preview...</div>
+					</div>
+
+					<div class="chat-room" data-chat-room-id="testChat2">
+						<div class="chat-room-name">Golden Gecko Seller</div>
+						<div class="chat-room-preview">Is it still available?</div>
+					</div>
+
+				</div>
+
+			</div>
+
+			<!-- 채팅 상세 팝업 -->
+
+			<div id="chatDetailPopup">
+
+				<div class="chat-header">
+					<span id="backToList">←</span> <span id="chatRoomTitle">Chat</span>
+				</div>
+
+				<div id="chatBox"></div>
+
+				<div class="chat-input">
+					<input type="text" id="messageInput" placeholder="Type message...">
+					<button id="sendBtn">Send</button>
+				</div>
+
+			</div>
+
 		</th:block>
-		
-		
+
+
 		<footer class="text-center py-4 border-top"
 			style="background-color: var(--bs-tertiary-bg);">
 			<p class="mb-0 text-muted small">© 2026 AnyZoo. 소중한 생명을 위한 희귀
 				반려동물 마켓</p>
 		</footer>
-		
+
 		<script th:inline="javascript">
 		
 	    $(function(){
@@ -232,9 +234,10 @@
 	    	let stompClient = null; // STOMP 클라이언트 변수, 전역에서 사용가능하게 하려고
 	    	let subscription = null;
 	    	let chatRoomId = null;
+	    	let senderImgUrl = null;
 	    	
-	    	$("#chatButton").click(function(){
-
+	    	$("#chatButton").click(function(e){
+				e.preventDefault();
 	    	    if(!stompClient){
 	    	        connect();
 	    	    }
@@ -305,29 +308,46 @@
 	        		// 특정 채널 듣기
 	        		subscription = stompClient.subscribe(`/topic/chatRoom/${chatRoomId}`, function (message) {
 	        			const text = JSON.parse(message.body);
-	        			showMessage(text.sender, text.content, text.timestamp)
+	        			showMessage(text.sender, text.content, text.timestamp, text.senderImgUrl);
 	        		})
 	        		
 	        		// 특정 채널 메시지 불러오기
 	        		fetch(`/chatRoom/${chatRoomId}`).then(response => response.json())
 	        		.then(messages => {
-	        			messages.forEach(message => showMessage(message.sender, message.content, message.timestamp));
+	        			messages.forEach(message => showMessage(message.sender, message.content, message.timestamp, message.senderImgUrl));
 	        		})
 	        		
 	        	}
 	        	
-	        	function showMessage(sender, content, timestamp){
+	        	function showMessage(sender, content, timestamp, imgUrl){
 	        		
-	        		 const chatBox = document.querySelector("#chatBox")
-	        		 const div = document.createElement('div');
-	        		 
-	        		 const timeString = new Date(timestamp).toLocaleTimeString();
-	        		 
-	        		 div.textContent = `[${timeString}] ${sender}: ${content}`;
-	        		 
-	        		 chatBox.appendChild(div);
-	        		 
-	        		 chatBox.scrollTop = chatBox.scrollHeight;
+	        		const chatBox = document.querySelector("#chatBox")
+	        		const div = document.createElement('div');
+	        		div.style.display = 'flex';
+        		    div.style.alignItems = 'center';
+        		    div.style.gap = '8px';
+        		    div.style.marginBottom = '6px';
+	        		senderImgUrl = imgUrl;
+        		    
+        		    // User image
+        		    const img = document.createElement('img');
+	        		    img.src = senderImgUrl || '/img/avatardefault.jpg';
+	        		    img.style.width = '36px';
+	        		    img.style.height = '36px';
+	        		    img.style.borderRadius = '50%';
+	        		    img.style.objectFit = 'cover';
+	        		    img.classList.add('me-2');
+	        		    
+        		    // text 영역
+        		    const textDiv = document.createElement('div');
+	        		const timeString = new Date(timestamp).toLocaleTimeString();
+	        		textDiv.textContent = `[${timeString}] ${sender}: ${content} `;
+	        		
+	        		div.appendChild(img);
+	        		div.appendChild(textDiv);
+	        		
+	        		chatBox.appendChild(div);
+	        		chatBox.scrollTop = chatBox.scrollHeight;
 	        	}
 	        	
 	        	// 메시지 보내기
@@ -367,7 +387,7 @@
 		    
    		</script>
 
-</div>
+	</div>
 
 	<div th:fragment="message">
 
@@ -647,7 +667,7 @@
    </script>
 	</div>
 
-	
+
 
 
 

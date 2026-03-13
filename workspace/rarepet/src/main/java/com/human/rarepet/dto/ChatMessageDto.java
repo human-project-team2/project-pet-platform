@@ -11,5 +11,7 @@ public class ChatMessageDto {
 	private String chatRoomId;
 	private String sender;
 	private String content;
+	private String senderImgUrl;
 	private Date timestamp;
+	
 }
