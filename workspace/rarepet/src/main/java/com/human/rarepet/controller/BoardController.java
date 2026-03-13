@@ -477,7 +477,7 @@ public class BoardController {
 				
 		}
 		
-		return "redirect:/board/adoptionlist";		
+		return "redirect:/board/qnalist";		
 	}
 	// qnaapply
 	
