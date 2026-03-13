@@ -202,9 +202,14 @@ public class BoardController {
 	// detail delete
 	@GetMapping(path = { "/board/delete" })
 	public String delete(
+			@AuthenticationPrincipal RarepetUserDetails userDetails,
 			@RequestParam(value = "boardId", defaultValue="-1") int boardId
 			) {
 		
+		if(userDetails == null)
+		{
+			return "redirect:/auth/login";		
+		}
 		/*
 		if (boardId == -1 || pageNo == -1) {
 			return "redirect:/board/list";
