@@ -11,7 +11,7 @@ public class BoardCommentDto extends GenBoardDto {
 	private String writer; 		// FK
 	private int boardId;   		// FK
 	
-//	private String content;
+	private String content;
 //	private Date writeDate = new Date();
 //	private Date modifyDate = new Date();
 //	private boolean deleted = false;
