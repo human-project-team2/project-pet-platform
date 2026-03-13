@@ -47,7 +47,7 @@ public class BoardCommentController {
 //	
 	
 	@GetMapping(path = { "comment-list" })
-	public String showCommentList(@RequestParam("boardNo") int boardNo, Model model) {	
+	public String showCommentList(@RequestParam("boardId") int boardId, Model model) {	
 		
 		int board_exist = 0;
 		
@@ -55,7 +55,7 @@ public class BoardCommentController {
 		
 		List<BoardDto> boards = boardService.showAllBoard();
 		List<GenBoardDto> genboards = boardService.showAllGenBoard();
-		List<BoardCommentDto> comments = boardCommentService.findBoardCommentByBoardNo(boardNo);
+		List<BoardCommentDto> comments = boardCommentService.findBoardCommentByBoardNo(boardId);
 		
 		for(GenBoardDto genboard : genboards) {
 			if(genboard != null) {
@@ -78,9 +78,14 @@ public class BoardCommentController {
 		}
 		
 		if(board_exist == 1) {
-			System.out.println("-------------->genboard OK\n");
+			System.out.println("-------------->gyyenboard OK\n");
 			model.addAttribute("boards", genboards);
 			if(comments != null) {
+				System.out.println("-------------->board comment\n");
+				for (BoardCommentDto comment : comments) {
+					System.out.println(comment);
+				}
+				
 				model.addAttribute("comments", comments);
 			}
 			// TODOTODOTODO TODO model.addAttribute("comments", comments);
