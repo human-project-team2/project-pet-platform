@@ -81,7 +81,9 @@ public class MyPageController {
 	// 2. 수정 실행
 	@PostMapping("/updateProfile")
 	public String updateProfile(MemberDto member,
-								@RequestParam("picture") MultipartFile picture) {
+								@RequestParam("picture") MultipartFile picture,
+								@AuthenticationPrincipal RarepetUserDetails userDetails) {
+		
 		
 		if(picture != null && !picture.isEmpty()) {
 			
@@ -93,6 +95,7 @@ public class MyPageController {
 				member.setImgUrl(imgUrl);
 				member.setOriginalFileName(picture.getOriginalFilename());
 				member.setSavedFileName(savedFileName);
+				userDetails.getMember().setImgUrl(imgUrl);
 				picture.transferTo(file);
 			} catch (Exception ex) {
 				ex.printStackTrace();
