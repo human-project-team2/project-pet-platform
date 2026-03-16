@@ -122,6 +122,18 @@
         padding: 12px;
         border: 1px solid #eee;
     }
+    
+    .like-info-box {
+	    display: inline-flex;
+	    align-items: center;
+	    gap: 8px;
+	    padding: 10px 16px;
+	    border-radius: 999px;
+	    background: #fff7f3;
+	    border: 1px solid #ffd8c2;
+	    font-weight: 600;
+	    color: #e76f51;
+	}
 </style>
 </head>
 
@@ -171,14 +183,32 @@
         </div>
 
         <!-- 내용 -->         
-        <!-- 
-        <div class="content-area mb-4" th:text="${user.name}">
-            게시글 내용이 여기에 표시됩니다.
-        </div>
-         -->
+        
         <div class="content-area mb-4" th:text="${board.boardContent}">
             게시글 내용이 여기에 표시됩니다.
         </div>
+        
+        <div class="d-flex align-items-center gap-3 mb-4 flex-wrap">
+		    <form th:action="@{/board/like}" method="post" class="m-0">
+		        <input type="hidden" name="boardId" th:value="${board.boardId}">
+		        <input type="hidden" name="boardType" value="adoption">
+		        <button type="submit" class="btn btn-outline-anyzoo btn-custom">
+		            <i class="bi bi-heart-fill me-1"></i> 좋아요
+		        </button>
+		    </form>
+		
+		    <div class="like-info-box">
+		        <i class="bi bi-heart-fill"></i>
+		        <span>좋아요</span>
+		        <span th:text="${board.boardLikeCount}">0</span>
+		    </div>
+		
+		    <div class="like-info-box" style="color:#6c757d; border-color:#dee2e6; background:#f8f9fa;">
+		        <i class="bi bi-eye-fill"></i>
+		        <span>조회수</span>
+		        <span th:text="${board.boardViewCount}">0</span>
+		    </div>
+		</div>
  
         <div class="d-flex justify-content-between align-items-center">
         	<th:block sec:authorize="isAuthenticated()">

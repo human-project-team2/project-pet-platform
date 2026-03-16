@@ -494,43 +494,32 @@ public class BoardController {
 	@GetMapping (path = {"/board/adoptionlist"}) 
 	public String boardadoptionlist(Model model) {
 
-		int board_exist = 0;
-		System.out.println("--------------------Adoptionlist-----");
-		
-		List<BoardDto> boards = boardService.showAllBoard();
-		List<AdoBoardDto> adoboards = boardService.showAllAdoBoard();		
-		
-		for(AdoBoardDto adoboard : adoboards) {
-			if(adoboard != null) {
-				board_exist = 1;
-				System.out.println(adoboard);
-				System.out.println("\n");
-				
-				for(BoardDto board : boards) {
-					
-					if(board.getBoardId() == adoboard.getBoardId())
-					{
-										
-						adoboard.setBoardTitle(board.getBoardTitle());
-						adoboard.setBoardContent(board.getBoardContent());						
-						adoboard.setBoardWriterId(board.getBoardWriterId());
-						adoboard.setBoardWriteDate(board.getBoardWriteDate());
-						adoboard.setBoardViewCount(board.getBoardViewCount());
-						
-						System.out.println(adoboard);
-						System.out.println("\n");
-					}
-				}				
-			}			
-		}
-		if(board_exist == 1) {
-			model.addAttribute("adoboards", adoboards);
-		} else {
-			System.out.println("-------------->adoboard null\n");
-		}
-			
-		return "board/adoptionlist"; 
-		
+	    System.out.println("--------------------Adoptionlist-----");
+
+	    List<BoardDto> boards = boardService.showAllBoard();   // 좋아요순 정렬
+	    List<AdoBoardDto> adoboards = boardService.showAllAdoBoard();
+
+	    List<AdoBoardDto> orderedAdoBoards = new java.util.ArrayList<>();
+
+	    for (BoardDto board : boards) {
+	        for (AdoBoardDto adoboard : adoboards) {
+	            if (board.getBoardId() == adoboard.getBoardId()) {
+	                adoboard.setBoardTitle(board.getBoardTitle());
+	                adoboard.setBoardContent(board.getBoardContent());
+	                adoboard.setBoardWriterId(board.getBoardWriterId());
+	                adoboard.setBoardWriteDate(board.getBoardWriteDate());
+	                adoboard.setBoardViewCount(board.getBoardViewCount());
+	                adoboard.setBoardLikeCount(board.getBoardLikeCount());
+	                adoboard.setImgUrl(board.getImgUrl());
+	                orderedAdoBoards.add(adoboard);
+	                break;
+	            }
+	        }
+	    }
+
+	    model.addAttribute("adoboards", orderedAdoBoards);
+
+	    return "board/adoptionlist";
 	}
 	
 	@GetMapping(path = {"/board/adoptionwrite"})
