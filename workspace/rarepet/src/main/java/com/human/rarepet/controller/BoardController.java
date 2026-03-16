@@ -175,7 +175,9 @@ public class BoardController {
 	@PostMapping(path = {"/board/like"})
 	public String likeBoard(
 			@AuthenticationPrincipal RarepetUserDetails userDetails,
-			@RequestParam(value = "boardId", defaultValue = "-1") int boardId) {
+			@RequestParam(value = "boardId", defaultValue = "-1") int boardId,
+			@RequestParam(value = "boardType", defaultValue = "community") String boardType
+			) {
 
 		if (userDetails == null) {
 			return "redirect:/auth/login";
@@ -186,6 +188,14 @@ public class BoardController {
 		}
 
 		boardService.increaseBoardLikeCount(boardId);
+		
+		if ("qna".equals(boardType)) {
+	        return "redirect:/board/qna?boardId=" + boardId;
+	    }
+
+	    if ("adoption".equals(boardType)) {
+	        return "redirect:/board/adoption?boardId=" + boardId;
+	    }
 
 		return "redirect:/board/detail?boardId=" + boardId;
 	}
@@ -257,43 +267,35 @@ public class BoardController {
 	}
 	
 	
-	@GetMapping (path = {"/board/qnalist"}) 
+	@GetMapping(path = {"/board/qnalist"})
 	public String boardqnalist(Model model) {
-		
-		int board_exist = 0;
-		
-		System.out.println("--------------------QnAList");
-		
-		List<BoardDto> boards = boardService.showAllBoard();
-		List<QnaBoardDto> qnaboards = boardService.showAllQnaBoard();		
-		
-		for(QnaBoardDto qnaboard : qnaboards) {
-			if(qnaboard != null) {
-				board_exist = 1;
-				System.out.printf("-------------->qnaboard title \n" + qnaboard.getBoardTitle());
-				for(BoardDto board : boards) {
-					System.out.println("\n");
-					if(board.getBoardId() == qnaboard.getBoardId())
-					{
-						
-						qnaboard.setBoardTitle(board.getBoardTitle());
-						qnaboard.setBoardContent(board.getBoardContent());						
-						qnaboard.setBoardWriterId(board.getBoardWriterId());
-						qnaboard.setBoardWriteDate(board.getBoardWriteDate());
-						qnaboard.setBoardViewCount(board.getBoardViewCount());
-						
-					}
-				}				
-			}			
-		}
-		if(board_exist == 1) {
-			model.addAttribute("qnaboards", qnaboards);
-		} else {
-			System.out.println("-------------->qnaboard null\n");
-		}
-			
-		return "board/qnalist"; 
-		
+
+	    System.out.println("--------------------QnAList");
+
+	    List<BoardDto> boards = boardService.showAllBoard();      // 좋아요순 정렬
+	    List<QnaBoardDto> qnaboards = boardService.showAllQnaBoard();
+
+	    List<QnaBoardDto> orderedQnaBoards = new java.util.ArrayList<>();
+
+	    for (BoardDto board : boards) {
+	        for (QnaBoardDto qnaboard : qnaboards) {
+	            if (board.getBoardId() == qnaboard.getBoardId()) {
+	                qnaboard.setBoardTitle(board.getBoardTitle());
+	                qnaboard.setBoardContent(board.getBoardContent());
+	                qnaboard.setBoardWriterId(board.getBoardWriterId());
+	                qnaboard.setBoardWriteDate(board.getBoardWriteDate());
+	                qnaboard.setBoardViewCount(board.getBoardViewCount());
+	                qnaboard.setBoardLikeCount(board.getBoardLikeCount());
+	                qnaboard.setImgUrl(board.getImgUrl());
+	                orderedQnaBoards.add(qnaboard);
+	                break;
+	            }
+	        }
+	    }
+
+	    model.addAttribute("qnaboards", orderedQnaBoards);
+
+	    return "board/qnalist";
 	}		
 	
 	@GetMapping(path = {"/board/qwrite"})

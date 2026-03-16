@@ -122,20 +122,28 @@ body{
         <th scope="col">작성자</th>
         <th scope="col">작성일</th>
         <th scope="col">조회수</th>
+        <th scope="col">좋아요</th>
         <th scope="col">응답완료</th>
         
       </tr>
       </thead>
-      <tbody>                      
-        <tr th:each="board: ${qnaboards}" style="height:30px">
+      <tbody>
+        <tr th:each="board, boardStat : ${qnaboards}" style="height:30px">
           <th scope="row" th:text="${ board.boardId }"></th>          
           <td>
           	<a 	th:href="@{/board/qna(boardId=${board.boardId}) }"
                 th:text="${ board.boardTitle }"></a>
+                <span th:if="${boardStat.index == 0}" class="badge bg-danger ms-2">인기글</span>
           </td>          
           <td th:text="${ board.boardWriterId }"></td>
           <td th:text="${ board.boardWriteDate }"></td>
           <td th:text="${ board.boardViewCount }"></td>
+          <td>
+		    <span class="text-danger">
+		        <i class="bi bi-heart-fill"></i>
+		    </span>
+		    <span th:text="${ board.boardLikeCount }">0</span>
+		  </td>
           <td th:text="${ board.getAnswerSelected }"></td>          
           
         </tr>
