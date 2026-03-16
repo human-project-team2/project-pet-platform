@@ -54,6 +54,10 @@ body {
 	color: #f26419;
 	font-size: 1.25rem;
 }
+/* [기본] 라이트 모드일 때의 색상 */
+.main-title {
+    color: #333; /* 원래대로 검은색 */
+}
 
 /* 🌙 한 단계 밝아진 소프트 다크모드 (Deep Blue Gray) */
 [data-bs-theme="dark"] body {
@@ -90,6 +94,16 @@ body {
 	color: #1a1d20;
 	font-weight: bold;
 }
+/* soft 다크모드 전용 설정 */
+[data-bs-theme="dark"] body {
+    background-color: #1a1d20 !important;
+    color: #f8f9fa;
+}
+
+/* 🌙 [추가] 다크 모드일 때만 흰색으로 변경 */
+[data-bs-theme="dark"] .main-title {
+    color: #ffffff !important; /* 다크모드에서는 흰색으로! */
+}
 </style>
 </head>
 <body>
@@ -98,7 +112,7 @@ body {
 	<section
 		class="hero d-flex align-items-center justify-content-center text-center mt-5">
 		<div class="hero-box p-5 shadow-sm">
-			<h2 class="fw-bold display-6" style="color: #333;">희귀 반려동물 전문 마켓</h2>
+			<h2 class="fw-bold display-6 main-title">희귀 반려동물 전문 마켓</h2>
 			<p class="text-muted fs-5">소중한 생명과의 특별한 만남을 시작하세요</p>
 		</div>
 	</section>
