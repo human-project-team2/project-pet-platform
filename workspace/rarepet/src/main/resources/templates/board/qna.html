@@ -107,7 +107,7 @@
 
     <!-- 메인 게시글 카드 -->
     <div class="detail-card mb-5">
-        <h6 class="text-muted mb-2">분양 게시글 상세</h6>
+        <h6 class="text-muted mb-2">Q&A 게시글 상세</h6>
         <h2 class="fw-bold mb-4" th:text="${board.boardTitle}">제목을 불러오는 중...</h2>
 
         <div class="d-flex align-items-center mb-4 pb-4 border-bottom">
@@ -215,7 +215,7 @@
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content shadow-lg">
             <div class="modal-header">
-                <h5 class="modal-title fw-bold" id="adoptionModalLabel">입양 신청서 작성</h5>
+                <h5 class="modal-title fw-bold" id="adoptionModalLabel">답변 작성</h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="닫기"></button>
             </div>
 
@@ -231,7 +231,7 @@
                     <input type="hidden" name="boardId" th:value="${board.boardId}">
     
                     <div class="mb-3">
-                        <label for="animalInfo" class="form-label fw-bold">신청 게시글</label>
+                        <label for="animalInfo" class="form-label fw-bold">문의 게시글</label>
                         <input type="text"
                                id="animalInfo"
                                class="form-control bg-light"
