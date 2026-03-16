@@ -140,9 +140,14 @@ body {
 
 			<div class="col-sm-6 col-lg-4 mb-2" th:each="product : ${products}">
 				<div class="card shadow-sm h-100">
-					<a th:href="@{/market/detail/{no}(no=${product.productNo})}"> <img
-						th:src="@{${product.imgUrl}}" class="card-img-top"
+					<a th:href="@{/market/detail/{no}(no=${product.productNo})}">
+					<img
+						th:if="${#lists.isEmpty(product.productImages) == false}" 
+						th:src="@{${product.productImages[0].imgUrl}}" class="card-img-top"
 						style="height: 220px; object-fit: cover;" alt="Animal">
+					<img th:if="${#lists.isEmpty(product.productImages) == true}" 
+                           src="/img/no_image.jpg" class="card-img-top"
+                           style="height: 220px; object-fit: cover;" alt="Animal">
 					</a>
 					<div class="card-body p-4">
 						<div class="mb-2">

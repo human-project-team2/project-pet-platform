@@ -13,12 +13,37 @@ import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 
 import com.human.rarepet.dto.ProductDto;
+import com.human.rarepet.dto.ProductImageDto;
 import com.human.rarepet.dto.ShoppingCartDto;
 
 @Mapper
 public interface ProductMapper {
 
 	void insertProduct(ProductDto product);
+	
+	@Insert
+	({"<script> "
+		+"insert into product_images "
+		+ "(product_no, img_url, saved_file_name, original_file_name, sort_order) "
+		+ "values "
+		+ "<foreach collection='images' item='image' separator=',' nullable='true' > "
+		+ "(#{image.productNo}, "
+		+ "#{image.imgUrl}, "
+		+ "#{image.savedFileName}, "
+		+ "#{image.originalFileName}, "
+		+ "#{image.sortOrder}) "
+		+ "</foreach> "
+		+ "</script> "
+	})
+	void insertProductImages(@Param(value="images") List<ProductImageDto> images);
+	
+	@Select("select product_no, img_url, saved_file_name, original_file_name, sort_order "
+			+ "from product_images where product_no = #{productNo} order by sort_order")
+	List<ProductImageDto> selectProductImagesByProductNo(int productNo);
+	
+//	@Select("select product_no, img_url, saved_file_name, original_file_name "
+//			+ "from product_images where product_no = #{productNo} order by sort_order limit 1")
+//	ProductImageDto selectProductMainImage(int productNo);
 	
 	List<ProductDto> showAllProduct();
 	List<ProductDto> showAllProductSearch();

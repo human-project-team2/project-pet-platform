@@ -233,7 +233,13 @@ body {
 			<!-- 상품 리스트 반복문 -->
 				<div class="col-md-4 market-item" th:each="product:${products}">
 					<div class="card shadow">
-						<a th:href="@{market/detail/{productNo}(productNo=${product.productNo})}"><img th:src="@{${product.imgUrl}}" class="card-img-top"></a>
+						<a th:href="@{market/detail/{productNo}(productNo=${product.productNo})}">
+						<img
+							th:if="${#lists.isEmpty(product.productImages) == false}" 
+							th:src="@{${product.productImages[0].imgUrl}}" class="card-img-top">
+						<img th:if="${#lists.isEmpty(product.productImages) == true}" 
+                            src="/img/no_image.jpg" class="card-img-top">
+						</a>
 						<div class="mb-2">
 							<span class="badge bg-warning text-dark px-3 py-2"
 								th:text="${product.productCategory}">분류</span>

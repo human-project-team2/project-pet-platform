@@ -2,9 +2,9 @@
 
 <mapper namespace="com.human.rarepet.mapper.ProductMapper">
 	
-	<insert id="insertProduct" parameterType="ProductDto">
-		insert into product_all (product_name, product_content, product_category, product_count, product_reg_date, price, shortDescription, saved_file_name, original_file_name, img_url, seller_id)
-		values (#{productName}, #{productContent}, #{productCategory}, #{productCount}, #{productRegDate}, #{price}, #{shortDescription}, #{savedFileName}, #{originalFileName}, #{imgUrl}, #{sellerId})
+	<insert id="insertProduct" parameterType="ProductDto" useGeneratedKeys="true" keyProperty="productNo">
+		insert into product_all (product_name, product_content, product_category, product_count, price, short_description, seller_id)
+		values (#{productName}, #{productContent}, #{productCategory}, #{productCount}, #{price}, #{shortDescription}, #{sellerId})
 	</insert>
 	
 	<select id="showAllProduct" resultType="ProductDto">

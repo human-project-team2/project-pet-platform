@@ -21,6 +21,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.human.rarepet.common.Util;
 import com.human.rarepet.dto.MemberDto;
 import com.human.rarepet.dto.ProductDto;
+import com.human.rarepet.dto.ProductImageDto;
 import com.human.rarepet.dto.ShopDto;
 import com.human.rarepet.dto.ShoppingCartDto;
 import com.human.rarepet.dto.UpdateCartQuantityDto;
@@ -97,36 +98,22 @@ public class MarketController {
 	final String UPLOAD_PATH = "d:\\uploaded_images";
 	
 	@PostMapping(path = {"/market/register"})
-	public String registerProduct(ProductDto product, 
-			@RequestParam("picture") MultipartFile picture,
-			@AuthenticationPrincipal RarepetUserDetails userDetails
-								  ) {
+	public String registerProduct(ProductDto product,
+			@RequestParam("picture") List<MultipartFile> pictures,
+			@AuthenticationPrincipal RarepetUserDetails userDetails,
+			RedirectAttributes redirectAttributes ) {
 				
 		MemberDto member = userDetails.getMember();
-				
-		if (picture != null && picture.getOriginalFilename().length() > 0) {
-			
-			String savedFileName = Util.makeUniqueFileName(picture.getOriginalFilename());
-			
-			File file = new File(UPLOAD_PATH, savedFileName);
-			String imgUrl = "/images/" + savedFileName;
-			
-			try {
-				
-				String id = member.getId();
-				product.setSellerId(id);
-				product.setImgUrl(imgUrl);
-				product.setOriginalFileName(picture.getOriginalFilename());
-				product.setSavedFileName(savedFileName);
-				marketService.registerProduct(product);
-				picture.transferTo(file);
-			}	catch (Exception ex) {
-				ex.printStackTrace();
-				
-			}
+		String id = member.getId();
+		product.setSellerId(id);
+		boolean success = marketService.registerProduct(product, pictures);
+		if(success) {
+			redirectAttributes.addFlashAttribute("registered", "상품이 등록되었습니다.");
+		} else {
+			redirectAttributes.addFlashAttribute("registered", "상품이 등록 중 오류가 발생했습니다.");
 		}
 		
-		return "redirect:/market";
+		return "redirect:/market/detail/" + product.getProductNo();
 	}
 	
 	@GetMapping(path = {"/market/shoppingCart"})
