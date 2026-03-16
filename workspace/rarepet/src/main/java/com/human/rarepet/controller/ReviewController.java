@@ -67,4 +67,12 @@ public class ReviewController {
 		reviewService.removeReview(reviewNo);
 		return "redirect:/review/list";
 	}
+	
+	@GetMapping("/review/write")
+	public String writeReview(@RequestParam("productName") String productName, Model model) {
+	    model.addAttribute("productName", productName);
+	    return "review/write"; 
+	}
+	
+	
 }
