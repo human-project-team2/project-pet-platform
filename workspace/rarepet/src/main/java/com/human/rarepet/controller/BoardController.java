@@ -380,6 +380,10 @@ public class BoardController {
 			System.out.println("--------------------Qna NULL--  ");	
 			return "redirect:/board/qnalist";
 		}
+		
+		// ★ 조회수 증가
+	    boardService.increaseBoardViewCount(boardId);
+	    
 		System.out.println("QnA Ok");
 		
 		model.addAttribute("board", board);
@@ -758,6 +762,9 @@ public class BoardController {
 			model.addAttribute("user", user);
 		}
 		
+		// ★ 조회수 증가
+	    boardService.increaseBoardViewCount(boardId);
+		
 		model.addAttribute("board", board);
 		model.addAttribute("pageNo", pageNo);
 		model.addAttribute("adoboard", adoboard);
@@ -869,6 +876,10 @@ public class BoardController {
 		if (genboard == null) {
 			return "redirect:/board/boardlist";
 		}
+		
+		// ★ 조회수 증가
+	    boardService.increaseBoardViewCount(boardId);
+	    
 		//board.setBoardLikeCount(2);
 		
 		model.addAttribute("board", board);

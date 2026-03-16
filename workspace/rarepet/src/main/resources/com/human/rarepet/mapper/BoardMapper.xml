@@ -14,6 +14,12 @@
 	    SET board_like_count = board_like_count + 1
 	    WHERE board_id = #{boardId}
 	</update>
+	
+	<update id="increaseBoardViewCount" parameterType="int">
+	    UPDATE board
+	    SET board_view_count = board_view_count + 1
+	    WHERE board_id = #{boardId}
+	</update>
 
     <update id="updateBoard" parameterType="BoardDto">
     UPDATE board 
