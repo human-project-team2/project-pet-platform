@@ -94,8 +94,8 @@ public class BoardController {
 					board.setOriginalFileName(picture.getOriginalFilename());
 					board.setSavedFileName(savedFileName);
 					picture.transferTo(file);
-					board.setBoardLikeCount(1);
-					board.setBoardViewCount(1);
+					board.setBoardLikeCount(0);
+					board.setBoardViewCount(0);
 					
 					// board.getBoardWriteDate();
 					boardService.insertBoard(board);
@@ -123,23 +123,19 @@ public class BoardController {
 	@GetMapping (path = {"/board/community"}) 
 	public String boardlist(
 			@RequestParam(value="pageNo", defaultValue="1") int pageNo,
+			@RequestParam(value = "keyword", defaultValue = "") String keyword,
 			Model model) {
-		int board_exist = 0;
+
 		System.out.println("--------------------Community page");
-		
-		// List<BoardDto> boards = boardService.findBoardByPage(pageNo, PAGE_SIZE);
-		List<BoardDto> boards = boardService.showAllBoard();
-		// int boardCount = boardService.findBoardCount(); // 페이지 갯수를 계산하기 위한 데이터 조회
-		int boardCount = 1;
+
+		List<BoardDto> boards = boardService.showAllBoard(); // 좋아요순 정렬
+		List<GenBoardDto> genboards = boardService.showAllGenBoard();
+
+		int boardCount = genboards.size();
 		int pagerBlock = 1;
 		int start = 1;
 		int end = 1;
-		
-		// 페이저 (페이지 번호 목록) 표시를 위한 데이터 처리
-		//int pagerBlock = (pageNo - 1) / PAGER_SIZE;
-		//int start = (pagerBlock * PAGER_SIZE) + 1;
-		//int end = start + PAGER_SIZE;
-		
+
 		PagerDto pager = new PagerDto();
 		pager.setPageNo(pageNo);
 		pager.setPageSize(PAGE_SIZE);
@@ -147,58 +143,86 @@ public class BoardController {
 		pager.setDataCnt(boardCount);
 		pager.setPageStart(start);
 		pager.setPageEnd(end);
-		//pager.setLinkUrl(LINK_URL);
 		int pageCnt = (boardCount / PAGE_SIZE) + ((boardCount % PAGE_SIZE) > 0 ? 1 : 0);
 		pager.setPageCnt(pageCnt);
-		
-		//model.addAttribute("boards", boards);
+
 		model.addAttribute("pager", pager);
 		model.addAttribute("pageNo", pageNo);
-		
-		/*
-		 * int bono = 15;
-		 * 
-		 * BoardDto board = boardService.showBoardById(bono);
-		 * 
-		 * if(board != null) { board_exist = 1;
-		 * System.out.printf("-------------->board id " + board.getBoardId()); }
-		 */		
-		
-		// List<BoardDto> boards = boardService.showAllBoard();
-		List<GenBoardDto> genboards = boardService.showAllGenBoard();
-		
-		for(GenBoardDto genboard : genboards) {
-			if(genboard != null) {
-				board_exist = 1;
-				
-				for(BoardDto board : boards) {
-					System.out.println("\n");
-					if(board.getBoardId() == genboard.getBoardId())
-					{
-						
-						genboard.setBoardTitle(board.getBoardTitle());
-						genboard.setBoardContent(board.getBoardContent());						
-						genboard.setBoardWriterId(board.getBoardWriterId());
-						genboard.setBoardWriteDate(board.getBoardWriteDate());
-						genboard.setBoardViewCount(board.getBoardViewCount());
-						
-					}
-				}				
-			}			
+
+		// 핵심: boards 순서(좋아요순)를 유지하면서 general 게시판 글만 추출
+		List<GenBoardDto> orderedGenBoards = new java.util.ArrayList<>();
+
+		for (BoardDto board : boards) {
+			for (GenBoardDto genboard : genboards) {
+				if (board.getBoardId() == genboard.getBoardId()) {
+					genboard.setBoardTitle(board.getBoardTitle());
+					genboard.setBoardContent(board.getBoardContent());
+					genboard.setBoardWriterId(board.getBoardWriterId());
+					genboard.setBoardWriteDate(board.getBoardWriteDate());
+					genboard.setBoardViewCount(board.getBoardViewCount());
+					genboard.setBoardLikeCount(board.getBoardLikeCount());
+					genboard.setImgUrl(board.getImgUrl());
+					orderedGenBoards.add(genboard);
+					break;
+				}
+			}
 		}
 		
-		if(board_exist == 1) {
-			model.addAttribute("boards", genboards);
-		} else {
-			System.out.println("-------------->genboard null\n");
-		}
-		
-		
-		// 여기에 입력 게시판 페이지 관련 from listWithPaging demoweb2 BoardController.java
-		return "board/community"; 
-		
+		// 검색어가 있으면 제목 / 내용 / 작성자 기준으로 필터링
+	    List<GenBoardDto> filteredBoards = new java.util.ArrayList<>();
+
+	    if (keyword != null && !keyword.trim().isEmpty()) {
+	        String searchKeyword = keyword.trim().toLowerCase();
+
+	        for (GenBoardDto board : orderedGenBoards) {
+	            String title = board.getBoardTitle() != null ? board.getBoardTitle().toLowerCase() : "";
+	            String content = board.getBoardContent() != null ? board.getBoardContent().toLowerCase() : "";
+	            String writer = board.getBoardWriterId() != null ? board.getBoardWriterId().toLowerCase() : "";
+
+	            if (title.contains(searchKeyword) ||
+	                content.contains(searchKeyword) ||
+	                writer.contains(searchKeyword)) {
+	                filteredBoards.add(board);
+	            }
+	        }
+	    } else {
+	        filteredBoards = orderedGenBoards;
+	    }
+
+		// model.addAttribute("boards", orderedGenBoards);
+		model.addAttribute("boards", filteredBoards);
+
+		return "board/community";
 	}
-	
+
+	@PostMapping(path = {"/board/like"})
+	public String likeBoard(
+			@AuthenticationPrincipal RarepetUserDetails userDetails,
+			@RequestParam(value = "boardId", defaultValue = "-1") int boardId,
+			@RequestParam(value = "boardType", defaultValue = "community") String boardType
+			) {
+
+		if (userDetails == null) {
+			return "redirect:/auth/login";
+		}
+
+		if (boardId == -1) {
+			return "redirect:/board/community";
+		}
+
+		boardService.increaseBoardLikeCount(boardId);
+		
+		if ("qna".equals(boardType)) {
+	        return "redirect:/board/qna?boardId=" + boardId;
+	    }
+
+	    if ("adoption".equals(boardType)) {
+	        return "redirect:/board/adoption?boardId=" + boardId;
+	    }
+
+		return "redirect:/board/detail?boardId=" + boardId;
+	}
+		
 	// detail delete
 	@GetMapping(path = { "/board/delete" })
 	public String delete(
@@ -266,43 +290,35 @@ public class BoardController {
 	}
 	
 	
-	@GetMapping (path = {"/board/qnalist"}) 
+	@GetMapping(path = {"/board/qnalist"})
 	public String boardqnalist(Model model) {
-		
-		int board_exist = 0;
-		
-		System.out.println("--------------------QnAList");
-		
-		List<BoardDto> boards = boardService.showAllBoard();
-		List<QnaBoardDto> qnaboards = boardService.showAllQnaBoard();		
-		
-		for(QnaBoardDto qnaboard : qnaboards) {
-			if(qnaboard != null) {
-				board_exist = 1;
-				System.out.printf("-------------->qnaboard title \n" + qnaboard.getBoardTitle());
-				for(BoardDto board : boards) {
-					System.out.println("\n");
-					if(board.getBoardId() == qnaboard.getBoardId())
-					{
-						
-						qnaboard.setBoardTitle(board.getBoardTitle());
-						qnaboard.setBoardContent(board.getBoardContent());						
-						qnaboard.setBoardWriterId(board.getBoardWriterId());
-						qnaboard.setBoardWriteDate(board.getBoardWriteDate());
-						qnaboard.setBoardViewCount(board.getBoardViewCount());
-						
-					}
-				}				
-			}			
-		}
-		if(board_exist == 1) {
-			model.addAttribute("qnaboards", qnaboards);
-		} else {
-			System.out.println("-------------->qnaboard null\n");
-		}
-			
-		return "board/qnalist"; 
-		
+
+	    System.out.println("--------------------QnAList");
+
+	    List<BoardDto> boards = boardService.showAllBoard();      // 좋아요순 정렬
+	    List<QnaBoardDto> qnaboards = boardService.showAllQnaBoard();
+
+	    List<QnaBoardDto> orderedQnaBoards = new java.util.ArrayList<>();
+
+	    for (BoardDto board : boards) {
+	        for (QnaBoardDto qnaboard : qnaboards) {
+	            if (board.getBoardId() == qnaboard.getBoardId()) {
+	                qnaboard.setBoardTitle(board.getBoardTitle());
+	                qnaboard.setBoardContent(board.getBoardContent());
+	                qnaboard.setBoardWriterId(board.getBoardWriterId());
+	                qnaboard.setBoardWriteDate(board.getBoardWriteDate());
+	                qnaboard.setBoardViewCount(board.getBoardViewCount());
+	                qnaboard.setBoardLikeCount(board.getBoardLikeCount());
+	                qnaboard.setImgUrl(board.getImgUrl());
+	                orderedQnaBoards.add(qnaboard);
+	                break;
+	            }
+	        }
+	    }
+
+	    model.addAttribute("qnaboards", orderedQnaBoards);
+
+	    return "board/qnalist";
 	}		
 	
 	@GetMapping(path = {"/board/qwrite"})
@@ -349,8 +365,8 @@ public class BoardController {
 					board.setOriginalFileName(picture.getOriginalFilename());
 					board.setSavedFileName(savedFileName);
 					picture.transferTo(file);
-					board.setBoardLikeCount(2);
-					board.setBoardViewCount(2);
+					board.setBoardLikeCount(0);
+					board.setBoardViewCount(0);
 					
 					boardService.insertBoard(board);
 					
@@ -387,6 +403,10 @@ public class BoardController {
 			System.out.println("--------------------Qna NULL--  ");	
 			return "redirect:/board/qnalist";
 		}
+		
+		// ★ 조회수 증가
+	    boardService.increaseBoardViewCount(boardId);
+	    
 		System.out.println("QnA Ok");
 		
 		model.addAttribute("board", board);
@@ -501,43 +521,32 @@ public class BoardController {
 	@GetMapping (path = {"/board/adoptionlist"}) 
 	public String boardadoptionlist(Model model) {
 
-		int board_exist = 0;
-		System.out.println("--------------------Adoptionlist-----");
-		
-		List<BoardDto> boards = boardService.showAllBoard();
-		List<AdoBoardDto> adoboards = boardService.showAllAdoBoard();		
-		
-		for(AdoBoardDto adoboard : adoboards) {
-			if(adoboard != null) {
-				board_exist = 1;
-				System.out.println(adoboard);
-				System.out.println("\n");
-				
-				for(BoardDto board : boards) {
-					
-					if(board.getBoardId() == adoboard.getBoardId())
-					{
-										
-						adoboard.setBoardTitle(board.getBoardTitle());
-						adoboard.setBoardContent(board.getBoardContent());						
-						adoboard.setBoardWriterId(board.getBoardWriterId());
-						adoboard.setBoardWriteDate(board.getBoardWriteDate());
-						adoboard.setBoardViewCount(board.getBoardViewCount());
-						
-						System.out.println(adoboard);
-						System.out.println("\n");
-					}
-				}				
-			}			
-		}
-		if(board_exist == 1) {
-			model.addAttribute("adoboards", adoboards);
-		} else {
-			System.out.println("-------------->adoboard null\n");
-		}
-			
-		return "board/adoptionlist"; 
-		
+	    System.out.println("--------------------Adoptionlist-----");
+
+	    List<BoardDto> boards = boardService.showAllBoard();   // 좋아요순 정렬
+	    List<AdoBoardDto> adoboards = boardService.showAllAdoBoard();
+
+	    List<AdoBoardDto> orderedAdoBoards = new java.util.ArrayList<>();
+
+	    for (BoardDto board : boards) {
+	        for (AdoBoardDto adoboard : adoboards) {
+	            if (board.getBoardId() == adoboard.getBoardId()) {
+	                adoboard.setBoardTitle(board.getBoardTitle());
+	                adoboard.setBoardContent(board.getBoardContent());
+	                adoboard.setBoardWriterId(board.getBoardWriterId());
+	                adoboard.setBoardWriteDate(board.getBoardWriteDate());
+	                adoboard.setBoardViewCount(board.getBoardViewCount());
+	                adoboard.setBoardLikeCount(board.getBoardLikeCount());
+	                adoboard.setImgUrl(board.getImgUrl());
+	                orderedAdoBoards.add(adoboard);
+	                break;
+	            }
+	        }
+	    }
+
+	    model.addAttribute("adoboards", orderedAdoBoards);
+
+	    return "board/adoptionlist";
 	}
 	
 	@GetMapping(path = {"/board/adoptionwrite"})
@@ -583,8 +592,8 @@ public class BoardController {
 					board.setOriginalFileName(picture.getOriginalFilename());
 					board.setSavedFileName(savedFileName);
 					picture.transferTo(file);
-					board.setBoardLikeCount(2);
-					board.setBoardViewCount(2);					
+					board.setBoardLikeCount(0);
+					board.setBoardViewCount(0);					
 					
 					board.setBoardAdoptCategory(true);
 					board.setBoardAdoptDone(1);
@@ -776,6 +785,9 @@ public class BoardController {
 			model.addAttribute("user", user);
 		}
 		
+		// ★ 조회수 증가
+	    boardService.increaseBoardViewCount(boardId);
+		
 		model.addAttribute("board", board);
 		model.addAttribute("pageNo", pageNo);
 		model.addAttribute("adoboard", adoboard);
@@ -887,6 +899,10 @@ public class BoardController {
 		if (genboard == null) {
 			return "redirect:/board/boardlist";
 		}
+		
+		// ★ 조회수 증가
+	    boardService.increaseBoardViewCount(boardId);
+	    
 		//board.setBoardLikeCount(2);
 		
 		model.addAttribute("board", board);

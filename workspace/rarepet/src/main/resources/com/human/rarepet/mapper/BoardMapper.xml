@@ -9,6 +9,18 @@
         VALUES (#{boardTitle}, #{boardContent}, #{boardWriterId}, #{boardLikeCount}, #{boardViewCount}, #{boardWriteDate}, #{savedFileName}, #{originalFileName}, #{imgUrl})
     </insert>
     
+    <update id="increaseBoardLikeCount" parameterType="int">
+	    UPDATE board
+	    SET board_like_count = board_like_count + 1
+	    WHERE board_id = #{boardId}
+	</update>
+	
+	<update id="increaseBoardViewCount" parameterType="int">
+	    UPDATE board
+	    SET board_view_count = board_view_count + 1
+	    WHERE board_id = #{boardId}
+	</update>
+
     <update id="updateBoard" parameterType="BoardDto">
     UPDATE board 
     SET board_title = #{boardTitle}, 
@@ -53,10 +65,10 @@
     WHERE board_id = #{boardId}
 	</update>
     
-    <select id="showAllBoard" resultType="AdoBoardDto">
+    <select id="showAllBoard" resultType="BoardDto">
 		select *
 		from board
-		ORDER BY board_like_count DESC
+		ORDER BY board_like_count DESC, board_id DESC
 	</select>
 	
 	<select id="showAllGenBoard" resultType="GenBoardDto">

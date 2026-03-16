@@ -88,20 +88,22 @@ body{
 
     <!-- 검색 및 카테고리 (PDF 기능) -->
     <div class="row mb-4">
-        <div class="col-md-3">
-            <select class="form-select">
-                <option>전체 카테고리</option>
-                <option>포유류</option>
-                <option>조류</option>
-            </select>
-        </div>
+    <form th:action="@{/board/community}" method="get" class="row g-2">
         <div class="col-md-6">
-            <input type="text" class="form-control" placeholder="검색어를 입력하세요">
+            <input type="text"
+                   name="keyword"
+                   class="form-control"
+                   placeholder="검색어를 입력하세요"
+                   th:value="${keyword}">
         </div>
         <div class="col-md-3">
-            <button class="btn btn-outline-secondary w-100">검색</button>
+            <button type="submit" class="btn btn-outline-secondary w-100">검색</button>
         </div>
-    </div>
+        <div class="col-md-3">
+            <a th:href="@{/board/community}" class="btn btn-outline-dark w-100">전체보기</a>
+        </div>
+    </form>
+</div>
 
 	
     <table class="table table-hover">
@@ -112,14 +114,17 @@ body{
         <th scope="col">작성자</th>
         <th scope="col">작성일</th>
         <th scope="col">조회수</th>
+        <th scope="col">좋아요</th>
       </tr>
       </thead>
-      <tbody>                      
-        <tr th:each="board: ${boards}" style="height:30px">
+      <tbody>
+        <tr th:each="board, boardStat : ${boards}" style="height:30px">
           <th scope="row" th:text="${ board.boardId }"></th>
           <td>
             <a 	th:href="@{/board/detail(boardId=${board.boardId}) }"
                 th:text="${ board.boardTitle }"></a>
+                
+            <span th:if="${boardStat.index == 0}" class="badge bg-danger ms-2">인기글</span>
           </td>
           <!-- 
           <td th:text="${ board.boardTitle }"></td>
@@ -130,8 +135,14 @@ body{
           </td>
            -->                
           <td th:text="${ board.boardWriterId }"></td>
-          <td th:text="${ board.boardWriteDate }"></td>
+          <td th:text="${#dates.format(board.boardWriteDate, 'yyyy-MM-dd')}"></td>
           <td th:text="${ board.boardViewCount }"></td>
+		  <td>
+		    <span class="text-danger">
+		        <i class="bi bi-heart-fill"></i>
+		    </span>
+		    <span th:text="${ board.boardLikeCount }">0</span>
+		  </td>
         </tr>
       </tbody>
     </table>
@@ -139,6 +150,7 @@ body{
 </div>
 
 	<!-- PAGINATION -->
+	<!-- 
 		<<nav aria-label="board pager">
           <ul class="pagination justify-content-center">
           <li class="page-item">	                            
@@ -182,7 +194,7 @@ body{
           </ul>
       </nav>
 	</div>
-
+ -->
 	
 	<div th:replace="fragments/fragment :: footer"></div>
 <div th:replace="fragments/fragment :: message"></div>

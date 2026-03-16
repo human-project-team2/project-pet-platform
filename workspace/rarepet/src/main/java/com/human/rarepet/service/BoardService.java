@@ -125,6 +125,14 @@ public class BoardService {
 
 	public void insertQnaApplyBoard(QnaBoardAnswerDto qnaapply) {
 		boardMapper.insertBoardQnaApply(qnaapply);
+	}
+
+	public void increaseBoardLikeCount(int boardId) {
+		boardMapper.increaseBoardLikeCount(boardId);
+	}
+
+	public void increaseBoardViewCount(int boardId) {
+		boardMapper.increaseBoardViewCount(boardId);
 	}	
 
 }
