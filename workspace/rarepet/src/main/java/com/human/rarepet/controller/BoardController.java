@@ -94,8 +94,8 @@ public class BoardController {
 					board.setOriginalFileName(picture.getOriginalFilename());
 					board.setSavedFileName(savedFileName);
 					picture.transferTo(file);
-					board.setBoardLikeCount(1);
-					board.setBoardViewCount(1);
+					board.setBoardLikeCount(0);
+					board.setBoardViewCount(0);
 					
 					// board.getBoardWriteDate();
 					boardService.insertBoard(board);
@@ -124,22 +124,17 @@ public class BoardController {
 	public String boardlist(
 			@RequestParam(value="pageNo", defaultValue="1") int pageNo,
 			Model model) {
-		int board_exist = 0;
+
 		System.out.println("--------------------Community page");
-		
-		// List<BoardDto> boards = boardService.findBoardByPage(pageNo, PAGE_SIZE);
-		List<BoardDto> boards = boardService.showAllBoard();
-		// int boardCount = boardService.findBoardCount(); // 페이지 갯수를 계산하기 위한 데이터 조회
-		int boardCount = 1;
+
+		List<BoardDto> boards = boardService.showAllBoard(); // 좋아요순 정렬
+		List<GenBoardDto> genboards = boardService.showAllGenBoard();
+
+		int boardCount = genboards.size();
 		int pagerBlock = 1;
 		int start = 1;
 		int end = 1;
-		
-		// 페이저 (페이지 번호 목록) 표시를 위한 데이터 처리
-		//int pagerBlock = (pageNo - 1) / PAGER_SIZE;
-		//int start = (pagerBlock * PAGER_SIZE) + 1;
-		//int end = start + PAGER_SIZE;
-		
+
 		PagerDto pager = new PagerDto();
 		pager.setPageNo(pageNo);
 		pager.setPageSize(PAGE_SIZE);
@@ -147,58 +142,54 @@ public class BoardController {
 		pager.setDataCnt(boardCount);
 		pager.setPageStart(start);
 		pager.setPageEnd(end);
-		//pager.setLinkUrl(LINK_URL);
 		int pageCnt = (boardCount / PAGE_SIZE) + ((boardCount % PAGE_SIZE) > 0 ? 1 : 0);
 		pager.setPageCnt(pageCnt);
-		
-		//model.addAttribute("boards", boards);
+
 		model.addAttribute("pager", pager);
 		model.addAttribute("pageNo", pageNo);
-		
-		/*
-		 * int bono = 15;
-		 * 
-		 * BoardDto board = boardService.showBoardById(bono);
-		 * 
-		 * if(board != null) { board_exist = 1;
-		 * System.out.printf("-------------->board id " + board.getBoardId()); }
-		 */		
-		
-		// List<BoardDto> boards = boardService.showAllBoard();
-		List<GenBoardDto> genboards = boardService.showAllGenBoard();
-		
-		for(GenBoardDto genboard : genboards) {
-			if(genboard != null) {
-				board_exist = 1;
-				
-				for(BoardDto board : boards) {
-					System.out.println("\n");
-					if(board.getBoardId() == genboard.getBoardId())
-					{
-						
-						genboard.setBoardTitle(board.getBoardTitle());
-						genboard.setBoardContent(board.getBoardContent());						
-						genboard.setBoardWriterId(board.getBoardWriterId());
-						genboard.setBoardWriteDate(board.getBoardWriteDate());
-						genboard.setBoardViewCount(board.getBoardViewCount());
-						
-					}
-				}				
-			}			
+
+		// 핵심: boards 순서(좋아요순)를 유지하면서 general 게시판 글만 추출
+		List<GenBoardDto> orderedGenBoards = new java.util.ArrayList<>();
+
+		for (BoardDto board : boards) {
+			for (GenBoardDto genboard : genboards) {
+				if (board.getBoardId() == genboard.getBoardId()) {
+					genboard.setBoardTitle(board.getBoardTitle());
+					genboard.setBoardContent(board.getBoardContent());
+					genboard.setBoardWriterId(board.getBoardWriterId());
+					genboard.setBoardWriteDate(board.getBoardWriteDate());
+					genboard.setBoardViewCount(board.getBoardViewCount());
+					genboard.setBoardLikeCount(board.getBoardLikeCount());
+					genboard.setImgUrl(board.getImgUrl());
+					orderedGenBoards.add(genboard);
+					break;
+				}
+			}
 		}
-		
-		if(board_exist == 1) {
-			model.addAttribute("boards", genboards);
-		} else {
-			System.out.println("-------------->genboard null\n");
-		}
-		
-		
-		// 여기에 입력 게시판 페이지 관련 from listWithPaging demoweb2 BoardController.java
-		return "board/community"; 
-		
+
+		model.addAttribute("boards", orderedGenBoards);
+
+		return "board/community";
 	}
-	
+
+	@PostMapping(path = {"/board/like"})
+	public String likeBoard(
+			@AuthenticationPrincipal RarepetUserDetails userDetails,
+			@RequestParam(value = "boardId", defaultValue = "-1") int boardId) {
+
+		if (userDetails == null) {
+			return "redirect:/auth/login";
+		}
+
+		if (boardId == -1) {
+			return "redirect:/board/community";
+		}
+
+		boardService.increaseBoardLikeCount(boardId);
+
+		return "redirect:/board/detail?boardId=" + boardId;
+	}
+		
 	// detail delete
 	@GetMapping(path = { "/board/delete" })
 	public String delete(
@@ -349,8 +340,8 @@ public class BoardController {
 					board.setOriginalFileName(picture.getOriginalFilename());
 					board.setSavedFileName(savedFileName);
 					picture.transferTo(file);
-					board.setBoardLikeCount(2);
-					board.setBoardViewCount(2);
+					board.setBoardLikeCount(0);
+					board.setBoardViewCount(0);
 					
 					boardService.insertBoard(board);
 					
@@ -583,8 +574,8 @@ public class BoardController {
 					board.setOriginalFileName(picture.getOriginalFilename());
 					board.setSavedFileName(savedFileName);
 					picture.transferTo(file);
-					board.setBoardLikeCount(2);
-					board.setBoardViewCount(2);					
+					board.setBoardLikeCount(0);
+					board.setBoardViewCount(0);					
 					
 					board.setBoardAdoptCategory(true);
 					board.setBoardAdoptDone(1);

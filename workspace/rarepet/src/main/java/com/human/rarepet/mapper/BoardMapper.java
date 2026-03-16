@@ -56,4 +56,6 @@ public interface BoardMapper {
 
 	void insertBoardQnaApply(QnaBoardAnswerDto qnaapply);
 	
+	void increaseBoardLikeCount(int boardId);
+	
 }
