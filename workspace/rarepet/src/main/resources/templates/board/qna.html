@@ -72,6 +72,17 @@
     .modal-body { padding: 35px; }
     .form-control { border-radius: 15px; padding: 15px; border: 1px solid #eee; background: #fdfdfd; }
     .form-control:focus { border-color: var(--primary-color); box-shadow: none; background: white; }
+    .like-info-box {
+	    display: inline-flex;
+	    align-items: center;
+	    gap: 8px;
+	    padding: 10px 16px;
+	    border-radius: 999px;
+	    background: #fff7f3;
+	    border: 1px solid #ffd8c2;
+	    font-weight: 600;
+	    color: #e76f51;
+	}
 </style>
 </head>
 
@@ -111,7 +122,7 @@
         </div>
 
         <!-- 이미지 영역 -->
-        <div class="image-area mb-4">
+        <div class="image-area mb-4" style=width:300px>
             <div class="card shadow border-0">
                 <img th:src="@{${board.imgUrl}}" class="card-img-top" alt="동물 이미지">
             </div>
@@ -122,7 +133,29 @@
         <div class="content-area mb-4" th:text="${board.boardContent}">
             게시글 내용이 여기에 표시됩니다.
         </div>
- 
+        
+        <div class="d-flex align-items-center gap-3 mb-4">
+		    <form th:action="@{/board/like}" method="post" class="m-0">
+		        <input type="hidden" name="boardId" th:value="${board.boardId}">
+		        <input type="hidden" name="boardType" value="qna">
+		        <button type="submit" class="btn btn-outline-anyzoo btn-custom">
+		            <i class="bi bi-heart-fill me-1"></i> 좋아요
+		        </button>
+		    </form>
+		
+		    <div class="like-info-box">
+		        <i class="bi bi-heart-fill"></i>
+		        <span>좋아요</span>
+		        <span th:text="${board.boardLikeCount}">0</span>
+		    </div>
+		
+		    <div class="like-info-box" style="color:#6c757d; border-color:#dee2e6; background:#f8f9fa;">
+		        <i class="bi bi-eye-fill"></i>
+		        <span>조회수</span>
+		        <span th:text="${board.boardViewCount}">0</span>
+		    </div>
+		</div>
+	 
         <div class="d-flex justify-content-between align-items-center">
         	<th:block sec:authorize="isAuthenticated()">
         	
