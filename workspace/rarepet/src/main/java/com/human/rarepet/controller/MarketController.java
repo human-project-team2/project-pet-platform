@@ -65,19 +65,19 @@ public class MarketController {
 		return "market/list";
 	}
 	
+	// 제품 상세
 	@GetMapping(path="/market/detail/{productNo}")
 	public String marketDetail(@PathVariable("productNo") int productNo,
 								Model model) {
-	
+		
 		ProductDto product = marketService.selectProductByNo(productNo);
+		
 		String id = product.getSellerId();
 		MemberDto member = memberService.selectMember(id);
 		
 		model.addAttribute("phone", member.getPhone());
 		model.addAttribute("email", member.getEmail());
 		model.addAttribute("product", product);
-		
-		
 		
 		return "market/detail";
 	}

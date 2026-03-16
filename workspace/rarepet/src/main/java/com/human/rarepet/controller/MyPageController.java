@@ -50,7 +50,7 @@ public class MyPageController {
         // 3. 서비스 호출: DB에서 유저 정보와 해당 유저의 상품 리스트 가져오기
         MemberDto user = memberService.getUserById(loginUser.getId());
         List<ProductDto> myProducts = marketService.findProductsByUserId(loginUser.getId());
-
+        System.out.println(myProducts);
         ShopDto shop = (ShopDto)shopService.showShopInfo(user.getId());
         
         // 4. 화면(HTML)으로 데이터 전달

@@ -158,7 +158,7 @@ body {
 							<div th:each="item : ${myProducts}"
 								class="content-card d-flex align-items-center justify-content-between">
 								<div class="d-flex align-items-center gap-3">
-									<img th:src="${item.imgUrl}" class="item-img shadow-sm">
+									<img th:src="${item.productImages[0].imgUrl}" class="item-img shadow-sm">
 									<div>
 										<h6 class="fw-bold mb-1" th:text="${item.productName}">상품명</h6>
 										<p class="text-danger fw-bold mb-0"
