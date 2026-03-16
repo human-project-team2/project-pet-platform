@@ -9,16 +9,16 @@
     </insert>
 
     <select id="selectAllReviews" resultType="com.human.rarepet.dto.ReviewDto">
-        SELECT r.review_no, r.id, r.order_no, r.product_no, r.created_at, r.content,
-               r.modified_at, r.rating, p.product_name, p.img_url
-        FROM review r
-        LEFT JOIN product_all p ON r.product_no = p.product_no
-        ORDER BY r.review_no DESC
-    </select>
+    SELECT r.review_no, r.id, r.order_no, r.product_no, r.created_at, r.content,
+           r.modified_at, r.rating, p.product_name
+    FROM review r
+    LEFT JOIN product_all p ON r.product_no = p.product_no
+    ORDER BY r.review_no DESC
+</select>
 
     <select id="selectReviewByNo" resultType="com.human.rarepet.dto.ReviewDto">
         SELECT r.review_no, r.id, r.order_no, r.product_no, r.created_at, r.content,
-               r.modified_at, r.rating, p.product_name, p.img_url
+               r.modified_at, r.rating, p.product_name
         FROM review r
         LEFT JOIN product_all p ON r.product_no = p.product_no
         WHERE r.review_no = #{reviewNo}

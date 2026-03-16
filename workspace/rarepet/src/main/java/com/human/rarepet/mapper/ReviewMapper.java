@@ -12,9 +12,7 @@ public interface ReviewMapper {
     // 리뷰 목록 조회
     List<ReviewDto> selectAllReviews();
 
-    // --- 아래 메서드들을 추가합니다 ---
-
-    // 특정 리뷰 상세 조회 (수정 폼 데이터 바인딩용)
+    // 특정 리뷰 상세 조회 (수정 페이지에서 사용)
     ReviewDto selectReviewByNo(Long reviewNo);
 
     // 리뷰 수정 실행 (업데이트)

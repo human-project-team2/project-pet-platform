@@ -42,7 +42,6 @@
         .btn-write { background-color: #e76f51; color: white; border-radius: 10px; padding: 10px 25px; border: none; }
         .btn-write:hover { background-color: #d65d41; color: white; }
 
-        /* 수정/삭제 버튼 스타일 */
         .btn-action { font-size: 13px; padding: 5px 12px; border-radius: 8px; border: none; transition: 0.2s; }
         .btn-edit { background-color: #f8f9fa; color: #666; border: 1px solid #ddd; }
         .btn-edit:hover { background-color: #e9ecef; color: #333; }
@@ -64,7 +63,7 @@
     <div class="container" style="margin-top: -30px; margin-bottom: 80px;">
         <div class="row mb-4">
             <div class="col-12 d-flex justify-content-between align-items-center bg-white p-3 shadow-sm" style="border-radius: 15px;">
-                <span class="fw-bold text-muted" th:text="|총 ${list.size()}개의 소중한 리뷰가 있습니다.|">총 0개</span>
+                <span class="fw-bold text-muted" th:if="${list != null}" th:text="|총 ${list.size()}개의 소중한 리뷰가 있습니다.|">총 0개</span>
                 <a th:href="@{/review/write}" class="btn btn-write shadow-sm">리뷰 쓰기</a>
             </div>
         </div>
@@ -72,8 +71,7 @@
         <div class="row g-4">
             <div class="col-md-4" th:each="review : ${list}">
                 <div class="card review-card shadow-sm">
-                    <img th:src="${review.imgUrl != null and review.imgUrl != '' ? review.imgUrl : 'https://via.placeholder.com/500x350'}" 
-                         class="card-img-top review-img" alt="리뷰 이미지">
+                    <img src="https://via.placeholder.com/500x350" class="card-img-top review-img" alt="기본 이미지">
 
                     <div class="card-body p-4 d-flex flex-column">
                         <div class="star-rating mb-2" style="color: #ffb703;">
@@ -81,7 +79,7 @@
                                th:classappend="${i <= review.rating} ? 'bi-star-fill' : 'bi-star'"></i>
                         </div>
 
-                        <h5 class="card-title fw-bold" style="color: #5a3c32;" th:text="${review.productName}">상품명</h5>
+                        <h5 class="card-title fw-bold" style="color: #5a3c32;" th:text="${review.productName ?: '알 수 없는 상품'}">상품명</h5>
                         
                         <div class="review-text-area" th:text="${review.content}"></div>
 
@@ -121,7 +119,6 @@
     <script th:inline="javascript">
         function deleteReview(reviewNo) {
             if (confirm("정말로 이 리뷰를 삭제하시겠습니까?")) {
-                // 삭제 요청 URL로 이동 (컨트롤러에 해당 매핑이 있어야 합니다)
                 location.href = "/review/delete/" + reviewNo;
             }
         }
