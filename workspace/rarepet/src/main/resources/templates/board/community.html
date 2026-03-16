@@ -133,7 +133,7 @@ body{
           </td>
            -->                
           <td th:text="${ board.boardWriterId }"></td>
-          <td th:text="${ board.boardWriteDate }"></td>
+          <td th:text="${#dates.format(board.boardWriteDate, 'yyyy-MM-dd')}"></td>
           <td th:text="${ board.boardViewCount }"></td>
 		  <td>
 		    <span class="text-danger">
@@ -148,6 +148,7 @@ body{
 </div>
 
 	<!-- PAGINATION -->
+	<!-- 
 		<<nav aria-label="board pager">
           <ul class="pagination justify-content-center">
           <li class="page-item">	                            
@@ -191,7 +192,7 @@ body{
           </ul>
       </nav>
 	</div>
-
+ -->
 	
 	<div th:replace="fragments/fragment :: footer"></div>
 <div th:replace="fragments/fragment :: message"></div>

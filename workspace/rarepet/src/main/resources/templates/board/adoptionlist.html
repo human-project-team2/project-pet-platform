@@ -137,7 +137,7 @@ body{
                 th:text="${ board.boardTitle }"></a>
           </td>          
           <td th:text="${ board.boardWriterId }"></td>
-          <td th:text="${ board.boardWriteDate }"></td>
+          <td th:text="${#dates.format(board.boardWriteDate, 'yyyy-MM-dd')}"></td>
           <td th:text="${ board.boardViewCount }"></td>
           <td>
               <span class="text-danger">
