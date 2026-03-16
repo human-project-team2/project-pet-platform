@@ -123,6 +123,7 @@ public class BoardController {
 	@GetMapping (path = {"/board/community"}) 
 	public String boardlist(
 			@RequestParam(value="pageNo", defaultValue="1") int pageNo,
+			@RequestParam(value = "keyword", defaultValue = "") String keyword,
 			Model model) {
 
 		System.out.println("--------------------Community page");
@@ -166,8 +167,30 @@ public class BoardController {
 				}
 			}
 		}
+		
+		// 검색어가 있으면 제목 / 내용 / 작성자 기준으로 필터링
+	    List<GenBoardDto> filteredBoards = new java.util.ArrayList<>();
 
-		model.addAttribute("boards", orderedGenBoards);
+	    if (keyword != null && !keyword.trim().isEmpty()) {
+	        String searchKeyword = keyword.trim().toLowerCase();
+
+	        for (GenBoardDto board : orderedGenBoards) {
+	            String title = board.getBoardTitle() != null ? board.getBoardTitle().toLowerCase() : "";
+	            String content = board.getBoardContent() != null ? board.getBoardContent().toLowerCase() : "";
+	            String writer = board.getBoardWriterId() != null ? board.getBoardWriterId().toLowerCase() : "";
+
+	            if (title.contains(searchKeyword) ||
+	                content.contains(searchKeyword) ||
+	                writer.contains(searchKeyword)) {
+	                filteredBoards.add(board);
+	            }
+	        }
+	    } else {
+	        filteredBoards = orderedGenBoards;
+	    }
+
+		// model.addAttribute("boards", orderedGenBoards);
+		model.addAttribute("boards", filteredBoards);
 
 		return "board/community";
 	}

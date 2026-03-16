@@ -88,20 +88,22 @@ body{
 
     <!-- 검색 및 카테고리 (PDF 기능) -->
     <div class="row mb-4">
-        <div class="col-md-3">
-            <select class="form-select">
-                <option>전체 카테고리</option>
-                <option>포유류</option>
-                <option>조류</option>
-            </select>
-        </div>
+    <form th:action="@{/board/community}" method="get" class="row g-2">
         <div class="col-md-6">
-            <input type="text" class="form-control" placeholder="검색어를 입력하세요">
+            <input type="text"
+                   name="keyword"
+                   class="form-control"
+                   placeholder="검색어를 입력하세요"
+                   th:value="${keyword}">
         </div>
         <div class="col-md-3">
-            <button class="btn btn-outline-secondary w-100">검색</button>
+            <button type="submit" class="btn btn-outline-secondary w-100">검색</button>
         </div>
-    </div>
+        <div class="col-md-3">
+            <a th:href="@{/board/community}" class="btn btn-outline-dark w-100">전체보기</a>
+        </div>
+    </form>
+</div>
 
 	
     <table class="table table-hover">
