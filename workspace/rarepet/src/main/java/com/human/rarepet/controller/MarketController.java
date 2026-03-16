@@ -48,12 +48,16 @@ public class MarketController {
 	}
 	
 	@GetMapping(path={"/market"})
-	public String market(Model model) {
+	public String market(Model model,
+			             @RequestParam(value = "search", required = false) String search,
+			             @RequestParam(value = "category", required = false) String category) {
 	
-		List<ProductDto> products = marketService.showAllProduct();
+		//List<ProductDto> products = marketService.showAllProduct();
+		List<ProductDto> products = marketService.searchProducts(search, category);
 		List<ShopDto> shops = shopService.selectAllShops();
 		
-		
+		model.addAttribute("category", category);
+		model.addAttribute("search", search);
 		model.addAttribute("products", products);
 		model.addAttribute("shops", shops);
 		System.out.println(shops);

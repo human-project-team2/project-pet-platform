@@ -38,18 +38,13 @@ public class ChatRoomController {
 	public List<ChatMessageDto> chatRoomTest(@AuthenticationPrincipal RarepetUserDetails userDetails,
 								@PathVariable(value = "chatRoomId") String chatRoomId,
 								Model model ) {
+		
 		if (userDetails != null) {
 			
 			MemberDto member = userDetails.getMember();
 			model.addAttribute("member", member);
 			
-			List<ChatMessageDto> chatHistory = chatRoomService.getChatMessagesByChatRoomId(chatRoomId);
-			chatHistory.forEach(message -> {
-				MemberDto sender = memberService.selectMember(message.getSender());
-				message.setSenderImgUrl(sender.getImgUrl());
-			});
-			
-			return chatHistory;
+			return chatRoomService.getChatMessagesByChatRoomId(chatRoomId);
 			
 		} else {
 			return List.of(); // 인증되지 않은 사용자는 빈 리스트 반환
@@ -61,6 +56,9 @@ public class ChatRoomController {
 	public void sendWsMessage(@DestinationVariable("chatRoomId") String chatRoomId, // websocket 에서는 @PathVariable 대신 @DestinationVariable 사용
 							
 			ChatMessageDto message) {
+		
+		MemberDto member = memberService.selectMember(message.getSender());
+		message.setSenderImgUrl(member.getImgUrl());
 		
 		messagingTemplate.convertAndSend("/topic/chatRoom/" + chatRoomId, message);
 		 

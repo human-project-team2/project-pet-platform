@@ -149,6 +149,17 @@ body {
 							<span class="badge bg-warning text-dark px-3 py-2"
 								th:text="${product.productCategory}">분류</span>
 						</div>
+						<div class="mb-2">
+							    <span class="badge bg-danger"
+							          th:if="${product.productCount == 0}">
+							        품절
+							    </span>
+							
+							    <span class="badge bg-secondary"
+							          th:if="${product.productCount > 0}"
+							          th:text="'수량 : ' + ${product.productCount}">
+							    </span>
+						</div>
 						<h5 class="card-title fw-bold mb-3"
 							th:text="${product.productName}">이름</h5>
 						<p class="card-text text-muted small mb-4"
