@@ -40,7 +40,7 @@ public interface BoardCommentMapper {
 			"WHERE comment_id = #{ commentNo }")
 	void updateGroupNo(@Param("commentNo")int commentNo, @Param("groupNo")int groupNo);
 	
-	@Select("SELECT comment_id, id, board_id, content, write_date, modify_date, deleted " + 
+	@Select("SELECT comment_id comment_no, id, board_id, content, write_date, modify_date, deleted " + 
 			"FROM comment " +
 			"WHERE board_id = #{ boardId }")
 	List<BoardCommentDto> selectCommentByBoardNo(int boardId);
@@ -50,7 +50,7 @@ public interface BoardCommentMapper {
 			//"FROM tbl_boardcomment " +
 			//"WHERE comment_no = #{ commentNo }")
 	
-	@Select("SELECT *comment_id, id, board_id, content, write_date, modify_date, deleted " + 
+	@Select("SELECT comment_id comment_no, id, board_id, content, write_date, modify_date, deleted " + 
 			"FROM comment " +
 			"WHERE comment_id = #{ commentNo }")
 	BoardCommentDto selectCommentByCommentNo(int commentNo);
