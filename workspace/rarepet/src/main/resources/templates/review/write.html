@@ -146,10 +146,10 @@
                         </div>
 
                         <div class="mb-4">
-                            <label for="title" class="form-label">상품명</label>
-                            <input type="text" class="form-control" id="productName" name="productName" value="22" readonly="readonly"  required>
-                            
-                        </div>
+						    <label for="productName" class="form-label">상품명</label>
+						    <input type="text" class="form-control" id="productName" name="productName" 
+						           th:value="${productName}" readonly="readonly" style="background-color: #f8f9fa;">
+						</div>
 
                         <div class="mb-4">
                             <label for="content" class="form-label">마켓 후기</label>
@@ -158,7 +158,7 @@
 
                         <div class="mb-4">
                             <label for="image" class="form-label">사진 첨부 (선택)</label>
-                            <input type="file" class="form-control" id="image" name="image" accept="image/*">
+                            <input type="file" class="form-control" id="imgUrl" name="imgUrl" accept="image/*">
                             <div class="form-text mt-2 text-muted">예쁜 사진을 공유하면 다른 분들에게 큰 도움이 됩니다!</div>
                         </div>
 

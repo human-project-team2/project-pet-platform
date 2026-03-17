@@ -99,6 +99,20 @@ body {
 	height: 150px;
 	object-fit: cover;
 }
+
+.product-gallery .main-image img {
+    width: 100%;
+    height: 400px;
+    object-fit: cover;
+    border-radius: 20px;
+    transition: 0.3s ease;
+}
+
+.product-gallery .thumbnails img:hover {
+    border: 2px solid #ffc107;
+    transform: scale(1.1);
+    transition: 0.2s ease;
+}
 </style>
 
 </head>
@@ -125,20 +139,40 @@ body {
 
 		<div class="row g-5">
 
-			<!-- LEFT : Image -->
+			<!-- LEFT : Image with preview thumbnails -->
 			<div class="col-lg-6">
-				<div class="card shadow">
-					<img
-						th:src="@{${product.imgUrl}}"
-						class="card-img-top">
-				</div>
+			    <div class="product-gallery shadow">
+			        <!-- Main image -->
+			        <div class="main-image mb-3">
+			            <img id="currentImage"
+			                 th:src="@{${product.productImages[0].imgUrl}}"
+			                 alt="Product Image"
+			                 class="img-fluid rounded">
+			        </div>
+			
+			        <!-- Preview thumbnails -->
+			        <div class="thumbnails d-flex gap-2">
+			            <th:block th:each="img : ${product.productImages}">
+			                <img th:src="@{${img.imgUrl}}" 
+			                     alt="Preview"
+			                     class="preview img-thumbnail"
+			                     style="width: 60px; height: 60px; object-fit: cover; cursor: pointer;">
+			            </th:block>
+			        </div>
+			    </div>
 			</div>
 
 			<!-- RIGHT : Basic Info -->
 			<div class="col-lg-6">
 				<div class="card shadow p-4">
 
-					<div class="price-badge mb-3" th:text="|₩${product.price}|" ></div>
+					<div class="d-flex align-items-center gap-2 mb-3">
+					    <div class="price-badge" th:text="${#numbers.formatInteger(product.price, 0, 'COMMA')} + '원'"></div>
+					    <span class="badge bg-secondary text-white badge-tiny d-inline-block" 
+					          th:if="${product.productCount > 0}" 
+					          th:text="'수량: ' + ${product.productCount}">
+					    </span>
+					</div>
 
 					<ul class="list-unstyled mb-4">
 						<li><strong>품종:</strong>
@@ -149,6 +183,8 @@ body {
 						<li><strong>접종여부:</strong></li>
 						<li><strong>지역:</strong></li>
 					</ul>
+					
+					
 
 					<div class="d-flex gap-3 flex-wrap">
 
@@ -170,7 +206,7 @@ body {
 						        💬 판매자 문의
 						    </button>
 						</th:block>
-						
+					   
 						<form th:action="@{/market/shoppingCart}" method="post">
 							<input type="hidden" name="productNo" th:value="${product.productNo}">
 							<button type="submit" class="btn btn-outline-dark rounded-pill px-4">
@@ -224,6 +260,14 @@ body {
 	
 	<script th:replace="fragments/fragment :: message_script"></script>
 	<script>
+		const previews = document.querySelectorAll(".preview");
+	    const mainImage = document.getElementById("currentImage");
+	
+	    previews.forEach(img => {
+	        img.addEventListener("mouseenter", () => {
+	            mainImage.src = img.src;
+	        });
+	    });
 		
 	</script>
 </body>

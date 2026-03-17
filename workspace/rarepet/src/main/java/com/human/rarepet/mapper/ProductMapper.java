@@ -6,6 +6,8 @@ import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.One;
+import org.apache.ibatis.annotations.Options;
+import org.apache.ibatis.annotations.Many;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Result;
 import org.apache.ibatis.annotations.Results;
@@ -51,17 +53,24 @@ public interface ProductMapper {
 	List<ProductDto> findProductsByUserId(String id);
 	
 	@Select("select * from product_all where product_no = #{productNo}")
+	@Results({
+			@Result(property = "productNo", column = "product_no"),
+			@Result(property = "productImages", column = "product_no", 
+			        many = @Many(select = "com.human.rarepet.mapper.ProductMapper.selectProductImagesByProductNo"))
+	})
 	ProductDto selectProductByNo(int productNo);
-	
+
 	@Insert("insert into shopping_cart values (#{savedListDate}, #{id}, #{productNo}, #{cartQuantity})")
 	void addShoppingCart(ShoppingCartDto added);
-	
+
+	// 밑에 쿼리 : product_no 를 이용하여 selectProductByNo 메서드를 호출하여 shoppingDto 의 product 필드를 채워주도록
+	// 하려면 @Results 어노테이션을 이용해서 매핑을 해줘야 함.
 	@Select(
 			"select c.saved_list_date, c.cart_quantity, "
-			+ "p.seller_id, p.product_no, p.product_name, p.price, p.img_url "
+			+ "p.seller_id, p.product_no, p.product_name, p.price "
 			+ "from shopping_cart c, product_all p where c.product_no = p.product_no and c.id = #{id}")
 	@Results({
-		
+		@Result(property = "productNo", column = "product_no"),
 		@Result(property = "product", column = "product_no",
 				one = @One(select = "com.human.rarepet.mapper.ProductMapper.selectProductByNo"))
 	})
@@ -72,6 +81,8 @@ public interface ProductMapper {
 	
 	@Update("update shopping_cart set cart_quantity = #{cartQuantity} where product_no = #{productNo} and id = #{id}")
 	void updateShoppingCart(ShoppingCartDto updated);
+	
+	
 	
 	List<ProductDto> findProductsByFilter(@Param("search") String search, @Param("category") String category);
 	
