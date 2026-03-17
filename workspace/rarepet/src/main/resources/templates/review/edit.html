@@ -88,11 +88,7 @@
                                       placeholder="수정할 내용을 입력해주세요." required th:text="${review.content}"></textarea>
                         </div>
 
-                        <div class="mb-4" th:if="${review.imgUrl != null}">
-                            <label class="form-label d-block">기존 사진</label>
-                            <img th:src="${review.imgUrl}" class="rounded mb-2" style="max-height: 150px; display: block;">
-                            <div class="form-text text-danger">새 파일을 선택하면 기존 사진이 교체됩니다.</div>
-                        </div>
+                      
 
                         <div class="mb-4">
                             <label for="image" class="form-label">사진 변경 (선택)</label>
