@@ -55,6 +55,9 @@ body {
 <script th:if="${message}" th:inline="javascript"> // message == null 일 경우 무시
 	alert(/*[[${message}]]*/"");
 </script>
+<script th:if="${msg}" th:inline="javascript"> // message == null 일 경우 무시
+	alert(/*[[${msg}]]*/"");
+</script>
 <div class="container my-5">
 
     <h3 class="fw-bold mb-4">🛒 장바구니</h3>
@@ -179,13 +182,12 @@ $(()=>{
 			{method: "post", 
 			headers: {"content-type": "application/json"},
 			body: JSON.stringify(updatedList)}		
-		).then(response => response.text()).then(data => {
-			if(data == "success"){
-				alert("저장되었습니다.")
-				location.reload();
+		).then(response => response.text())
+		.then(result => {
+			if(result === "success"){
+				alert("저장되었습니다.");
 			} else {
 				alert("저장 실패");
-				location.reload();
 			}
 		})
 		

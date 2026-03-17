@@ -25,6 +25,8 @@ import com.human.rarepet.dto.ProductImageDto;
 import com.human.rarepet.dto.ShopDto;
 import com.human.rarepet.dto.ShoppingCartDto;
 import com.human.rarepet.dto.UpdateCartQuantityDto;
+import com.human.rarepet.exception.AlreadyInCartException;
+import com.human.rarepet.exception.ZeroProductException;
 import com.human.rarepet.security.RarepetUserDetails;
 import com.human.rarepet.service.MarketService;
 import com.human.rarepet.service.MemberService;
@@ -86,10 +88,21 @@ public class MarketController {
 	public String register(@AuthenticationPrincipal RarepetUserDetails userDetails, RedirectAttributes redirectMessage) {
 		
 		MemberDto member = userDetails.getMember();
+		ShopDto shop = null;
 		
-		if(!member.isShop()) {
+		
+		
+		if(shopService.showShopInfo(member.getId()) == null) {
 			redirectMessage.addFlashAttribute("shopRegisterMessage", "판매자 등록된 회원만 등록이 가능합니다. -> 마이페이지");
 			return "redirect:/mypage";
+			
+		} else if(shopService.showShopInfo(member.getId()) != null) { 
+			shop = shopService.showShopInfo(member.getId());
+			if(!shop.isVerified()) {
+				redirectMessage.addFlashAttribute("shopRegisterMessage", "판매자 승인 대기중 입니다.");
+				return "redirect:/mypage";
+			}	
+			return "market/register";
 		} else {
 			return "market/register";
 		}
@@ -147,11 +160,9 @@ public class MarketController {
 		try {
 			marketService.addShoppingCart(productNo, id);
 			redirectAttributes.addFlashAttribute("message", "장바구니에 담겼습니다.");
-			
-		} catch (DuplicateKeyException exception) {
-			redirectAttributes.addFlashAttribute("message", "이미 장바구니에 담긴 상품입니다");
-			
-		}
+		} catch (AlreadyInCartException exception) {
+			redirectAttributes.addFlashAttribute("message", exception.getMessage());
+		} 
 		
 		return "redirect:/market/shoppingCart";
 	}
@@ -173,13 +184,9 @@ public class MarketController {
 									 RedirectAttributes redirectAttributes) {
 		
 		MemberDto member = userDetails.getMember();
-
-		if(member != null) {
-			String id = member.getId();
-			marketService.updateShoppingCartList(id, updatedList);
-			return "success";
-		} else {
-			return "failure";
-		}
+		String id = member.getId();
+		marketService.updateShoppingCartList(id, updatedList);
+		
+		return "success"; 
 	}
 }

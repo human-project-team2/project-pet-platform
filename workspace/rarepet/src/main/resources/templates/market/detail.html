@@ -172,6 +172,10 @@ body {
 					          th:if="${product.productCount > 0}" 
 					          th:text="'수량: ' + ${product.productCount}">
 					    </span>
+					    <span class="badge bg-danger"
+							          th:if="${product.productCount == 0}">
+							        품절
+					    </span>
 					</div>
 
 					<ul class="list-unstyled mb-4">
@@ -209,8 +213,14 @@ body {
 					   
 						<form th:action="@{/market/shoppingCart}" method="post">
 							<input type="hidden" name="productNo" th:value="${product.productNo}">
-							<button type="submit" class="btn btn-outline-dark rounded-pill px-4">
-								🛒 장바구니 등록</button>
+							<th:block th:if="${product.productCount != 0}">
+								<button type="submit" class="btn btn-outline-dark rounded-pill px-4">
+									🛒 장바구니 등록</button>
+							</th:block>
+							<th:block th:if="${product.productCount == 0}">
+								<button type="submit" class="btn btn-outline-dark rounded-pill px-4 disabled">
+									🛒 장바구니 등록</button>
+							</th:block>
 						</form>
 						<a th:href="@{/market/shoppingCart}"
 					       class="btn btn-success rounded-pill px-4 fw-bold">

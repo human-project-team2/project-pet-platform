@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.human.rarepet.dto.ShoppingCartDto; // 꽃게님 프로젝트의 DTO명으로 수정
+import com.human.rarepet.exception.ZeroProductException;
 import com.human.rarepet.dto.MemberDto;
 import com.human.rarepet.dto.OrderDto;
 import com.human.rarepet.dto.ProductDto;
@@ -25,7 +26,7 @@ public class PurchaseController {
     private OrderService orderService;
 
     @Autowired
-    private MarketService marketService; // 꽃게님의 MarketService 사용
+    private MarketService marketService;
 
     // 1. 단일 상품 구매 (상세페이지 -> 결제)
     @GetMapping("/purchase/{productNo}")
@@ -51,8 +52,7 @@ public class PurchaseController {
         
         RarepetUserDetails userDetails = (RarepetUserDetails) authentication.getPrincipal();
         MemberDto member = userDetails.getMember();
-
-        // 꽃게님의 MarketService 메서드(selectShoppingCart) 호출
+        
         List<ShoppingCartDto> cartList = marketService.selectShoppingCart(member.getId()); 
 
         if (cartList == null || cartList.isEmpty()) {
@@ -90,10 +90,10 @@ public class PurchaseController {
             
             return "redirect:/order/success";
             
-        } catch (Exception e) {
+        } catch (ZeroProductException e) {
             e.printStackTrace();
-            rttr.addFlashAttribute("msg", "주문 중 오류가 발생했습니다.");
-            return "redirect:/market";
+            rttr.addFlashAttribute("msg", e.getMessage());
+            return "redirect:/market/shoppingCart";
         }
     }
 

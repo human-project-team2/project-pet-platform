@@ -37,11 +37,11 @@
 						<li class="nav-item"><a class="nav-link" th:href="@{/market}">
 								<i class="bi bi-shop"></i>마켓
 						</a></li>
-
+						
 						<li class="nav-item"><a class="nav-link"
 							th:href="@{/market/register}"> <i class="bi bi-plus-circle"></i>판매등록
 						</a></li>
-
+						
 						<li class="nav-item"><a class="nav-link"
 							th:href="@{/board/boardlist}"> <i class="bi bi-card-text"></i>게시판
 						</a></li>
@@ -51,6 +51,7 @@
 						<th:block sec:authorize="isAuthenticated()">
 							<span class="nav-link" style="color: #e91e63; font-weight: 600;">
 								[[${#authentication.principal.username}]] 님 </span>
+							<!-- #authentication.name 을 쓰면 null 일때도 오류는 안남 -->
 						</th:block>
 						<th:block sec:authorize="isAuthenticated()">
 							<li class="nav-item dropdown ms-2"><a

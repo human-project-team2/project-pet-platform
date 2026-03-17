@@ -19,6 +19,8 @@ import com.human.rarepet.dto.ProductDto;
 import com.human.rarepet.dto.ProductImageDto;
 import com.human.rarepet.dto.ShoppingCartDto;
 import com.human.rarepet.dto.UpdateCartQuantityDto;
+import com.human.rarepet.exception.AlreadyInCartException;
+import com.human.rarepet.exception.ZeroProductException;
 import com.human.rarepet.mapper.ProductMapper;
 
 @Service("marketService")
@@ -143,18 +145,25 @@ public class MarketService {
     	
     }
 
-    public void addShoppingCart(int productNo, String id) throws DuplicateKeyException {
+    @Transactional
+    public void addShoppingCart(int productNo, String id) {
+    	
     	ProductDto product = productMapper.selectProductByNo(productNo);
         if (product == null) {
             throw new IllegalArgumentException("상품이 존재하지 않습니다: " + productNo);
         }
+        
     	ShoppingCartDto added = new ShoppingCartDto();
         added.setSavedListDate(new Date());
         added.setId(id);
         added.setProductNo(productNo);
         added.setCartQuantity(1);
-
-        productMapper.addShoppingCart(added);
+        
+        try {
+        	productMapper.addShoppingCart(added);
+        } catch(DuplicateKeyException exception) {
+        	throw new AlreadyInCartException("이미 장바구니에 담긴 상품입니다.");
+        }
     }	
 	
     public List<ShoppingCartDto> selectShoppingCart(String id) {
@@ -170,20 +179,23 @@ public class MarketService {
     public void deleteShoppingCart(int productNo, String id) {
         productMapper.deleteShoppingCart(productNo, id);
     }
-
+    
+    @Transactional
     public void updateShoppingCartList(String id, List<UpdateCartQuantityDto> updatedQuantityList) {
         // try-with-resources 방식을 사용하면 close()를 자동으로 호출해줍니다. 
-        // 위의 주석은 누가 작성? 자바 자동 기능인듯?
+        // 위의 주석은 누가 작성??
     	try (SqlSession session = sqlSessionFactory.openSession(ExecutorType.BATCH)) {
             
     		ProductMapper batch = session.getMapper(ProductMapper.class);
 
             for (UpdateCartQuantityDto updated : updatedQuantityList) {
-                ShoppingCartDto item = new ShoppingCartDto();
-                item.setId(id);
-                item.setCartQuantity(updated.getCartQuantity());
-                item.setProductNo(updated.getProductNo());
-                batch.updateShoppingCart(item);
+                
+            		ShoppingCartDto item = new ShoppingCartDto();
+	                item.setId(id);
+	                item.setCartQuantity(updated.getCartQuantity());
+	                item.setProductNo(updated.getProductNo());
+	                batch.updateShoppingCart(item);
+            	
             }
             session.flushStatements();
             session.commit();

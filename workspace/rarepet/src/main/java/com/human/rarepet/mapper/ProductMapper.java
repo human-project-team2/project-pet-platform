@@ -76,13 +76,22 @@ public interface ProductMapper {
 	})
 	List<ShoppingCartDto> selectShoppingCart(String id);
 	
+	@Select("select cart_quantity from shopping_cart "
+			+ "where product_no = #{productNo} and id = #{id}")
+	ShoppingCartDto selectShoppingCartByProductNo(@Param("id") String id, @Param("productNo") int productNo);
+	
 	@Delete("delete from shopping_cart where product_no = #{productNo} and id = #{id}")
 	void deleteShoppingCart(@Param("productNo") int productNo, @Param("id") String id);
 	
 	@Update("update shopping_cart set cart_quantity = #{cartQuantity} where product_no = #{productNo} and id = #{id}")
-	void updateShoppingCart(ShoppingCartDto updated);
+	int updateShoppingCart(ShoppingCartDto updated);
 	
+	@Update("update product_all set product_count = product_count - 1 where product_no = #{productNo} and product_count > 0")
+	int decreaseProductCount(int productNo);
 	
+	@Update("update product_all set product_count = product_count - #{cartQuantity} "
+			+ "where product_no = #{productNo} and product_count >= #{cartQuantity}")
+	int updateDecreaseProductCount(@Param("productNo") int productNo, @Param("cartQuantity") int cartQuantity);
 	
 	List<ProductDto> findProductsByFilter(@Param("search") String search, @Param("category") String category);
 	
