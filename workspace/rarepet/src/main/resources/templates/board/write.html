@@ -290,45 +290,26 @@ input[name="title"], textarea[name="content"], #priceDisplay {
 $(document).ready(function() {
     let selectedFiles = [];
 
-    // 이미지 핸들링
+ 	// 이미지 핸들링
     $('#btnUploadTrigger').on('click', () => $('#fileInput').click());
- 	// 파일 선택 시 이미지 1장만 표시
-    $('#fileInput').on('change', function () {
-        const file = this.files[0];
-        if (!file) return;
-
-        const reader = new FileReader();
-
-        reader.onload = function (e) {
-            // 바깥 컨테이너는 유지하고, 안쪽 내용만 교체
-            $('#btnUploadTrigger').html(`
-                <img src="${e.target.result}" 
-                     style="width:100%; height:100%; object-fit:cover; border-radius:10px;">
-                <button type="button" id="btnRemoveImage"
-                    style="
-                        position:absolute;
-                        top:6px;
-                        right:6px;
-                        width:28px;
-                        height:28px;
-                        border:none;
-                        border-radius:50%;
-                        background:rgba(0,0,0,0.6);
-                        color:#fff;
-                        font-size:16px;
-                        cursor:pointer;
-                        z-index:10;
-                    ">×</button>
-            `);
-
-            $('#imageError').hide();
-        };
-
-        reader.readAsDataURL(file);
-
-        // 같은 파일 다시 선택해도 change 이벤트가 동작하도록 초기화
-        $(this).val('');
+    $('#fileInput').on('change', function(e) {
+        const files = Array.from(e.target.files);
+        files.forEach(file => selectedFiles.push(file));
+        $('#imageError').hide();
+        updatePreview();
+        syncFiles();
     });
+
+    function updatePreview() {
+        $('.preview-item').remove();
+        selectedFiles.forEach((file, index) => {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                $('#imageContainer').append(`<div class="image-preview preview-item"><img src="${e.target.result}"><button type="button" class="remove-btn" data-index="${index}">✕</button></div>`);
+            };
+            reader.readAsDataURL(file);
+        });
+    }
 
     // 이미지 삭제
     $(document).on('click', '#btnRemoveImage', function (e) {
