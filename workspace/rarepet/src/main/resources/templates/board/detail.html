@@ -151,13 +151,17 @@
 		    </div>
 		</div>
         <!-- 버튼 그룹 -->
+        
         <div class="mt-5 d-flex justify-content-between border-top pt-4">
+        	<th:block sec:authorize="isAuthenticated()">
             <div>
                 <button type="button" id="edit-btn" class="btn btn-outline-anyzoo px-4 me-2">수정하기</button>
                 <button type="button" id="delete-btn" class="btn btn-outline-danger rounded-pill px-4">삭제</button>
             </div>
+            </th:block>
             <button type="button" id="to-list-btn" class="btn btn-dark rounded-pill px-4">목록보기</button>
         </div>
+        
     </div>
 
     <!-- [Comment Section] -->
