@@ -124,10 +124,16 @@
     WHERE board_id=#{boardId}
 	</select>
 	
-	<insert id="insertBoardQnaApply" parameterType="BoardAdoptionDto"
+	<insert id="insertBoardQnaApply" parameterType="QnaBoardAnswerDto"
 		useGeneratedKeys="true" keyColumn="answerId" keyProperty="answerId">
         INSERT INTO answer (id, board_id, content)
         VALUES (#{id}, #{boardId}, #{content})
     </insert>   
+    
+    <select id="showQnaAnswerBoardById" resultType="QnaBoardAnswerDto" parameterType="int">
+    SELECT *
+    FROM answer
+    WHERE board_id=#{boardId}
+	</select>
    
 </mapper>

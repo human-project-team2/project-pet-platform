@@ -1,152 +1,146 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>로그인 | AnyZoo Marketplace</title>
 
-<title>AnyZoo Marketplace</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/floating-chat.css}">
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 
+    <style>
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background: #fdf6ee;
+            transition: background-color 0.3s;
+        }
 
+        /* [기본] 라이트 모드 텍스트 색상 */
+        .login-card {
+            border: none;
+            border-radius: 25px;
+            background: #ffffff;
+        }
+        .login-title { color: #5a3c32; }
+        .form-label { color: #777; }
+        .footer-text { color: #777; }
 
-<!-- Bootstrap 5 CSS -->
-<link
-	href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
-	rel="stylesheet">
-<!-- Bootstrap JS -->
-<script
-	src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js">
-</script>
-<!-- Bootstrap Icons -->
-<link rel="stylesheet"
-	href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-<!-- Google Font -->
-<link
-	href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap"
-	rel="stylesheet">
-<link rel="stylesheet" th:href="@{/css/floating-chat.css}">
-<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+        /* 🌙 다크 모드 스타일 (Deep Blue Gray) */
+        [data-bs-theme="dark"] body {
+            background-color: #1a1d20 !important;
+            color: #f8f9fa;
+        }
 
-<style>
-body {
-	font-family: 'Noto Sans KR', sans-serif;
-	background: #fdf6ee;
-}
+        [data-bs-theme="dark"] .login-card {
+            background-color: #2b3035 !important;
+            border: 1px solid #3d4246;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3) !important;
+        }
 
-/* Hero */
-.hero {
-	background: linear-gradient(rgba(230, 180, 150, 0.45),
-		rgba(245, 210, 185, 0.55)),
-		url("https://images.unsplash.com/photo-1508672019048-805c876b67e2?auto=format&fit=crop&w=1600&q=80");
-	background-size: cover;
-	background-position: center;
-	height: 60vh;
-}
+        [data-bs-theme="dark"] .login-title {
+            color: #ff9f1c !important; /* 다크모드 포인트 컬러 */
+        }
 
-.hero-box {
-	background: rgba(255, 250, 245, 0.92);
-	border-radius: 30px;
-}
+        [data-bs-theme="dark"] .form-label {
+            color: #adb5bd !important;
+        }
 
-/* Card */
-.card {
-	border: none;
-	border-radius: 20px;
-}
+        [data-bs-theme="dark"] .form-control {
+            background-color: #343a40;
+            border-color: #495057;
+            color: #fff;
+        }
 
-.card img {
-	height: 200px;
-	object-fit: cover;
-	border-radius: 20px 20px 0 0;
-}
+        [data-bs-theme="dark"] .form-control:focus {
+            background-color: #3f474e;
+            border-color: #ff9f1c;
+            color: #fff;
+        }
 
-.heart {
-	position: absolute;
-	top: 15px;
-	right: 15px;
-	font-size: 22px;
-	cursor: pointer;
-	color: #ccc;
-}
+        [data-bs-theme="dark"] .footer-text {
+            color: #adb5bd !important;
+        }
 
-.heart.active {
-	color: #e76f51;
-}
-
-.review-section {
-	background:
-		url("https://images.unsplash.com/photo-1518717758536-85ae29035b6d?auto=format&fit=crop&w=1600&q=80");
-	background-size: cover;
-	background-position: center;
-}
-
-.review-overlay {
-	background: rgba(90, 60, 50, 0.75);
-	border-radius: 25px;
-}
-</style>
+        /* 버튼 및 입력창 공통 */
+        .rounded-12 { border-radius: 12px; }
+        .btn-pay-style {
+            background-color: #e76f51;
+            color: white;
+            border-radius: 12px;
+            transition: 0.3s;
+        }
+        .btn-pay-style:hover {
+            background-color: #cf5d42;
+            color: white;
+        }
+    </style>
 </head>
 
 <body>
+    <div th:replace="~{fragments/fragment :: header}"></div>
 
-	<!-- NAVBAR -->
-	<div th:replace="fragments/fragment :: header"></div>
-	<div th:if="${param.error}" class="alert alert-danger text-center" role="alert">
-        로그인 실패: 아이디 또는 비밀번호가 올바르지 않습니다.
-	</div>
-	<!-- --------------------- -->
-	<div id='pageContainer' style="margin-top: 120px; margin-bottom: 60px;">
+    <div th:if="${param.error}" class="container" style="margin-top: 100px; margin-bottom: -110px;">
+        <div class="alert alert-danger text-center rounded-pill shadow-sm" role="alert">
+            <i class="bi bi-exclamation-triangle-fill"></i> 로그인 실패: 아이디 또는 비밀번호가 올바르지 않습니다.
+        </div>
+    </div>
 
-		<div class="container">
-			<div class="row justify-content-center">
-				<div class="col-md-5">
-					<div class="card shadow-sm p-4" style="border-radius: 25px;">
-						<div class="card-body">
-							<h3 class="text-center fw-bold mb-4" style="color: #5a3c32;">로그인</h3>
+    <div id='pageContainer' style="margin-top: 120px; margin-bottom: 60px;">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-md-5">
+                    <div class="card login-card shadow-sm p-4">
+                        <div class="card-body">
+                            <h3 class="text-center fw-bold mb-4 login-title">로그인</h3>
 
-							<form action="login" method="post">
-								<input type="hidden" name="returnUrl" value="${returnUrl}">
+                            <form th:action="@{/auth/login}" method="post">
+                                <input type="hidden" name="returnUrl" th:value="${param.returnUrl}">
 
-								<div class="mb-3">
-									<label class="form-label fw-bold" style="color: #777;">아이디(ID)</label>
-									<input type="text" name="memberId"
-										class="form-control form-control-lg" placeholder="아이디를 입력하세요"
-										required style="border-radius: 12px; font-size: 15px;">
-								</div>
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold small">아이디(ID)</label>
+                                    <input type="text" name="memberId"
+                                        class="form-control form-control-lg rounded-12" 
+                                        placeholder="아이디를 입력하세요" required style="font-size: 15px;">
+                                </div>
 
-								<div class="mb-4">
-									<label class="form-label fw-bold" style="color: #777;">비밀번호</label>
-									<input type="password" name="passwd"
-										class="form-control form-control-lg" placeholder="비밀번호를 입력하세요"
-										required style="border-radius: 12px; font-size: 15px;">
-								</div>
+                                <div class="mb-4">
+                                    <label class="form-label fw-bold small">비밀번호</label>
+                                    <input type="password" name="passwd"
+                                        class="form-control form-control-lg rounded-12" 
+                                        placeholder="비밀번호를 입력하세요" required style="font-size: 15px;">
+                                </div>
 
-								<div class="d-grid gap-2">
-									<button type="submit" class="btn btn-lg fw-bold shadow-sm"
-										style="background-color: #e76f51; color: white; border-radius: 12px;">
-										로그인</button>
-								</div>
-							</form>
-						</div>
-						
+                                <div class="d-grid gap-2">
+                                    <button type="submit" class="btn btn-lg btn-pay-style fw-bold shadow-sm">
+                                        로그인
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
 
-						<hr class="my-4" style="color: #ddd;">
-						<div class="text-center">
-							<p style="color: #777; font-size: 14px;">아직 AnyZoo 회원이 아니신가요?</p>
-							<a href="register"
-								class="btn btn-outline-secondary w-100 fw-bold"
-								style="border-radius: 12px; border-color: #e76f51; color: #e76f51;" >
-								회원가입하기 </a>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
+                        <hr class="my-4 opacity-25">
+                        
+                        <div class="text-center">
+                            <p class="footer-text mb-3" style="font-size: 14px;">아직 AnyZoo 회원이 아니신가요?</p>
+                            <a th:href="@{/auth/register}"
+                                class="btn btn-outline-secondary w-100 fw-bold rounded-12"
+                                style="border-color: #e76f51; color: #e76f51;">
+                                회원가입하기
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-<div th:replace="fragments/fragment :: footer"></div>
-<div th:replace="fragments/fragment :: message"></div>
-	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>	
-	<script th:replace="fragments/fragment :: message_script"></script>
+    <div th:replace="~{fragments/fragment :: footer}"></div>
+    <div th:replace="~{fragments/fragment :: message}"></div>
+    <div th:replace="~{fragments/fragment :: message_script}"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

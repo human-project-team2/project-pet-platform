@@ -78,17 +78,20 @@ public class BoardController {
 			Model model) {
 		Date writeDate = new Date();
 		
-		System.out.printf("-------------->Gen writetitle " + board.getBoardTitle());
+		System.out.printf("-------------->Gen writetitle \n" + board.getBoardTitle());
 		
 		if(userDetails == null)
 		{
 			return "redirect:/auth/login";		
-		}		
+		}	
+		
+		System.out.println(board);
 		
 		if (picture != null && picture.getOriginalFilename().length() > 0) {
 			
 			String savedFileName = Util.makeUniqueFileName(picture.getOriginalFilename());
 			
+			System.out.println("test \n");
 			System.out.println(picture.getOriginalFilename());
 			System.out.println(savedFileName);
 			
@@ -120,6 +123,8 @@ public class BoardController {
 				}
 			}
 		
+		} else {
+			System.out.println("test ERR\n");
 		}
 		return "redirect:/board/community";		
 	}
@@ -430,10 +435,13 @@ public class BoardController {
 		// ★ 조회수 증가
 	    boardService.increaseBoardViewCount(boardId);
 	    
+	    QnaBoardAnswerDto qnaAnswer = boardService.showQnaAnswerBoardById(boardId);
+	    System.out.println(qnaAnswer);
 		System.out.println("QnA Ok");
 		
 		model.addAttribute("board", board);
 		model.addAttribute("pageNo", pageNo);
+		model.addAttribute("qnaAnswer", qnaAnswer);
 			
 		return "board/qna"; 
 		
