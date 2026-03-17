@@ -430,6 +430,8 @@ public class BoardController {
 		// ★ 조회수 증가
 	    boardService.increaseBoardViewCount(boardId);
 	    
+	    QnaBoardAnswerDto qnaanswer = boardService.showQnaAnswerBoardById(boardId);
+	    System.out.println(qnaanswer);
 		System.out.println("QnA Ok");
 		
 		model.addAttribute("board", board);

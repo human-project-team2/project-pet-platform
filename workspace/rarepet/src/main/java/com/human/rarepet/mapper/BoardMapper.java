@@ -59,5 +59,7 @@ public interface BoardMapper {
 	void increaseBoardLikeCount(int boardId);
 
 	void increaseBoardViewCount(int boardId);
+
+	QnaBoardAnswerDto showQnaAnswerBoardById(int boardId);
 	
 }

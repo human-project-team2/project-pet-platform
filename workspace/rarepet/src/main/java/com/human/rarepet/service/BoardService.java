@@ -133,6 +133,11 @@ public class BoardService {
 
 	public void increaseBoardViewCount(int boardId) {
 		boardMapper.increaseBoardViewCount(boardId);
+	}
+
+	public QnaBoardAnswerDto showQnaAnswerBoardById(int boardId) {
+		QnaBoardAnswerDto dto = boardMapper.showQnaAnswerBoardById(boardId);
+		return dto;
 	}	
 
 }
