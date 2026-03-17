@@ -48,10 +48,22 @@ public class BoardController {
 	private MemberService memberService;
 	
 	@GetMapping(path = {"/board/write"})
-	public String showWriteForm(BoardDto board) {
+	public String showWriteForm(BoardDto board,
+			@AuthenticationPrincipal RarepetUserDetails userDetails ,
+			Model model) {
 		
 		System.out.println("-------------->write form");
 		
+		if(userDetails == null)
+		{
+			return "redirect:/auth/login";		
+		}
+		
+		MemberDto member = userDetails.getMember();
+		if(member != null) {
+			MemberDto user = memberService.getUserById(member.getId());
+			model.addAttribute("user", user);
+		}
 		
 		return "board/write";		
 	}	
@@ -62,7 +74,8 @@ public class BoardController {
 	public String writeBoard(
 			@AuthenticationPrincipal RarepetUserDetails userDetails , 
 			@RequestParam("picture") MultipartFile picture,
-			GenBoardDto board) {
+			GenBoardDto board,
+			Model model) {
 		Date writeDate = new Date();
 		
 		System.out.printf("-------------->Gen writetitle " + board.getBoardTitle());
@@ -86,7 +99,7 @@ public class BoardController {
 			if(member != null) {
 				String id = member.getId();
 				System.out.printf("====================write Community ID\n" + id);
-			
+				
 				try {
 								
 					board.setBoardWriteDate(writeDate);
@@ -322,12 +335,22 @@ public class BoardController {
 	}		
 	
 	@GetMapping(path = {"/board/qwrite"})
-	public String showQWriteForm(QnaBoardDto board) {
-		//public String showQWriteForm(BoardDto board) {
+	public String showQWriteForm(QnaBoardDto board,
+			@AuthenticationPrincipal RarepetUserDetails userDetails ,
+			Model model) {
 		
-		System.out.println("-------------->write QnAform");
+		System.out.println("-------------->qwrite form");
 		
+		if(userDetails == null)
+		{
+			return "redirect:/auth/login";		
+		}
 		
+		MemberDto member = userDetails.getMember();
+		if(member != null) {
+			MemberDto user = memberService.getUserById(member.getId());
+			model.addAttribute("user", user);
+		}
 		return "board/qwrite";		
 	}
 	
@@ -407,6 +430,8 @@ public class BoardController {
 		// ★ 조회수 증가
 	    boardService.increaseBoardViewCount(boardId);
 	    
+	    QnaBoardAnswerDto qnaanswer = boardService.showQnaAnswerBoardById(boardId);
+	    System.out.println(qnaanswer);
 		System.out.println("QnA Ok");
 		
 		model.addAttribute("board", board);
@@ -550,10 +575,22 @@ public class BoardController {
 	}
 	
 	@GetMapping(path = {"/board/adoptionwrite"})
-	public String showAWriteForm(BoardDto board) {
+	public String showAWriteForm(BoardDto board,
+			@AuthenticationPrincipal RarepetUserDetails userDetails ,
+			Model model) {
 		
-		System.out.println("-------------->write Adoptionform");
+		System.out.println("-------------->awrite form");
 		
+		if(userDetails == null)
+		{
+			return "redirect:/auth/login";		
+		}
+		
+		MemberDto member = userDetails.getMember();
+		if(member != null) {
+			MemberDto user = memberService.getUserById(member.getId());
+			model.addAttribute("user", user);
+		}
 		
 		return "board/adoptionwrite";		
 	}

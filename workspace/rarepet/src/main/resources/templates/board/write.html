@@ -175,9 +175,13 @@ input[name="title"], textarea[name="content"], #priceDisplay {
 						<div class="error-msg">글 제목을 작성하세요!</div>
 					</div>					
 					<div class="col-12 col-md-8">
+						<th:block th:if="${user != null}">
 						<label class="form-label">글쓴이</label> <input type="text"
-							class="form-control form-control-lg" name="boardWriterId" id="boardWriterId">
+							class="form-control form-control-lg"
+							th:value="${user.id}" readonly="readonly" style="background-color: #f8f9fa;" 
+							name="boardWriterId" id="boardWriterId">
 						<div class="error-msg">작성자</div>
+						</th:block>
 					</div>
 					<div class="col-12 col-md-8">
 						<!--
