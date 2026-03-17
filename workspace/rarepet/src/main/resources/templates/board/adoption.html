@@ -215,10 +215,12 @@
         	<!-- 
         	<th:block sec:authorize="hasRole('admin')">
         	 -->
+        	<th:block sec:authorize="isAuthenticated()">
             <div class="btn-group-area">
                 <button type="button" id="edit-btn" class="btn btn-outline-secondary btn-custom me-2">수정</button>
                 <button type="button" id="delete-btn" class="btn btn-outline-danger btn-custom">삭제</button>
             </div>
+            </th:block>
             
             <div th:if="${adoboard.boardAdoptDone == 1}">            
             <!-- 입양 신청 모달 트리거 버튼 -->
