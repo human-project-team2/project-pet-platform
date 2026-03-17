@@ -290,15 +290,15 @@ input[name="title"], textarea[name="content"], #priceDisplay {
 $(document).ready(function() {
     let selectedFiles = [];
 
- 	// 이미지 핸들링
-    $('#btnUploadTrigger').on('click', () => $('#fileInput').click());
+ 	// 이미지 핸들링   
+ 	$('#btnUploadTrigger').on('click', () => $('#fileInput').click());
     $('#fileInput').on('change', function(e) {
         const files = Array.from(e.target.files);
         files.forEach(file => selectedFiles.push(file));
         $('#imageError').hide();
         updatePreview();
         syncFiles();
-    });
+    });   
 
     function updatePreview() {
         $('.preview-item').remove();
