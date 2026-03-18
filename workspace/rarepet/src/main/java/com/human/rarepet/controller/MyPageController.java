@@ -13,11 +13,13 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.human.rarepet.common.Util;
 import com.human.rarepet.dto.MemberDto;
+import com.human.rarepet.dto.OrderDto;
 import com.human.rarepet.dto.ProductDto;
 import com.human.rarepet.dto.ShopDto;
 import com.human.rarepet.security.RarepetUserDetails;
 import com.human.rarepet.service.MarketService;
 import com.human.rarepet.service.MemberService;
+import com.human.rarepet.service.OrderService;
 import com.human.rarepet.service.ShopService;
 
 import jakarta.servlet.http.HttpSession;
@@ -26,14 +28,18 @@ import jakarta.servlet.http.HttpSession;
 public class MyPageController {
 
     
-    private MemberService memberService;
-    private MarketService marketService;
-    private ShopService shopService;
-    
-    public MyPageController(MemberService memberService, MarketService marketService, ShopService shopService) {
+    private final MemberService memberService;
+    private final MarketService marketService;
+    private final ShopService shopService;
+    private final OrderService orderService;
+    public MyPageController(MemberService memberService, 
+    						MarketService marketService, 
+    						ShopService shopService,
+    						OrderService orderService) {
     	this.memberService = memberService;
     	this.marketService = marketService;
     	this.shopService = shopService;
+    	this.orderService = orderService;
     }
     @GetMapping("/mypage")
     public String myPage(@AuthenticationPrincipal RarepetUserDetails userDetails , Model model) {
@@ -50,8 +56,11 @@ public class MyPageController {
         // 3. 서비스 호출: DB에서 유저 정보와 해당 유저의 상품 리스트 가져오기
         MemberDto user = memberService.getUserById(loginUser.getId());
         List<ProductDto> myProducts = marketService.findProductsByUserId(loginUser.getId());
-        System.out.println(myProducts);
+        //System.out.println(myProducts);
         ShopDto shop = (ShopDto)shopService.showShopInfo(user.getId());
+        
+        // 주문 내역 가져오기
+        List<OrderDto> myOrders = orderService.selectAllOrderById(loginUser.getId());
         
         // 4. 화면(HTML)으로 데이터 전달
         
@@ -59,7 +68,8 @@ public class MyPageController {
         model.addAttribute("myProducts", myProducts);
         model.addAttribute("productCount", myProducts.size());
         model.addAttribute("shop", shop);
-        // templates/auth/myPage.html 파일을 찾아갑니다.
+        model.addAttribute("myOrders", myOrders);
+        
         return "auth/myPage";
     }
     
@@ -104,13 +114,6 @@ public class MyPageController {
 		
 	    // 1. DB 업데이트
 	    memberService.updateMember(member);
-	    
-	    // Spring Security로 로그인한 유저 정보 가져오기 로 대체
-	    // 2. [추천] DB에서 최신 정보를 다시 가져와서 세션에 저장
-	    // 이렇게 하면 폼에 없던 다른 정보들까지 누락 없이 세션에 유지됩니다.
-	    //MemberDto updatedUser = memberService.getUserById(member.getId());
-	    //session.setAttribute("loginuser", updatedUser);
-	    
 	    
 	    
 	    return "redirect:/mypage";
