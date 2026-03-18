@@ -34,7 +34,7 @@ public interface BoardMapper {
 
 	GenBoardDto showGenBoardById(int boardId);
 
-	BoardDto showQnaBoardById(int boardId);
+	QnaBoardDto showQnaBoardById(int boardId);
 
 	AdoBoardDto showAdoBoardById(int boardId);
 
@@ -61,5 +61,7 @@ public interface BoardMapper {
 	void increaseBoardViewCount(int boardId);
 
 	QnaBoardAnswerDto showQnaAnswerBoardById(int boardId);
+
+	void updateBoardQnA(QnaBoardDto qnaboard);
 	
 }

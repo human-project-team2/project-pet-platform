@@ -416,6 +416,109 @@ public class BoardController {
 		return "redirect:/board/qnalist";	
 	}
 	
+	@GetMapping (path = {"/board/qnaaprove"}) 
+	public String qnaAproveForm(
+			@AuthenticationPrincipal RarepetUserDetails userDetails ,
+			@RequestParam(value = "boardId", defaultValue = "-1") int boardId,
+			Model model) {
+				
+		System.out.println("--------------------QnA Prove Form");
+		
+		/*
+		 * if (boardId == -1 || pageNo == -1) { return "redirect:/board/adoptionlist"; }
+		 */			
+		
+		BoardDto board = boardService.showBoardById(boardId);
+		BoardDto qnaboard = boardService.showQnaBoardById(boardId);		
+		if (qnaboard == null) {
+			System.out.println("--------------------QnA NULL--  ");	
+			return "redirect:/board/qnalist";
+		}
+		
+		System.out.println(qnaboard);
+		
+		QnaBoardAnswerDto qnaapply = boardService.showQnaAnswerBoardById(boardId);	
+		System.out.println(qnaapply);
+		
+		if (userDetails != null) {
+			MemberDto loginUser = userDetails.getMember();
+			MemberDto user = memberService.getUserById(loginUser.getId());
+			model.addAttribute("user", user);
+		}
+		
+		model.addAttribute("board", board);		
+		model.addAttribute("adoboard", qnaboard);
+		model.addAttribute("adoapply", qnaapply);	
+		System.out.println("QnA prove Form \n");
+			
+		return "board/qna"; 
+		
+	}
+	
+	@PostMapping(path = {"/board/qnaaprove"})
+	public String qnaAprove(
+			@AuthenticationPrincipal RarepetUserDetails userDetails , 
+			@RequestParam(value = "boardId", defaultValue = "-1") int boardId
+			) {
+		Date writeDate = new Date();
+		String name = null;
+		String writer = null;
+		
+		if(userDetails == null) 
+		{
+			return "redirect:/auth/login";		
+		}		
+		
+		System.out.printf("qnaAprove boardId\n" + boardId);
+		
+		BoardDto board = boardService.showBoardById(boardId);
+		QnaBoardDto qnaboard = boardService.showQnaBoardById(boardId);	
+		
+		if (qnaboard == null) {
+			System.out.println("--------------------QnA NULL--  ");	
+			return "redirect:/board/qnalist";
+		}
+		
+		System.out.println("QnA prove");
+		System.out.println(qnaboard);
+		
+		QnaBoardAnswerDto qnaapply = boardService.showQnaAnswerBoardById(boardId);	
+		System.out.println(qnaapply);		
+		
+		String qnaDone = qnaboard.getAnswerSelected();
+		if (qnaDone.equals(1) == true)
+		{
+			System.out.println("문의 상태임 \n");
+			return "redirect:qnalist";
+		}
+		
+		System.out.println("QnA prove Done 1");
+		
+		if (userDetails != null) {
+			MemberDto loginUser = userDetails.getMember();
+			MemberDto user = memberService.getUserById(loginUser.getId());		
+			
+			name = user.getId();
+			writer = board.getBoardWriterId();
+			if(!name.equals(writer))
+			{
+				System.out.println(user.getId());
+				System.out.println(board.getBoardWriterId());
+				System.out.println("name not match \n");
+				
+				return "redirect:adoptionlist";
+			}
+			
+			qnaboard.setAnswerSelected("1");
+			 
+			boardService.updateQnABoardById(qnaboard);
+			
+			System.out.println("QnA prove Done 2");
+		}
+		
+		return "redirect:/board/qnalist";		
+	}
+	
 	@GetMapping (path = {"/board/qna"}) 
 	public String boardqna(
 			@AuthenticationPrincipal RarepetUserDetails userDetails ,

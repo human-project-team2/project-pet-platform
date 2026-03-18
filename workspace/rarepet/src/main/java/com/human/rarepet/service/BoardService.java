@@ -77,9 +77,9 @@ public class BoardService {
 		return dto;
 	}
 
-	public BoardDto showQnaBoardById(int boardId) {
+	public QnaBoardDto showQnaBoardById(int boardId) {
 		
-		BoardDto dto = boardMapper.showQnaBoardById(boardId);
+		QnaBoardDto dto = boardMapper.showQnaBoardById(boardId);
 		return dto;
 	}
 
@@ -138,6 +138,10 @@ public class BoardService {
 	public QnaBoardAnswerDto showQnaAnswerBoardById(int boardId) {
 		QnaBoardAnswerDto dto = boardMapper.showQnaAnswerBoardById(boardId);
 		return dto;
+	}
+
+	public void updateQnABoardById(QnaBoardDto qnaboard) {
+		boardMapper.updateBoardQnA(qnaboard);
 	}	
 
 }

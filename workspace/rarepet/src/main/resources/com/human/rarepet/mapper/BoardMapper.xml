@@ -50,6 +50,12 @@
         DELETE from board_question WHERE board_id = #{boardId}
     </delete>
     
+    <update id="updateBoardQnA" parameterType="QnaBoardDto">
+    UPDATE board_question 
+    SET answer_selected = #{answerSelected}
+    WHERE board_id = #{boardId}
+	</update>
+    
     <insert id="insertBoardAdo" parameterType="AdoBoardDto">        
         INSERT INTO board_adopt (board_id, board_adopt_category, board_adopt_done)
         VALUES (#{boardId}, #{boardAdoptCategory}, #{boardAdoptDone})
@@ -106,11 +112,9 @@
 	</select>
     
     <select id="showQnaBoardById" resultType="QnaBoardDto" parameterType="int">
-    SELECT b.board_id, b.board_title, b.board_writer_id
-    FROM board b 
-    INNER JOIN board_question qa
-    ON b.board_id = qa.board_id 
-    WHERE b.board_id=#{boardId}
+    SELECT *
+    FROM board_question 
+    WHERE board_id=#{boardId}
 	</select>	
 	
     <insert id="insertBoardAdoApply" parameterType="BoardAdoptionDto">
