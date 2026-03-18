@@ -558,7 +558,10 @@ public class BoardController {
 		
 		model.addAttribute("board", board);
 		model.addAttribute("pageNo", pageNo);
+		model.addAttribute("qnaboard", qnaboard);
 		model.addAttribute("qnaAnswer", qnaAnswer);
+		
+		
 			
 		return "board/qna"; 
 		

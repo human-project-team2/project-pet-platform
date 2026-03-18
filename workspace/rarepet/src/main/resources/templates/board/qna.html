@@ -203,16 +203,15 @@
                         <span class="fw-bold text-primary" th:text="${qnaAnswer.id}">신청자 A</span>
                         <small class="text-muted ms-2">1시간 전</small>
                     </div>
-                    <!-- 
-                    <button type="submit" class="btn btn-sm btn-outline-warning rounded-pill px-3">
-                        신청 승인
-                    </button>
-                     -->
-                    <th:block sec:authorize="isAuthenticated()">
-						<th:block th:if="${user != null and user.id == board.boardWriterId}">
-						    <button type="submit" class="btn btn-sm btn-outline-warning rounded-pill px-3">
-						        신청 승인
-						    </button>
+                    <th:block th:if="${qnaboard != null}">
+	                    <th:block sec:authorize="isAuthenticated()">
+	                    	<th:block th:if="${qnaboard.answerSelected == '0'}">
+								<th:block th:if="${user != null and user.id == board.boardWriterId}">
+								    <button type="submit" class="btn btn-sm btn-outline-warning rounded-pill px-3">
+								        신청 승인
+								    </button>
+								</th:block>
+							</th:block>
 						</th:block>
 					</th:block>
                 </div>
