@@ -415,6 +415,7 @@ public class BoardController {
 	
 	@GetMapping (path = {"/board/qna"}) 
 	public String boardqna(
+			@AuthenticationPrincipal RarepetUserDetails userDetails ,
 			@RequestParam(value = "boardId", defaultValue = "-1") int boardId, 
 			@RequestParam(value = "pageNo", defaultValue = "-1") int pageNo,
 			Model model) {	
@@ -431,6 +432,16 @@ public class BoardController {
 			System.out.println("--------------------Qna NULL--  ");	
 			return "redirect:/board/qnalist";
 		}
+		
+		if(userDetails != null)
+		{
+			MemberDto member = userDetails.getMember();
+			if(member != null) {
+				MemberDto user = memberService.getUserById(member.getId());
+				model.addAttribute("user", user);
+			}					
+		}		
+		
 		
 		// ★ 조회수 증가
 	    boardService.increaseBoardViewCount(boardId);
@@ -925,6 +936,7 @@ public class BoardController {
 	
 	@GetMapping (path = {"/board/detail"}) 
 	public String boarddetail(
+			@AuthenticationPrincipal RarepetUserDetails userDetails,
 			@RequestParam(value = "boardId", defaultValue = "-1") int boardId, 
 			@RequestParam(value = "pageNo", defaultValue = "-1") int pageNo,
 			Model model) {
@@ -942,6 +954,15 @@ public class BoardController {
 		if (genboard == null) {
 			return "redirect:/board/boardlist";
 		}
+		
+		if(userDetails != null)
+		{
+			MemberDto member = userDetails.getMember();
+			if(member != null) {
+				MemberDto user = memberService.getUserById(member.getId());
+				model.addAttribute("user", user);
+			}					
+		}		
 		
 		// ★ 조회수 증가
 	    boardService.increaseBoardViewCount(boardId);
