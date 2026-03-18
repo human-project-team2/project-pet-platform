@@ -130,11 +130,12 @@ body{
       </tr>
       </thead>
       <tbody>                      
-        <tr th:each="board: ${adoboards}" style="height:30px">
+        <tr th:each="board , boardStat: ${adoboards}" style="height:30px">
           <th scope="row" th:text="${ board.boardId }"></th>
           <td>
           	<a 	th:href="@{/board/adoption(boardId=${board.boardId}) }"
                 th:text="${ board.boardTitle }"></a>
+            <span th:if="${boardStat.index == 0}" class="badge bg-danger ms-2">인기글</span>
           </td>          
           <td th:text="${ board.boardWriterId }"></td>
           <td th:text="${#dates.format(board.boardWriteDate, 'yyyy-MM-dd')}"></td>
