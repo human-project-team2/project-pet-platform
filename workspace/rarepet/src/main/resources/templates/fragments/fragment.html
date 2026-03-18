@@ -568,6 +568,9 @@
           
          // 메시지 클릭 → 채팅 상세 모달 열기
           $(document).on('click', '.message-row', function () { // $(".message-row").on("click") -> 작동하지 않음
+     	  														// $(".message-row").on("click") 는 페이지 로딩 시 존재하는 요소에만 이벤트를 붙임.
+     	  														// $(document).on(...) 는 Event Delegation 으로 클릭 이벤트를 미리 등록해놓고, 
+     	  														// 클릭이 발생할 시에, ".message-row" 인지 체크
              
              const partnerId = $(this).data("partner-id")
              

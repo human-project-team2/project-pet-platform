@@ -134,6 +134,11 @@
                     var addr = data.userSelectedType === 'R' ? data.roadAddress : data.jibunAddress;
                     document.getElementById('postcode').value = data.zonecode;
                     document.getElementById("address").value = addr;
+                        
+                		if (document.getElementById("address").value.trim() !== "") {
+                			document.getElementById("address").style.border = ""; 
+                	    }
+                	
                     document.getElementById("detailAddress").focus();
                 }
             }).open();
@@ -154,6 +159,20 @@
                 document.getElementById('hiddenTotalPrice').value = total;
             });
         }
+    </script>
+    <script>
+    $( () => {
+    	$("#orderForm").on("submit", function(e) {
+    		const addr = $("#address").val().trim()
+    		if(!addr){
+    			e.preventDefault();
+    			alert("주소 찾기 버튼을 눌러 주소를 입력해주세요.")
+    			$("button[onclick='execDaumPostcode()']").focus();
+    			$("#address").css("border", "2px solid red");
+    		}
+    	})
+    	
+    })
     </script>
 </body>
 </html>
