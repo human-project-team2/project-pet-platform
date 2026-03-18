@@ -321,12 +321,15 @@ public class BoardController {
 	    for (BoardDto board : boards) {
 	        for (QnaBoardDto qnaboard : qnaboards) {
 	            if (board.getBoardId() == qnaboard.getBoardId()) {
+	            	
+	            	System.out.println(qnaboard);
 	                qnaboard.setBoardTitle(board.getBoardTitle());
 	                qnaboard.setBoardContent(board.getBoardContent());
 	                qnaboard.setBoardWriterId(board.getBoardWriterId());
 	                qnaboard.setBoardWriteDate(board.getBoardWriteDate());
 	                qnaboard.setBoardViewCount(board.getBoardViewCount());
 	                qnaboard.setBoardLikeCount(board.getBoardLikeCount());
+	                qnaboard.setAnswerSelected(qnaboard.getAnswerSelected());
 	                qnaboard.setImgUrl(board.getImgUrl());
 	                orderedQnaBoards.add(qnaboard);
 	                break;
@@ -398,7 +401,7 @@ public class BoardController {
 					
 					boardService.insertBoard(board);
 					
-					board.setAnswerSelected("1");
+					board.setAnswerSelected("0");
 					board.setBoardQuestionCategory(true);
 					boardService.insertBoardQnA(board);
 					
