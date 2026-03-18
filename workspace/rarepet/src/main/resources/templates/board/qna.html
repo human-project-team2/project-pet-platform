@@ -158,22 +158,30 @@
 	 
         <div class="d-flex justify-content-between align-items-center">
         	<th:block sec:authorize="isAuthenticated()">
-        	
-            <div class="btn-group-area">
-                <button type="button" id="edit-btn" class="btn btn-outline-secondary btn-custom me-2">수정</button>
-                <button type="button" id="delete-btn" class="btn btn-outline-danger btn-custom">삭제</button>
-            </div>
-            
-                        
-            <!-- 입양 신청 모달 트리거 버튼 -->
-            <button type="button"
-                    class="btn btn-anyzoo btn-custom shadow"
-                    id="openAdoptionModalBtn"
-                    data-bs-toggle="modal"
-                    data-bs-target="#adoptionModal">
-                <i class="bi bi-heart-fill me-2"></i>답변달기
-            </button>
-             
+        	<th:block th:if="${user != null}">
+        		<th:block sec:authorize="hasRole('admin')">
+		            <div class="btn-group-area">
+		                <button type="button" id="edit-btn" class="btn btn-outline-secondary btn-custom me-2">수정</button>
+		                <button type="button" id="delete-btn" class="btn btn-outline-danger btn-custom">삭제</button>
+		            </div>
+		        </th:block>
+		        <th:block th:if="${user.id == board.boardWriterId}">
+		            <div class="btn-group-area">
+		                <button type="button" id="edit-btn" class="btn btn-outline-secondary btn-custom me-2">수정</button>
+		                <button type="button" id="delete-btn" class="btn btn-outline-danger btn-custom">삭제</button>
+		            </div>
+		        </th:block>
+	                        
+	            <!-- 입양 신청 모달 트리거 버튼 -->
+	            <button type="button"
+	                    class="btn btn-anyzoo btn-custom shadow"
+	                    id="openAdoptionModalBtn"
+	                    data-bs-toggle="modal"
+	                    data-bs-target="#adoptionModal">
+	                <i class="bi bi-heart-fill me-2"></i>답변달기
+	            </button>
+	            
+            </th:block> 
             </th:block>
         </div>
     </div>
@@ -187,6 +195,7 @@
 
         <div class="card reply-card mb-3 shadow-sm">
             <div class="card-body p-4" >
+              <th:block th:if="${qnaAnswer != null}">
               <form id="applyProveForm" method="post">
                 <input type="hidden" name="boardId" th:value="${board.boardId}">
                 <div class="d-flex justify-content-between align-items-start mb-3">
@@ -204,6 +213,7 @@
                     식사량이 평소와 같다면 며칠 더 지켜보셔도 좋습니다.
                 </p>                
               </form>
+              </th:block>
             </div>
         </div>        
         
