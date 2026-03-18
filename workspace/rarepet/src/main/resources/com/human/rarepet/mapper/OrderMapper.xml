@@ -29,16 +29,18 @@
     INSERT INTO order_detail (
         order_no, 
         product_no, 
-        product_order_count) VALUES (
+        product_order_count,
+        price) VALUES (
         #{orderNo}, 
         #{productNo}, 
-        #{productOrderCount})
+        #{productOrderCount},
+        #{price})
 </insert>
 
     <update id="decreaseStock">
         UPDATE product_all
-        SET product_count = product_count - #{quantity}
-        WHERE product_no = #{productNo} and product_count >= #{quantity}
+        SET product_count = product_count - #{productOrderCount}
+        WHERE product_no = #{productNo} and product_count >= #{productOrderCount}
     </update>
 
 </mapper>

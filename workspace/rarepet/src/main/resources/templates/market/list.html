@@ -316,7 +316,7 @@ body {
         <div class="row g-4">
 
             <!-- shop 반복문 -->
-            <div class="col-md-4" th:each="shop : ${shops}">
+            <div class="col-md-4" th:each="shop : ${shops}" th:if="${shop.verified and !(shop.shopName == '관리자')}">
 
                 <div class="card shadow h-100">
 

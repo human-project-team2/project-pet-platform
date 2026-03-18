@@ -6,7 +6,7 @@ import com.human.rarepet.dto.ProductDto;
 import com.human.rarepet.exception.ZeroProductException;
 import com.human.rarepet.mapper.OrderMapper;
 
-
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -36,17 +36,28 @@ public class OrderService {
         // 2. 상세 내역 및 재고 처리
         for(OrderItemDto item : order.getOrderItems()) {
             item.setOrderNo(order.getOrderNo());
-            System.out.println(item.getProductOrderCount()); 
+            
             int no = orderMapper.decreaseStock(item.getProductNo(), item.getProductOrderCount());
             if (no == 0) {
-            	throw new ZeroProductException("재고가 없습니다.");
+            	throw new ZeroProductException("재고가 부족합니다.");
             }
+            System.out.println(item);
             orderMapper.insertOrderDetail(item);
         // [추가] 3. 구매 완료 후 해당 사용자의 장바구니 비우기
         orderMapper.removeShoppingCart(id, item.getProductNo());
         
         }
         return order.getOrderNo();
+    }
+    
+    public List<OrderDto> selectAllOrderById(String id){
+    	List<OrderDto> orders = orderMapper.selectAllOrderById(id);
+    	
+    	return orders;
+    }
+    
+    public OrderDto selectOrderByOrderNo(int orderNo){
+    	return orderMapper.selectOrderByOrderNo(orderNo);
     }
 }
     

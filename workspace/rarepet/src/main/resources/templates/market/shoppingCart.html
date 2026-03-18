@@ -128,10 +128,10 @@ body {
             <a th:href="@{/market}" class="btn btn-outline-secondary rounded-pill px-4">
                 쇼핑 계속하기
             </a>
-            <button id="saveShoppingCart" type="submit" th:href="@{/market/saveCart}" class="btn btn-success rounded-pill px-4">
+            <button id="saveShoppingCart" type="submit" class="btn btn-success rounded-pill px-4">
 		        저장하기
 		    </button>
-            <a th:href="@{/purchase/cart}" class="btn btn-danger rounded-pill px-4">
+            <a id="saveBeforePurchase" th:href="@{/purchase/cart}" class="btn btn-danger rounded-pill px-4">
                 결제하기
             </a>
         </div>
@@ -141,7 +141,6 @@ body {
 </div>
 
 <div th:replace="fragments/fragment :: footer"></div>
-
 <div th:replace="fragments/fragment :: message"></div>
 <script th:replace="fragments/fragment :: message_script"></script>
 
@@ -192,6 +191,45 @@ $(()=>{
 		})
 		
 	})
+	
+	$("#saveBeforePurchase").on("click", function(e){
+		
+		e.preventDefault();	
+		
+		const updatedList = [];
+		
+		$(".cart-item").each(function() {
+			
+			updatedList.push({
+					productNo: parseInt($(this).data("product-no")),
+					cartQuantity: parseInt($(this).find(".cart-quantity").val())
+			})
+		})
+		//console.log(updatedList);
+		try{
+			$(this).prop("disabled", true).text("저장 중.....")
+			fetch("/market/updateShoppingCart", 
+					{method: "post", 
+					headers: {"content-type": "application/json"},
+					body: JSON.stringify(updatedList)}		
+				).then(response => response.text())
+				.then(result => {
+					if(result === "success"){
+						location.href = "/purchase/cart"
+					} else {
+						alert("저장 실패");
+						btn.prop("disabled", false).text("결제하기");
+					}
+				})	
+		} catch(exception){
+			alert("오류 발생")
+		}
+		
+		
+		
+	})
+	
+	
 })
 </script>
 </body>

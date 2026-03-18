@@ -1,5 +1,6 @@
 package com.human.rarepet.dto;
 
+import java.util.Date;
 import java.util.List;
 import lombok.Data;
 
@@ -8,7 +9,7 @@ public class OrderDto {
     private int orderNo;
     private String orderAddr;
     private String orderPhone; // 추가한 연락처
-    private String orderDate;
+    private Date orderDate;
     private String id;
     private int totalPrice;
 
