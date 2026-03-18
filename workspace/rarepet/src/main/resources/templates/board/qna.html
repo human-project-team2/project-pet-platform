@@ -164,7 +164,7 @@
 		    </div>
 		</div>
 	 
-        <div class="d-flex justify-content-between align-items-center">
+        <div class="d-flex align-items-center">
         	<th:block sec:authorize="isAuthenticated()">
         	<th:block th:if="${user != null}">
         		<th:block sec:authorize="hasRole('admin')">
@@ -181,6 +181,7 @@
 		        </th:block>
 	                        
 	            <!-- 입양 신청 모달 트리거 버튼 -->
+	            <div class="ms-auto">
 	            <button type="button"
 	                    class="btn btn-anyzoo btn-custom shadow"
 	                    id="openAdoptionModalBtn"
@@ -188,6 +189,7 @@
 	                    data-bs-target="#adoptionModal">
 	                <i class="bi bi-heart-fill me-2"></i>답변달기
 	            </button>
+	            </div>
 	            
             </th:block> 
             </th:block>
