@@ -360,10 +360,10 @@ public class BoardController {
 			MemberDto user = memberService.getUserById(member.getId());
 			model.addAttribute("user", user);
 			
-			List<BoardDto> myBoards = boardService.selectAllBoardyId(member.getId());
-			for (BoardDto mboard : myBoards) {
-				System.out.println(mboard);
-			}			
+			//List<BoardDto> myBoards = boardService.selectAllBoardyId(member.getId());
+			//for (BoardDto mboard : myBoards) {
+				//System.out.println(mboard.getBoardTitle());
+			//}			
 		}
 		return "board/qwrite";		
 	}

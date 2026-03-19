@@ -12,11 +12,15 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.human.rarepet.common.Util;
+import com.human.rarepet.dto.AdoBoardDto;
+import com.human.rarepet.dto.BoardDto;
+import com.human.rarepet.dto.GenBoardDto;
 import com.human.rarepet.dto.MemberDto;
 import com.human.rarepet.dto.OrderDto;
 import com.human.rarepet.dto.ProductDto;
 import com.human.rarepet.dto.ShopDto;
 import com.human.rarepet.security.RarepetUserDetails;
+import com.human.rarepet.service.BoardService;
 import com.human.rarepet.service.MarketService;
 import com.human.rarepet.service.MemberService;
 import com.human.rarepet.service.OrderService;
@@ -32,18 +36,22 @@ public class MyPageController {
     private final MarketService marketService;
     private final ShopService shopService;
     private final OrderService orderService;
+    private final BoardService boardService;
     public MyPageController(MemberService memberService, 
     						MarketService marketService, 
     						ShopService shopService,
-    						OrderService orderService) {
+    						OrderService orderService,
+    						BoardService boardService) {
     	this.memberService = memberService;
     	this.marketService = marketService;
     	this.shopService = shopService;
     	this.orderService = orderService;
+    	this.boardService = boardService;
     }
     @GetMapping("/mypage")
     public String myPage(@AuthenticationPrincipal RarepetUserDetails userDetails , Model model) {
        
+    	int post_exist = 0;
     	// 1. 세션에서 로그인한 유저 정보 가져오기 (소문자 loginuser 확인)
     	// -> Spring Security 로 바꿈.
         MemberDto loginUser = userDetails.getMember();
@@ -61,6 +69,29 @@ public class MyPageController {
         
         // 주문 내역 가져오기
         List<OrderDto> myOrders = orderService.selectAllOrderById(loginUser.getId());
+        
+        // 내가 쓴 글 가져오기
+		List<BoardDto> boards = boardService.selectAllBoardyId(loginUser.getId());		
+		List<GenBoardDto> genboards = boardService.showAllGenBoard();		
+		List<BoardDto> myPosts = new java.util.ArrayList<>();
+		for (BoardDto board : boards) {
+			for (GenBoardDto genboard : genboards) {
+				if (board.getBoardId() == genboard.getBoardId()) {		
+					genboard.setBoardTitle(board.getBoardTitle());
+					genboard.setBoardContent(board.getBoardContent());
+					genboard.setBoardWriterId(board.getBoardWriterId());
+					genboard.setBoardWriteDate(board.getBoardWriteDate());
+					genboard.setBoardViewCount(board.getBoardViewCount());
+					genboard.setBoardLikeCount(board.getBoardLikeCount());
+					myPosts.add(genboard);
+					post_exist = 1;
+					break;
+				}
+			}
+		}
+		if(post_exist == 1) {
+			model.addAttribute("myPosts", myPosts);
+		}
         
         // 4. 화면(HTML)으로 데이터 전달
         
