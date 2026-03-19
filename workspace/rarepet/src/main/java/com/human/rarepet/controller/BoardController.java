@@ -146,6 +146,7 @@ public class BoardController {
 
 		System.out.println("--------------------Community page");
 
+		
 		List<BoardDto> boards = boardService.showAllBoard(); // 좋아요순 정렬
 		List<GenBoardDto> genboards = boardService.showAllGenBoard();
 
@@ -358,6 +359,11 @@ public class BoardController {
 		if(member != null) {
 			MemberDto user = memberService.getUserById(member.getId());
 			model.addAttribute("user", user);
+			
+			List<BoardDto> myBoards = boardService.selectAllBoardyId(member.getId());
+			for (BoardDto mboard : myBoards) {
+				System.out.println(mboard);
+			}			
 		}
 		return "board/qwrite";		
 	}
