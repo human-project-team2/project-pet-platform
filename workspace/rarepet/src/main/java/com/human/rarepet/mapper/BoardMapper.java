@@ -63,5 +63,7 @@ public interface BoardMapper {
 	QnaBoardAnswerDto showQnaAnswerBoardById(int boardId);
 
 	void updateBoardQnA(QnaBoardDto qnaboard);
+
+	List<BoardDto> selectAllBoardyId(String id);
 	
 }

@@ -142,6 +142,10 @@ public class BoardService {
 
 	public void updateQnABoardById(QnaBoardDto qnaboard) {
 		boardMapper.updateBoardQnA(qnaboard);
+	}
+
+	public List<BoardDto> selectAllBoardyId(String id) {
+		return boardMapper.selectAllBoardyId(id);
 	}	
 
 }

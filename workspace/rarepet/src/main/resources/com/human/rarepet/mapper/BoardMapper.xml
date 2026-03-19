@@ -77,6 +77,12 @@
 		ORDER BY board_like_count DESC, board_id DESC
 	</select>
 	
+	<select id="selectAllBoardyId" resultType="BoardDto">
+		select *
+		from board
+		WHERE board_writer_id = #{boardWriterId}
+	</select>	
+	
 	<select id="showAllGenBoard" resultType="GenBoardDto">
 		select *
 		from board_general		
