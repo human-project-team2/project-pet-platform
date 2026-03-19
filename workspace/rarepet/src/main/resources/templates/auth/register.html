@@ -70,10 +70,31 @@
                                 </div>
 
                                 <div class="mb-3">
-                                    <label class="form-label fw-bold" style="color: #777;">이메일</label>
-                                    <input type="email" id="email" name="email" class="form-control" 
-                                        placeholder="이메일을 입력하세요" style="border-radius: 12px; font-size: 15px;">
-                                </div>
+								    <label class="form-label fw-bold" style="color: #777;">이메일</label>
+								
+								    <div class="input-group mb-2">
+								        <input type="email" id="email" name="email" class="form-control"
+								            placeholder="이메일을 입력하세요"
+								            style="border-radius: 12px 0 0 12px; font-size: 15px;">
+								        <button class="btn btn-outline-secondary" type="button" id="btn-send-code"
+								            style="border-radius: 0 12px 12px 0;">
+								            인증번호 받기
+								        </button>
+								    </div>
+								    <small id="email-status" style="font-size: 12px; margin-left: 5px;"></small>
+								    <div class="input-group">
+								        <input type="text" id="email-code" class="form-control"
+								            placeholder="인증번호 입력"
+								            style="border-radius: 12px 0 0 12px;">
+								        <button class="btn btn-outline-secondary" type="button" id="btn-verify-code"
+								            style="border-radius: 0 12px 12px 0;">
+								            확인
+								        </button>
+								    </div>
+								    <small id="email-code-status" style="font-size: 12px; margin-left: 5px;"></small>
+								
+								    
+								</div>
 
                                 <div class="mb-3">
                                     <label class="form-label fw-bold" style="color: #777;">이름</label>
@@ -124,6 +145,117 @@
     <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
 	
     <script>
+    
+    	let isEmailVerified = false;
+    	let timeLimit = 120;
+    	let timer = null;
+    	const $btn = $("#btn-send-code");
+    	const $status = $("#email-status");
+    	
+    	// 이메일 인증 하기
+    	// 시간 카운트 함수.
+    	function emailConfirmTimeLimit(){
+    		
+    		if(timer){
+    			clearInterval(timer);
+    			timer = null;
+    		}
+    		
+    		timeLimit = 120;
+    		
+    		timer = setInterval(function() {
+    			
+    			timeLimit--;
+    			$btn.prop("disabled", true).text(`재전송 대기시간 : ${timeLimit}s`)
+	    		
+    			if(timeLimit <= 0){
+	    			clearInterval(timer);
+	    			timer = null;
+	    			$btn.prop("disabled", false).text("인증번호 받기");
+	    			
+	    		}
+    			
+    		}, 1000)
+    	}
+    	
+    	let code = null;
+    	
+    	
+    	
+    	// 인증번호전송 클릭 이벤트
+    	
+    	$btn.on("click", function(event) {
+    		
+    		const email = $("#email").val().trim();
+    		if(!email){
+    			alert("이메일을 입력해주세요");
+    			return;
+    		}
+    		
+    		fetch("/send-email?email=" + email)
+    		.then(response => response.text())
+    		.then(text => {
+	    		
+    			if(text === "alreadyUsedEmail"){
+    				//alert("이미 존재하는 이메일입니다.")
+    				$status.text("이미 존재하는 이메일입니다").css("color", "red");
+    			} else if(text === "success"){
+    				emailConfirmTimeLimit();
+    				//alert("인증 번호를 보냈습니다. 메일을 확인해 주세요.")
+    				$status.text("인증번호를 보냈습니다. 이메일을 확인해주세요")
+                    .css("color", "green");
+    			} else {
+    				//alert("인증 번호 보내기 실패. 다시 시도해 주세요.")
+    				$status.text("인증번호 전송 실패. 다시 시도해주세요")
+                    .css("color", "red");
+    			}
+    		})
+    	});
+    	
+    	// 인증번호 검증.
+    	$("#btn-verify-code").on("click", function(event){
+    		const code = $("#email-code").val().trim();
+    		const url = "/send-email-code?code=" + code
+    		if(!code){
+    			$("#email-code-status").text("인증번호를 입력해주세요").css("color", "red");
+    			return;
+    		}
+    		
+    		fetch(url, {method:'POST'})
+    		.then(response => response.text())
+    		.then(text => {
+    			if(text === "success"){
+    				isEmailVerified = true;
+    				$("#email-code-status").text("이메일 인증이 완료되었습니다.").css("color", "green");
+    				if(timer){
+    					clearInterval(timer);
+    					timer = null;
+    				}
+    				$("#btn-send-code").prop("disabled", true).text("인증완료").css("color", "green"); // 인증되면 이메일 잠금.
+    				$("#email").prop("readonly", true);
+    			} else {
+    				$("#email-code-status").text("인증 번호가 틀립니다.").css("color", "red");
+    			}
+    		})
+    	})
+    	
+    	// 이메일 수정하면 인증 초기화.
+    	$("#email").on("input", function() {
+		    if(isEmailVerified){
+		    	isEmailVerified = false;
+			    $("#email-status").text("");
+			    $("#email-code-status").text("")
+			    emailConfirmTimeLimit();	
+		    } else {
+		    	return;
+		    }
+    		
+		});
+    	
+    	
+    	
+    	
+    	
         // 주소 API 함수
         function execDaumPostcode() {
             new daum.Postcode({
@@ -177,7 +309,11 @@
                 if (!isIdValid) { alert('아이디 중복검사를 완료해 주세요.'); return; }
                 if (!$('#id').val()) { alert('아이디를 입력하세요.'); return; }
                 if ($('#passwd').val() !== $('#confirm').val()) { alert('비밀번호가 일치하지 않습니다.'); return; }
-
+				
+                if (!isEmailVerified) {
+                    alert('이메일 인증을 완료해 주세요.');
+                    return;
+                }
                 // [주소 합치기] 기본주소 + 상세주소
                 const mainAddr = $('#main_address').val();
                 const detailAddr = $('#detail_address').val();

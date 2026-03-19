@@ -57,4 +57,9 @@ public class MemberService {
 	public List<RoleDto> selectMemberRolesById(String id) {
 		return memberMapper.selectMemberRolesById(id);
 	}
+	
+	
+	
+	
+	
 }

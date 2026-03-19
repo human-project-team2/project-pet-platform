@@ -77,7 +77,7 @@ public class MemberController {
 		member.setRoles(roles);
 		
 		memberService.insertMember(member);
-		return "redirect:/";
+		return "redirect:/auth/login";
 	}
 
 	/**

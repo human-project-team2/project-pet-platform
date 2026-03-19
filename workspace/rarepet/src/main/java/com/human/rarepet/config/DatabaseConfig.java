@@ -10,6 +10,8 @@ import org.springframework.context.annotation.PropertySource;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 
+
+
 @Configuration // -> servlet-context.xml 과 같은 설정파일 클래스로 구현
 @PropertySource("classpath:/application.properties")
 public class DatabaseConfig {

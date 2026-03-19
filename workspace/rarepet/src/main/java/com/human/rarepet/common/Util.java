@@ -4,13 +4,9 @@ import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.sql.SQLData;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
-
-import org.apache.ibatis.jdbc.SQL;
 
 public class Util {
 	
