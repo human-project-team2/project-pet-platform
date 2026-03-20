@@ -16,14 +16,20 @@ import com.human.rarepet.dto.MemberDto;
 import com.human.rarepet.dto.MessageDto;
 import com.human.rarepet.security.RarepetUserDetails;
 import com.human.rarepet.service.MessageService;
+import com.human.rarepet.service.NotificationService;
 
 import jakarta.servlet.http.HttpSession;
 
 @Controller
 public class MessageController {
 	
-	@Autowired
-	private MessageService messageService;
+	private final MessageService messageService;
+	
+	
+	public MessageController(MessageService messageService, NotificationService notificationService) {
+		
+		this.messageService = messageService;
+	}
 	
 	@PostMapping(path = {"/messages"})
 	@ResponseBody

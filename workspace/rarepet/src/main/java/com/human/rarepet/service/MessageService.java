@@ -14,10 +14,14 @@ import com.human.rarepet.mapper.MessageMapper;
 import com.human.rarepet.security.RarepetUserDetails;
 
 import jakarta.servlet.http.HttpSession;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 @Service("messageService")
 public class MessageService {
 
+	@Autowired
+	private NotificationService notificationService;
+	
 	@Autowired
 	private MessageMapper messageMapper;
 	
@@ -28,6 +32,11 @@ public class MessageService {
 		message.setSenderId(member.getId());
 		
 		messageMapper.sendMessage(message);
+		
+		if(message.getReceiverId() != null) {
+			notificationService.sendToUser(message.getReceiverId(), message.getReceiverId() + "님으로 부터 메시지");
+			
+		}
 	}
 	
 	public List<MessageDto> receiveMessage(String loggedInId){

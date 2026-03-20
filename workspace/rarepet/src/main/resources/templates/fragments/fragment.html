@@ -3,8 +3,9 @@
 	xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <body>
 
-	<div th:fragment="header">
-
+	<div th:fragment="header" id="global-header"
+		 th:data-authenticated="${#authorization.expression('isAuthenticated()')}">
+		
 		<nav class="navbar navbar-expand-lg shadow-sm fixed-top"
 			style="background-color: var(--bs-body-bg); border-bottom: 1px solid rgba(0, 0, 0, 0.1); transition: 0.3s;">
 			<div class="container">
@@ -77,10 +78,21 @@
 										th:href="@{/market/shoppingCart}"> <!-- adjust path if your cart is elsewhere -->
 											<i class="bi bi-cart me-2 text-muted"></i> 장바구니
 									</a></li>
-									<li><a class="dropdown-item d-flex align-items-center"
-										data-bs-toggle="modal" data-bs-target="#chatListModal"> <i
-											class="bi bi-chat-dots me-2 text-muted"></i> 메시지
-									</a></li>
+									<li>
+									<a class="dropdown-item d-flex align-items-center" href="#" 
+									   data-bs-toggle="modal" data-bs-target="#chatListModal">
+									    
+									    <div class="position-relative me-3">
+									        <i class="bi bi-chat-dots fs-5"></i> <span id="msgBadge" 
+									              class="position-absolute bottom-0 start-100 translate-middle badge rounded-pill bg-danger d-none"
+									              style="font-size: 0.6rem; padding: 0.25em 0.4em;">
+									            0
+									        </span>
+									    </div>
+									    
+									    <span>메시지</span>
+									</a>
+									</li>
 									<li><hr class="dropdown-divider"></li>
 									<li><a
 										class="dropdown-item text-danger d-flex align-items-center"
@@ -210,18 +222,91 @@
 
 		</th:block>
 
-
+		
 		<footer class="text-center py-4 border-top"
 			style="background-color: var(--bs-tertiary-bg);">
 			<p class="mb-0 text-muted small">© 2026 AnyZoo. 소중한 생명을 위한 희귀
 				반려동물 마켓</p>
 		</footer>
+		
+		<div class="toast-container position-fixed bottom-0 end-0 p-3">
+		  <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+		    <div class="toast-header">
+		      <strong class="me-auto" id="toastTitle">알림</strong>
+		      <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+		    </div>
+		    <div class="toast-body" id="toastBody">
+		    </div>
+		  </div>
+		</div>
 
 		<script th:inline="javascript">
 		
 	    $(function(){
+	    	window.totalUnread = 0;
 	    	
-			/*[- 타임리프이용해서 스크립트 안에 주석을 남길 때 쓰는 형식 -]*/
+	    	let sse = null;
+	    	let unreadCount = 0;
+			const header = document.querySelector("#global-header")
+			const isAuthenticated = header && header.getAttribute("data-authenticated") === 'true';
+	    	if(isAuthenticated){
+	    		initializeSse();
+	    	}
+	    	
+	    	function initializeSse(){
+	    		
+	    		sse = new EventSource("/sse/connect");
+	    		
+	    		//ping
+	    		sse.addEventListener("ping", event => {
+	    			console.debug("heartbeat on going")
+	    			//test
+	    		})
+	    		
+	    		//전체 메시지
+	    		sse.addEventListener("broadcast", event => {
+	    			const message = event.data;
+	    			//showNotification()
+	    		})
+	    		
+	    		//개인 메시지
+	    		sse.addEventListener("private", event => {
+	    			const message = event.data;
+	    			updateMessageBadge();
+	    			showNotification("💬", message)
+	    		})
+	    	}
+	    	
+	    	//메시지 알림 뜨는 부츠스트랩
+	    	function showNotification(title, message){
+	    		document.querySelector('#toastTitle').innerText = title;
+	    		document.querySelector('#toastBody').innerText = message;
+	    		const toastElement = document.getElementById('liveToast');
+	    	    const toast = new bootstrap.Toast(toastElement);
+	    	    toast.show();
+	    	}
+	    	
+	    	//메시지 알림 카운트
+	    	function updateMessageBadge() {
+	    		window.totalUnread++;
+			    const badge = document.getElementById('msgBadge');
+			    
+			    if (badge) {
+			    	
+			        // 9보다 클 경우 9+
+			        badge.innerText = window.totalUnread > 9 ? "9+" : window.totalUnread++;;
+			        
+			        // d-none prop 없애기
+			        badge.classList.remove('d-none');
+			        
+			        // Optional: Add a small "pop" animation using Bootstrap classes
+			        badge.classList.add('animate__animated', 'animate__bounceIn'); 
+			    }
+			}
+	    	
+	    	
+	    	
+	    	/*[- 타임리프이용해서 스크립트 안에 주석을 남길 때 쓰는 형식 -]*/
 			
 			/*[- 스프링 시큐리티에서 #authentication.principal 은 로그인할때만 null 이 아니다.
 				따라서 #authentication.principal.username 은 anonymousUser 일 때 오류가 난다. 
@@ -544,7 +629,14 @@
          // 보낸 사람별로 메시지 목록 불러오기
          
          $("#chatListModal").on("shown.bs.modal", () => {
-            
+        	 
+        	 window.totalUnread = 0;
+             const badge = document.getElementById('msgBadge');
+             if (badge) {
+                 badge.classList.add('d-none');
+                 badge.innerText = "0";
+             }
+             
             fetch("/messages/list").then(response => response.json())
             .then(messages => {
                $("#messageListBody").empty();
@@ -552,11 +644,14 @@
                messages.forEach( (message) => {
                   
                   const partnerId = message.direction === "sent" ? message.receiverId : message.senderId;
-                         
+                  const showNew = !(message.direction === "sent");       
                   $("#messageListBody").append(
                      `
                      <tr class="message-row" data-partner-id="${partnerId}">
-                        <td>${partnerId}</td>
+                        <td>
+                        ${partnerId}
+                        ${showNew ? '<span class="badge rounded-pill bg-danger ms-2 row-badge-icon">N</span>' : ''}
+                        </td>
                         <td>${message.sentAt}</td>
                      </tr>
                      `);
@@ -572,6 +667,7 @@
      	  														// $(document).on(...) 는 Event Delegation 으로 클릭 이벤트를 미리 등록해놓고, 
      	  														// 클릭이 발생할 시에, ".message-row" 인지 체크
              
+     	  	$(this).find('.row-badge-icon').hide();
              const partnerId = $(this).data("partner-id")
              
              fetch(`/messages/detail?partnerId=${partnerId}`)
@@ -661,10 +757,7 @@
               $('#btnSendInChat').click();
             }
           });
-          // 채팅창 끝
-
-         
-          
+          // 채팅창 끝          
           
       })
       

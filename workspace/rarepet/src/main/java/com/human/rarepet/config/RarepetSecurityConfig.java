@@ -37,6 +37,7 @@ public class RarepetSecurityConfig {
 											"/market/deleteShoppingCart",
 											"/market/updateShoppingCart",
 											"/mypage"
+											
 									).hasRole("member")
 									
 									// 2. 기타 회원 전용 기능
@@ -47,7 +48,7 @@ public class RarepetSecurityConfig {
 									
 									// 3. 인증만 되면 접근 가능한 경로
 									.requestMatchers("/shop/**").authenticated()
-									
+									.requestMatchers("/sse/**").authenticated()
 									// 4. 관리자 전용 경로
 									.requestMatchers("/admin").hasRole("admin")
 									
