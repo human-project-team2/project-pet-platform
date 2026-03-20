@@ -354,7 +354,7 @@ body {
 					    </table>
 					    </th:block>
 					    
-						<div th:if="${#lists.isEmpty(myPosts)}"
+						<div th:if="${#lists.isEmpty(myPosts) && #lists.isEmpty(qmyPosts) && #lists.isEmpty(amyPosts)}"
 							class="text-center py-5 bg-white rounded-5 shadow-sm">
 							<p class="text-muted">작성한 글이 없습니다. 📝</p>
 						</div>
