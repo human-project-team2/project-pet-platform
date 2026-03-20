@@ -18,6 +18,7 @@ import com.human.rarepet.dto.GenBoardDto;
 import com.human.rarepet.dto.MemberDto;
 import com.human.rarepet.dto.OrderDto;
 import com.human.rarepet.dto.ProductDto;
+import com.human.rarepet.dto.QnaBoardDto;
 import com.human.rarepet.dto.ShopDto;
 import com.human.rarepet.security.RarepetUserDetails;
 import com.human.rarepet.service.BoardService;
@@ -52,6 +53,8 @@ public class MyPageController {
     public String myPage(@AuthenticationPrincipal RarepetUserDetails userDetails , Model model) {
        
     	int post_exist = 0;
+    	int qpost_exist = 0;
+    	int apost_exist = 0;
     	// 1. 세션에서 로그인한 유저 정보 가져오기 (소문자 loginuser 확인)
     	// -> Spring Security 로 바꿈.
         MemberDto loginUser = userDetails.getMember();
@@ -91,6 +94,46 @@ public class MyPageController {
 		}
 		if(post_exist == 1) {
 			model.addAttribute("myPosts", myPosts);
+		}
+		List<QnaBoardDto> qnaboards = boardService.showAllQnaBoard();		
+		List<BoardDto> qmyPosts = new java.util.ArrayList<>();
+		for (BoardDto board : boards) {
+			for (QnaBoardDto qnaboard : qnaboards) {
+				if (board.getBoardId() == qnaboard.getBoardId()) {		
+					qnaboard.setBoardTitle(board.getBoardTitle());
+					qnaboard.setBoardContent(board.getBoardContent());
+					qnaboard.setBoardWriterId(board.getBoardWriterId());
+					qnaboard.setBoardWriteDate(board.getBoardWriteDate());
+					qnaboard.setBoardViewCount(board.getBoardViewCount());
+					qnaboard.setBoardLikeCount(board.getBoardLikeCount());
+					qmyPosts.add(qnaboard);
+					qpost_exist = 1;
+					break;
+				}
+			}
+		}
+		if(qpost_exist == 1) {
+			model.addAttribute("qmyPosts", qmyPosts);
+		}
+		List<AdoBoardDto> adoboards = boardService.showAllAdoBoard();		
+		List<BoardDto> amyPosts = new java.util.ArrayList<>();
+		for (BoardDto board : boards) {
+			for (AdoBoardDto adoboard : adoboards) {
+				if (board.getBoardId() == adoboard.getBoardId()) {		
+					adoboard.setBoardTitle(board.getBoardTitle());
+					adoboard.setBoardContent(board.getBoardContent());
+					adoboard.setBoardWriterId(board.getBoardWriterId());
+					adoboard.setBoardWriteDate(board.getBoardWriteDate());
+					adoboard.setBoardViewCount(board.getBoardViewCount());
+					adoboard.setBoardLikeCount(board.getBoardLikeCount());
+					amyPosts.add(adoboard);
+					apost_exist = 1;
+					break;
+				}
+			}
+		}
+		if(apost_exist == 1) {
+			model.addAttribute("amyPosts", amyPosts);
 		}
         
         // 4. 화면(HTML)으로 데이터 전달
