@@ -19,6 +19,7 @@ public class BoardDto {
 	private String savedFileName;
 	private String originalFileName;
 	private String imgUrl;
+	private int boardType;
 	
 	//private String email;
 	//private MemberDto writer;
