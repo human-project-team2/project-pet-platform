@@ -148,6 +148,7 @@ body {
 						<img th:src="@{${userImgUrl}}" alt="Profile Image"
 							class="profile-img shadow-sm">
 						<h3 class="user-name mt-3" th:text="${user.name}">집사님</h3>
+						<h3 class="text-muted small" th:text="'아이디: ' + ${user.id}">집사님</h3>
 						<p class="text-muted small" th:text="${user.email}">user@email.com</p>
 					</div>
 					<div class="row g-2 mb-4">

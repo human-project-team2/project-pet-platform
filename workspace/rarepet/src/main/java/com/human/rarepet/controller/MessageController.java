@@ -63,4 +63,16 @@ public class MessageController {
 		
 	}
 	
+	@PostMapping(path = {"/messages/read"})
+	@ResponseBody
+	public String markAsRead(@RequestParam("partnerId") String partnerId,
+	            @AuthenticationPrincipal RarepetUserDetails userDetail) {
+	
+	String id = userDetail.getMember().getId();
+	
+	int result = messageService.markAsRead(id, partnerId);
+	System.out.println("----------------->" + result);
+	return "ok";
+	
+	}
 }

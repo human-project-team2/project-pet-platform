@@ -14,5 +14,5 @@ public class MessageDto {
 	Date sentAt;
 	Date receivedAt;
 	String direction;
-	
+	boolean isRead;
 }

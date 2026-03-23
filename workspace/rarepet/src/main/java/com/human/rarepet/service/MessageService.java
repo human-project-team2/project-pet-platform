@@ -34,7 +34,7 @@ public class MessageService {
 		messageMapper.sendMessage(message);
 		
 		if(message.getReceiverId() != null) {
-			notificationService.sendToUser(message.getReceiverId(), message.getReceiverId() + "님으로 부터 메시지");
+			notificationService.sendToUser(message.getReceiverId(), message.getSenderId() + "님으로 부터 메시지");
 			
 		}
 	}
@@ -46,5 +46,9 @@ public class MessageService {
 	
 	public List<MessageDto> messageDetail(String loggedInId, String partnerId){
 		return messageMapper.messageDetail(loggedInId, partnerId);
+	}
+	
+	public int markAsRead(String id, String partnerId) {
+		return messageMapper.markAsRead(id, partnerId);
 	}
 }
