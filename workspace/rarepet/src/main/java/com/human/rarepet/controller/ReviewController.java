@@ -77,4 +77,17 @@ public class ReviewController {
 		reviewService.removeReview(reviewNo);
 		return "redirect:/review/list";
 	}
+	
+	@GetMapping("/review/write")
+	public String reviewWriteForm(@RequestParam("productNo") Long productNo,
+	                             @RequestParam("orderNo") String orderNo,
+	                             @RequestParam("productName") String productName,
+	                             Model model) {
+	    
+	    model.addAttribute("productNo", productNo);
+	    model.addAttribute("orderNo", orderNo);
+	    model.addAttribute("productName", productName); // 상품명을 모델에 담음
+	    
+	    return "review/write_form"; // 리뷰 작성 페이지 경로
+	}
 }
