@@ -310,10 +310,12 @@
                 if (!$('#id').val()) { alert('아이디를 입력하세요.'); return; }
                 if ($('#passwd').val() !== $('#confirm').val()) { alert('비밀번호가 일치하지 않습니다.'); return; }
 				
-                if (!isEmailVerified) {
+                //임시 주석 처리
+                /* if (!isEmailVerified) {
                     alert('이메일 인증을 완료해 주세요.');
                     return;
-                }
+                } */
+                
                 // [주소 합치기] 기본주소 + 상세주소
                 const mainAddr = $('#main_address').val();
                 const detailAddr = $('#detail_address').val();

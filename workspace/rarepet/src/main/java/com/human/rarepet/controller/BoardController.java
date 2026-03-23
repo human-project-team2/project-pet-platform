@@ -443,8 +443,8 @@ public class BoardController {
 		
 		System.out.println(qnaboard);
 		
-		QnaBoardAnswerDto qnaapply = boardService.showQnaAnswerBoardById(boardId);	
-		System.out.println(qnaapply);
+		List<QnaBoardAnswerDto> qnaapplyList = boardService.showQnaAnswerBoardById(boardId);	
+		//System.out.println(qnaapplyList);
 		
 		if (userDetails != null) {
 			MemberDto loginUser = userDetails.getMember();
@@ -454,7 +454,7 @@ public class BoardController {
 		
 		model.addAttribute("board", board);		
 		model.addAttribute("adoboard", qnaboard);
-		model.addAttribute("adoapply", qnaapply);	
+		model.addAttribute("adoapply", qnaapplyList);	
 		System.out.println("QnA prove Form \n");
 			
 		return "board/qna"; 
@@ -488,8 +488,8 @@ public class BoardController {
 		System.out.println("QnA prove");
 		System.out.println(qnaboard);
 		
-		QnaBoardAnswerDto qnaapply = boardService.showQnaAnswerBoardById(boardId);	
-		System.out.println(qnaapply);		
+		List<QnaBoardAnswerDto> qnaapplyList = boardService.showQnaAnswerBoardById(boardId);	
+		//System.out.println(qnaapplyList);		
 		
 		String qnaDone = qnaboard.getAnswerSelected();
 		if (qnaDone.equals(1) == true)
@@ -539,6 +539,8 @@ public class BoardController {
 		 */			
 		
 		BoardDto board = boardService.showBoardById(boardId);
+		MemberDto writer = memberService.getUserById(board.getBoardWriterId());
+		
 		BoardDto qnaboard = boardService.showQnaBoardById(boardId);		
 		if (qnaboard == null) {
 			System.out.println("--------------------Qna NULL--  ");	
@@ -558,14 +560,19 @@ public class BoardController {
 		// ★ 조회수 증가
 	    boardService.increaseBoardViewCount(boardId);
 	    
-	    QnaBoardAnswerDto qnaAnswer = boardService.showQnaAnswerBoardById(boardId);
-	    System.out.println(qnaAnswer);
+	    List<QnaBoardAnswerDto> qnaAnswerList = boardService.showQnaAnswerBoardById(boardId);
+	    for(QnaBoardAnswerDto answer : qnaAnswerList) {
+	    	String imgUrl = memberService.getUserById(answer.getId()).getImgUrl();
+	    	answer.setAnswerImgUrl(imgUrl);
+	    }
+	    
+	    //System.out.println(qnaAnswerList);
 		System.out.println("QnA Ok");
-		
+		model.addAttribute("writer", writer);
 		model.addAttribute("board", board);
 		model.addAttribute("pageNo", pageNo);
 		model.addAttribute("qnaboard", qnaboard);
-		model.addAttribute("qnaAnswer", qnaAnswer);
+		model.addAttribute("qnaAnswers", qnaAnswerList);
 		
 		
 			
@@ -1084,6 +1091,10 @@ public class BoardController {
 	    
 		//board.setBoardLikeCount(2);
 		
+	    //작성자 프로필 가져오기
+	    MemberDto writer = memberService.getUserById(board.getBoardWriterId());
+	    
+	    model.addAttribute("writer", writer);
 		model.addAttribute("board", board);
 		model.addAttribute("pageNo", pageNo);
 		

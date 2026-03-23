@@ -62,7 +62,7 @@ public interface BoardMapper {
 
 	void increaseBoardViewCount(int boardId);
 
-	QnaBoardAnswerDto showQnaAnswerBoardById(int boardId);
+	List<QnaBoardAnswerDto> showQnaAnswerBoardById(int boardId);
 
 	void updateBoardQnA(QnaBoardDto qnaboard);
 

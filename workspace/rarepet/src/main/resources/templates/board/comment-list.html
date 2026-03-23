@@ -9,6 +9,7 @@
 										<br><br>
 									</th:fragment>
 									<th:fragment th:unless="${ comment.deleted }"> 
+										<img th:src="${comment.imgUrl != null and comment.imgUrl != ''} ? @{${comment.imgUrl}} : @{/img/avatardefault.jpg}" class="rounded-circle me-1" width="40" height="40"/>
 										[[${ comment.writer }]] &nbsp;&nbsp; [[(${ #dates.format(comment.writeDate, 'yyyy-MM-dd HH:mm:ss') })]]									 
 										<br /><br />
 									    <span th:text="${ #strings.replace(comment.content, '
@@ -17,7 +18,7 @@
 										<!-- 
 										<div th:style='${ (session.loginuser != null && session.loginuser.email == comment.writer) ? "display:block" : "display:none" }'>
 										 -->
-										<div>
+										<div th:if="${#authentication.principal.username == comment.writer}">
 									    	<a class="edit-comment" th:data-comment-no="${ comment.commentNo }" href="javascript:">편집</a>
 											&nbsp;
 											<a class="delete-comment" th:data-comment-no="${ comment.commentNo }" href="javascript:">삭제</a>

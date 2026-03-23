@@ -11,16 +11,15 @@ public class RarepetPasswordEncoder implements PasswordEncoder {
 	@Override
 	public String encode(CharSequence rawPassword) {
 		String passwd = rawPassword.toString();
-		// return Util.getHashedString(passwd, ALGORITHM);
-		return passwd;
+		return Util.getHashedString(passwd, ALGORITHM);
+		
 	}
 
 	@Override
 	public boolean matches(CharSequence rawPassword, String encodedPassword) {
 		
-		//String hashedRawPassword = Util.getHashedString(rawPassword.toString(), ALGORITHM);
-		//return encodedPassword.equals(encodedPassword);
-		return encodedPassword.equals(rawPassword.toString());
+		String hashedRawPassword = Util.getHashedString(rawPassword.toString(), ALGORITHM);
+		return hashedRawPassword.equals(encodedPassword);
 		
 	}
 

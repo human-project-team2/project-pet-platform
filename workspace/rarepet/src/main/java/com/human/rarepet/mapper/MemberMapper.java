@@ -5,7 +5,9 @@ import java.util.List;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Result;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 
 import com.human.rarepet.dto.MemberDto;
 import com.human.rarepet.dto.RoleDto;
@@ -36,4 +38,6 @@ public interface MemberMapper {
     
     @Insert("INSERT INTO member_role (id, role_no) VALUES (#{id}, #{roleNo})")
     void insertMemberRole(@Param("id") String id, @Param("roleNo") int roleNo);
-}
+    
+    
+ }

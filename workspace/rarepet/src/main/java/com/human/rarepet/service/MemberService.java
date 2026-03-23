@@ -3,19 +3,26 @@ package com.human.rarepet.service;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import com.human.rarepet.dto.MemberDto;
 import com.human.rarepet.dto.RoleDto;
 import com.human.rarepet.mapper.MemberMapper;
+import com.human.rarepet.security.RarepetPasswordEncoder;
 
 @Service("memberService")
 public class MemberService {
 	
 	@Autowired
 	private MemberMapper memberMapper;
+	@Autowired
+	private PasswordEncoder passwordEncoder;
 	
-	public void insertMember(MemberDto member)
-	{
+	public void insertMember(MemberDto member) {
+		
+		String encoded = passwordEncoder.encode(member.getPasswd());
+		member.setPasswd(encoded);
+		
 		// 3. mybatis 사용
 		memberMapper.insertMember(member);
 		for (RoleDto role : member.getRoles()) {
@@ -57,6 +64,7 @@ public class MemberService {
 	public List<RoleDto> selectMemberRolesById(String id) {
 		return memberMapper.selectMemberRolesById(id);
 	}
+	
 	
 	
 	

@@ -135,9 +135,9 @@ public class BoardService {
 		boardMapper.increaseBoardViewCount(boardId);
 	}
 
-	public QnaBoardAnswerDto showQnaAnswerBoardById(int boardId) {
-		QnaBoardAnswerDto dto = boardMapper.showQnaAnswerBoardById(boardId);
-		return dto;
+	public List<QnaBoardAnswerDto> showQnaAnswerBoardById(int boardId) {
+		List<QnaBoardAnswerDto> answerList = boardMapper.showQnaAnswerBoardById(boardId);
+		return answerList;
 	}
 
 	public void updateQnABoardById(QnaBoardDto qnaboard) {
