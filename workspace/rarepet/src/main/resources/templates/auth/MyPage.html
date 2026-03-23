@@ -269,6 +269,11 @@ body {
 												수량: <span th:text="${item.productOrderCount}"></span>
 											</p>
 										</div>
+										
+										<a th:href="@{/review/write(productNo=${item.productNo}, orderNo=${order.orderNo})}" 
+								           class="btn btn-sm btn-outline-warning rounded-pill mt-1">
+								           리뷰 쓰기
+								        </a>
 
 										<div class="text-end">
 											<p class="fw-bold mb-0"
