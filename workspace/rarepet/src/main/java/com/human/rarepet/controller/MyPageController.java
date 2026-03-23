@@ -58,7 +58,7 @@ public class MyPageController {
     	// 1. 세션에서 로그인한 유저 정보 가져오기 (소문자 loginuser 확인)
     	// -> Spring Security 로 바꿈.
         MemberDto loginUser = userDetails.getMember();
-
+        System.out.println(loginUser);
         // 2. 로그인 안 되어 있으면 로그인 페이지로 강제 이동
         if (loginUser == null) {
             return "redirect:/auth/login";

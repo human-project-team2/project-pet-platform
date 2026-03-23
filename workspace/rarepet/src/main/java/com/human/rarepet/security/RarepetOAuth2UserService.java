@@ -77,7 +77,7 @@ public class RarepetOAuth2UserService extends DefaultOAuth2UserService {
     		
     		List<RoleDto> roles2 = member.getRoles();
     		for (RoleDto role2 : roles2) {
-    			memberMapper.insertMemberRole(member.getEmail(), role2.getRoleNo());
+    			memberMapper.insertMemberRole(member.getId(), role2.getRoleNo());
     		}
     		
 		} else {
@@ -87,6 +87,6 @@ public class RarepetOAuth2UserService extends DefaultOAuth2UserService {
         
 		
 		RarepetOAuth2User userDetails = new RarepetOAuth2User(oAuth2Response, member);
-		return userDetails;
+		return new RarepetUserDetails(member,name);
 	}
 }
