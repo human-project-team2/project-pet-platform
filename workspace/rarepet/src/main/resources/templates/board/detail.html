@@ -117,7 +117,11 @@
                 <div class="d-flex align-items-center">
                     <!-- 프로필 이미지 추가 -->
         			<img th:src="@{${writer.imgUrl}}" alt="profile" 
-        				class="rounded-circle me-2" width="40" height="40"/>
+        				class="rounded-circle me-2" width="40" height="40"
+        				style="cursor: pointer;"
+					     data-bs-toggle="modal"
+					     data-bs-target="#newMessageModal"
+					     th:attr="data-bs-receiver=${board.boardWriterId}"/>
                     <span class="fw-bold" th:text="${board.boardWriterId}">애니멀러버</span>
                 </div>
             </div>

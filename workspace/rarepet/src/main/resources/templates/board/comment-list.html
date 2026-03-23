@@ -9,7 +9,12 @@
 										<br><br>
 									</th:fragment>
 									<th:fragment th:unless="${ comment.deleted }"> 
-										<img th:src="${comment.imgUrl != null and comment.imgUrl != ''} ? @{${comment.imgUrl}} : @{/img/avatardefault.jpg}" class="rounded-circle me-1" width="40" height="40"/>
+										<img th:src="${comment.imgUrl != null and comment.imgUrl != ''} ? @{${comment.imgUrl}} : @{/img/avatardefault.jpg}" 
+											class="rounded-circle me-1" width="40" height="40"
+											style="cursor:pointer;"
+										     data-bs-toggle="modal"
+										     data-bs-target="#newMessageModal"
+										     th:attr="data-bs-receiver=${comment.writer}"/>
 										[[${ comment.writer }]] &nbsp;&nbsp; [[(${ #dates.format(comment.writeDate, 'yyyy-MM-dd HH:mm:ss') })]]									 
 										<br /><br />
 									    <span th:text="${ #strings.replace(comment.content, '

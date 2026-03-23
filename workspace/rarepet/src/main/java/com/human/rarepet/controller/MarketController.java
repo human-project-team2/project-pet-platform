@@ -63,7 +63,7 @@ public class MarketController {
 		model.addAttribute("search", search);
 		model.addAttribute("products", products);
 		model.addAttribute("shops", shops);
-		System.out.println(shops);
+		
 		return "market/list";
 	}
 	
@@ -188,5 +188,15 @@ public class MarketController {
 		marketService.updateShoppingCartList(id, updatedList);
 		
 		return "success"; 
+	}
+	
+	@GetMapping(path = {"/market/shop/{id}"})
+	public String getShopPage(@PathVariable("id") String id, Model model) {
+		
+		List<ProductDto> products = marketService.findProductsByUserId(id);
+		ShopDto shop = shopService.showShopInfo(id);
+		model.addAttribute("shop", shop);
+		model.addAttribute("shopProducts", products);
+		return "market/shop";
 	}
 }

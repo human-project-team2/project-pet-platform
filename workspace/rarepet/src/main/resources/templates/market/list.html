@@ -267,6 +267,10 @@ body {
 							<div class="price-badge"
 								th:text="${#numbers.formatInteger(product.price, 0, 'COMMA')} + '원'"></div>
 							</div>
+							<!-- 판매자 아이디 추가 -->
+							<div class="mt-1 text-muted small">
+							    판매자: <span th:text="${product.sellerId}"></span>
+							</div>
 						</div>
 					</div>
 				</div>
@@ -364,11 +368,11 @@ body {
 
                         <!-- shop page link -->
                         <!-- <a th:href="@{/shop/{id}(id=${shop.id})}" -->
-                        <a href="#"
+                        <a th:href="@{/market/shop/{id}(id=${shop.id})}"
                            class="btn btn-warning w-100 rounded-pill">
                            샵 방문
                         </a>
-
+					
                     </div>
 
                 </div>

@@ -81,6 +81,12 @@ body{
 <br><br><br><br><br><br>
 
 <div class="container main-container mt-5">
+	<!-- Back Button -->
+    <div class="mb-4">
+        <a th:href="@{/board/boardlist}" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left me-1"></i> 게시판 메인으로
+        </a>
+    </div>
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h2 class="fw-bold">분양 게시글</h2>
         <a th:href="@{/board/adoptionwrite}" class="text-decoration-none">
