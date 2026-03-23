@@ -263,13 +263,18 @@ body {
 				
 										<div class="flex-grow-1">
 											<h6 class="fw-bold mb-1">
-												상품번호: <span th:text="${item.productNo}"></span>
+												상품명: <span th:text="${item.productName}"></span>
 											</h6>
 
 											<p class="mb-0 small text-muted">
 												수량: <span th:text="${item.productOrderCount}"></span>
 											</p>
 										</div>
+										
+										<a th:href="@{/review/write(productNo=${item.productNo}, orderNo=${order.orderNo})}" 
+										   class="btn btn-sm btn-outline-warning rounded-pill mt-1">
+										   리뷰 쓰기
+										</a>
 
 										<div class="text-end">
 											<p class="fw-bold mb-0"

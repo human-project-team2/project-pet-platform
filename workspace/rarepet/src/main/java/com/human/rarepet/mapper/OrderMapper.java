@@ -52,7 +52,14 @@ public interface OrderMapper {
     })
     List<OrderDto> selectAllOrderById(String id);
     
-    @Select("select order_no, product_order_count, product_no, price from order_detail where order_no = #{orderNo}")
-    OrderItemDto selectOrderItemByOrderNo(int orderNo); 
-    
+    @Select("SELECT od.*, p.product_name AS productName " +
+            "FROM order_detail od " +
+            "JOIN product_all p ON od.product_no = p.product_no " +
+            "WHERE od.order_no = #{orderNo}")
+    @Results({
+        @Result(property = "productNo", column = "product_no"),
+        @Result(property = "productOrderCount", column = "product_order_count"),
+        @Result(property = "productName", column = "productName")
+    })
+    List<OrderItemDto> selectOrderItemByOrderNo(int orderNo);
 }
