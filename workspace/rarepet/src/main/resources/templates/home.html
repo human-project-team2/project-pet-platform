@@ -9,6 +9,10 @@ xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<!-- Bootstrap JS -->
+			<script
+				src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+			<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <style>
 body { font-family: 'Noto Sans KR', sans-serif; background: #fdfaf6; transition: 0.3s; }
 .hero { background: linear-gradient(rgba(230,180,150,0.3), rgba(245,210,185,0.4)), url("https://images.unsplash.com/photo-1508672019048-805c876b67e2?auto=format&fit=crop&w=1600&q=80") center/cover; height: 40vh; }
@@ -23,6 +27,7 @@ body { font-family: 'Noto Sans KR', sans-serif; background: #fdfaf6; transition:
 .trending-item:hover { border-left: 4px solid #f26419; background-color: #fff9f5; }
 .btn-outline-warning.active { background-color: #f26419 !important; border-color: #f26419 !important; color: white !important; }
 </style>
+<link rel="stylesheet" th:href="@{/css/floating-chat.css}">
 </head>
 <body>
 	<div th:replace="~{fragments/fragment :: header}"></div>
@@ -130,7 +135,9 @@ body { font-family: 'Noto Sans KR', sans-serif; background: #fdfaf6; transition:
 	</div>
 
 	<div th:replace="~{fragments/fragment :: footer}"></div>
-
+	<div th:replace="fragments/fragment :: message"></div>
+	
+	<script th:replace="fragments/fragment :: message_script"></script>
 	<script>
 		function performSearch() {
 			location.href = `/home?search=${encodeURIComponent($('#searchInput').val())}&category=${encodeURIComponent($('#categorySelect').val())}`;
