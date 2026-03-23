@@ -15,13 +15,19 @@ import com.human.rarepet.dto.RoleDto;
 public class RarepetUserDetails implements UserDetails {
 
 	private MemberDto member;
+	private String name;
 	
-	public RarepetUserDetails(MemberDto member) {
+	public RarepetUserDetails(MemberDto member, String name) {
 		this.member = member;
+		this.name = name;
 	}
 
 	public MemberDto getMember() {
 		return member;
+	}
+	
+	public String getName() {
+		return name;
 	}
 	
 	@Override
@@ -45,6 +51,7 @@ public class RarepetUserDetails implements UserDetails {
 	public String getUsername() {
 		return member.getId();
 	}
+
 	
 	@Override
 	public boolean isAccountNonExpired() {

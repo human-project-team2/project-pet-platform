@@ -28,7 +28,8 @@ public class RarepetUserDetailsService implements UserDetailsService {
 		if (member != null) {
 			List<RoleDto> roles = memberService.selectMemberRolesById(username);
 			member.setRoles(roles);
-			userDetails = new RarepetUserDetails(member);
+			member.getName();
+			userDetails = new RarepetUserDetails(member, member.getName());
 			return userDetails;
 		} else {
 			throw new UsernameNotFoundException("사용자를 찾을 수 없습니다: " + username);

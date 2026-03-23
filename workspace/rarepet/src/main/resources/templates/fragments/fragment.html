@@ -51,7 +51,7 @@
 						</a></li>
 						<th:block sec:authorize="isAuthenticated()">
 							<span class="nav-link" style="color: #e91e63; font-weight: 600;">
-								[[${#authentication.principal.username}]] 님 </span>
+								[[${#authentication.principal.name}]] 님 </span>
 							<!-- #authentication.name 을 쓰면 null 일때도 오류는 안남 -->
 						</th:block>
 						<th:block sec:authorize="isAuthenticated()">
@@ -229,7 +229,7 @@
 				반려동물 마켓</p>
 		</footer>
 		
-		<div class="toast-container position-fixed bottom-0 end-0 p-3">
+		<div class="toast-container position-fixed end-0 p-3 mb-5" style="bottom: 80px; z-index: 1080;">
 		  <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
 		    <div class="toast-header">
 		      <strong class="me-auto" id="toastTitle">알림</strong>
