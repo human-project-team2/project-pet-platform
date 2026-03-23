@@ -190,12 +190,12 @@
 				<div id="chatRoomList">
 
 					<div class="chat-room" data-chat-room-id="testChat">
-						<div class="chat-room-name">Rare Reptile Shop</div>
+						<div class="chat-room-name">Rarepet Community 1</div>
 						<div class="chat-room-preview">Last message preview...</div>
 					</div>
 
 					<div class="chat-room" data-chat-room-id="testChat2">
-						<div class="chat-room-name">Golden Gecko Seller</div>
+						<div class="chat-room-name">Rarepet Community 2</div>
 						<div class="chat-room-preview">Is it still available?</div>
 					</div>
 
@@ -432,8 +432,10 @@
 	    	let chatRoomId = null;
 	    	let senderImgUrl = null;
 	    	
-	    	$("#chatButton").click(function(e){
+	    	$(document).on('click', '#chatButton', function(e){
+	    		
 				e.preventDefault();
+				
 	    	    if(!stompClient){
 	    	        connect();
 	    	    }
@@ -441,12 +443,13 @@
 	    	    $("#chatPopup").toggle();
 	    	});
 	
-	        $("#closeChat").click(function(){
+	        $(document).on('click', '#closeChat', function(e){
+	        	e.preventDefault();
 	            $("#chatPopup").hide();
 	        });
 	        
-	        $(".chat-room").click(function(){
-
+	        $(".chat-room").click(function(e){
+				e.preventDefault()
 	            chatRoomId = $(this).data("chatRoomId");
 	            const roomName = $(this).find(".chat-room-name").text();
 	            $("#chatRoomTitle").text(roomName);
@@ -459,8 +462,8 @@
 	            subscribeTo(chatRoomId);
 
 	        });
-	        $("#backToList").click(function(){
-
+	        $("#backToList").click(function(e){
+				e.preventDefault();
 	            $("#chatDetailPopup").hide();
 	            $("#chatPopup").css("display","flex");
 
@@ -554,6 +557,8 @@
 	        			const messageInput = document.querySelector('#messageInput')
 	        			const content =	messageInput.value.trim();
 	        			
+	        			if(!content) return;
+	        			
 	        			if(stompClient) {
 	        				// Send the message to the server
 	        				stompClient.send(`/app/sendWsMessage/${chatRoomId}`, {}, JSON.stringify({
@@ -571,10 +576,17 @@
 	        	
       	// 밑에 이벤트리스너 잘못된 표현
       	// document.querySelector('#sendBtn').addEventListener('click', sendWsMessage(chatRoomId));
-      	document.querySelector('#sendBtn').addEventListener('click', () => sendWsMessage(chatRoomId));
+      	document.querySelector('#sendBtn').addEventListener('click', function(e) {
+      		e.preventDefault()
+      		sendWsMessage(chatRoomId);
+      	})
       	
       	document.querySelector('#messageInput').addEventListener('keypress', function(e) {
-              if (e.key === 'Enter') sendWsMessage(chatRoomId);
+      			
+              if (e.key === 'Enter') {
+            	  e.preventDefault();
+            	  sendWsMessage(chatRoomId);
+              }
           });
          
          // 판매자 문의 누를 때 새로 열리는
@@ -744,8 +756,8 @@
           });
 
           // 채팅창 내 전송 버튼
-          $('#btnSendInChat').on('click', function() {
-             
+          $('#btnSendInChat').on('click', function(e) {
+             e.preventDefault()
             const text = $('#chatInput').val().trim();
             if (!text) return;
             const partnerId = $(this).data("partner")
