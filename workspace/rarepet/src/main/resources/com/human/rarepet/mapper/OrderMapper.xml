@@ -7,6 +7,12 @@
         SELECT * FROM products 
         WHERE productNo = #{productNo}
     </select>
+    
+    <select id="selectMyOrderItems" resultType="com.human.rarepet.dto.OrderItemDto">
+    SELECT 
+        oi.*,             p.product_name AS productName FROM order_item oi
+    JOIN product p ON oi.product_no = p.product_no WHERE oi.order_no = #{orderNo}
+</select>
 
     <insert id="insertOrderMaster" parameterType="com.human.rarepet.dto.OrderDto" 
             useGeneratedKeys="true" keyProperty="orderNo">
