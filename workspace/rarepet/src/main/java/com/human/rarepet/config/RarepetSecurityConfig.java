@@ -7,9 +7,12 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
 
+import com.human.rarepet.mapper.MemberMapper;
+import com.human.rarepet.security.RarepetOAuth2UserService;
 import com.human.rarepet.security.RarepetPasswordEncoder;
 import com.human.rarepet.security.RarepetUserDetailsService;
 import com.human.rarepet.service.MemberService;
@@ -64,7 +67,9 @@ public class RarepetSecurityConfig {
                                         // 로그인 성공 시 이전 요청 페이지로 자동 리다이렉트 (예: 구매페이지 시도 -> 로그인 -> 다시 구매페이지)
                                         .successHandler(new SavedRequestAwareAuthenticationSuccessHandler()) 
 										.failureUrl("/auth/login?error=true")) // 로그인 실패 시 이동할 URL
-                           
+				.oauth2Login( oauth2 -> oauth2.loginPage("/auth/signin")
+						  .defaultSuccessUrl("/index")
+						  .permitAll())         
 				.logout(logout -> logout.logoutUrl("/auth/logout") // 로그아웃 처리 URL
 						                .invalidateHttpSession(true) // 세션 무효화
 						                .deleteCookies("JSESSIONID") // 쿠키 삭제
@@ -72,6 +77,11 @@ public class RarepetSecurityConfig {
 				
 		return http.build();
 						
+	}
+	
+	@Bean
+	DefaultOAuth2UserService oAuth2UserService(MemberMapper memberMapper) {
+		return new RarepetOAuth2UserService(memberMapper);
 	}
 	
 	@Bean 
