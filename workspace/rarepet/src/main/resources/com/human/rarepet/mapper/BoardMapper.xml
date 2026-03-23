@@ -145,5 +145,12 @@
     FROM answer
     WHERE board_id=#{boardId}
 	</select>
+	
+<select id="selectTrendingBoards" resultType="com.human.rarepet.dto.BoardDto">
+    SELECT * FROM board
+    WHERE board_write_date >= DATE_SUB(NOW(), INTERVAL #{days} DAY)
+    ORDER BY board_view_count DESC
+    LIMIT 5
+</select>
    
 </mapper>

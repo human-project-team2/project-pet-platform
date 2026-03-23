@@ -5,191 +5,124 @@ xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>AnyZoo Marketplace</title>
-<link
-	href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
-	rel="stylesheet">
-<link rel="stylesheet"
-	href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-<link
-	href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap"
-	rel="stylesheet">
-<link rel="stylesheet" th:href="@{/css/floating-chat.css}">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <style>
-body {
-	font-family: 'Noto Sans KR', sans-serif;
-	background: #fdfaf6;
-	transition: 0.3s;
-}
+body { font-family: 'Noto Sans KR', sans-serif; background: #fdfaf6; transition: 0.3s; }
+.hero { background: linear-gradient(rgba(230,180,150,0.3), rgba(245,210,185,0.4)), url("https://images.unsplash.com/photo-1508672019048-805c876b67e2?auto=format&fit=crop&w=1600&q=80") center/cover; height: 40vh; }
+.hero-box { background: rgba(255, 255, 255, 0.9); border-radius: 30px; border: 1px solid rgba(255,255,255,0.3); }
+.card { border: none; border-radius: 20px; transition: 0.3s; overflow: hidden; background: #fff; }
+.card:hover { transform: translateY(-8px); box-shadow: 0 15px 30px rgba(0,0,0,0.1) !important; }
+.price-badge { font-weight: bold; color: #f26419; font-size: 1.25rem; }
 
-.hero {
-	background: linear-gradient(rgba(230, 180, 150, 0.3),
-		rgba(245, 210, 185, 0.4)),
-		url("https://images.unsplash.com/photo-1508672019048-805c876b67e2?auto=format&fit=crop&w=1600&q=80")
-		center/cover;
-	height: 50vh;
-}
-
-.hero-box {
-	background: rgba(255, 255, 255, 0.9);
-	border-radius: 30px;
-	border: 1px solid rgba(255, 255, 255, 0.3);
-}
-
-.card {
-	border: none;
-	border-radius: 20px;
-	transition: 0.3s;
-	overflow: hidden;
-	background: #fff;
-}
-
-.card:hover {
-	transform: translateY(-8px);
-	box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1) !important;
-}
-
-.price-badge {
-	font-weight: bold;
-	color: #f26419;
-	font-size: 1.25rem;
-}
-/* [기본] 라이트 모드일 때의 색상 */
-.main-title {
-    color: #333; /* 원래대로 검은색 */
-}
-
-/* 🌙 한 단계 밝아진 소프트 다크모드 (Deep Blue Gray) */
-[data-bs-theme="dark"] body {
-	background-color: #1a1d20 !important;
-	color: #f8f9fa;
-}
-
-[data-bs-theme="dark"] .hero-box {
-	background: rgba(43, 48, 53, 0.9) !important;
-	color: #fff !important;
-	border: 1px solid #495057;
-}
-
-[data-bs-theme="dark"] .card {
-	background-color: #2b3035 !important;
-	border: 1px solid #3d4246;
-}
-
-[data-bs-theme="dark"] .card-title {
-	color: #ff9f1c !important;
-}
-
-[data-bs-theme="dark"] .price-badge {
-	color: #ffbf69 !important;
-}
-
-[data-bs-theme="dark"] .text-muted {
-	color: #adb5bd !important;
-}
-
-[data-bs-theme="dark"] .btn-warning {
-	background-color: #ff9f1c;
-	border-color: #ff9f1c;
-	color: #1a1d20;
-	font-weight: bold;
-}
-/* soft 다크모드 전용 설정 */
-[data-bs-theme="dark"] body {
-    background-color: #1a1d20 !important;
-    color: #f8f9fa;
-}
-
-/* 🌙 [추가] 다크 모드일 때만 흰색으로 변경 */
-[data-bs-theme="dark"] .main-title {
-    color: #ffffff !important; /* 다크모드에서는 흰색으로! */
-}
+/* 인기글 전용 스타일 */
+.trending-rank { width: 40px; font-weight: 800; color: #f26419; font-size: 1.2rem; }
+.trending-item { transition: 0.2s; border-left: 4px solid transparent; }
+.trending-item:hover { border-left: 4px solid #f26419; background-color: #fff9f5; }
+.btn-outline-warning.active { background-color: #f26419 !important; border-color: #f26419 !important; color: white !important; }
 </style>
 </head>
 <body>
 	<div th:replace="~{fragments/fragment :: header}"></div>
-
-	<section
-		class="hero d-flex align-items-center justify-content-center text-center mt-5">
+	
+	<section class="hero d-flex align-items-center justify-content-center text-center mt-5">
 		<div class="hero-box p-5 shadow-sm">
-			<h2 class="fw-bold display-6 main-title">희귀 반려동물 전문 마켓</h2>
-			<p class="text-muted fs-5">소중한 생명과의 특별한 만남을 시작하세요</p>
+			<h2 class="fw-bold display-6">AnyZoo Marketplace</h2>
+			<p class="text-muted fs-5">소중한 생명과의 특별한 만남</p>
 		</div>
 	</section>
 
 	<div class="container my-5">
 		<div class="row g-3 align-items-end mb-5">
 			<div class="col-md-5">
-				<label class="form-label fw-bold small">검색어</label> <input
-					type="text" id="searchInput" class="form-control form-control-lg"
-					th:value="${search}" placeholder="찾으시는 생물을 입력하세요">
+				<label class="form-label fw-bold small">검색어</label> 
+				<input type="text" id="searchInput" class="form-control form-control-lg" th:value="${search}" placeholder="생물 검색">
 			</div>
 			<div class="col-md-3">
-				<label class="form-label fw-bold small">카테고리</label> <select
-					id="categorySelect" class="form-select form-select-lg">
+				<label class="form-label fw-bold small">카테고리</label> 
+				<select id="categorySelect" class="form-select form-select-lg">
 					<option value="all" th:selected="${category == 'all'}">전체</option>
 					<option value="포유류" th:selected="${category == '포유류'}">포유류</option>
 					<option value="파충류" th:selected="${category == '파충류'}">파충류</option>
 					<option value="양서류" th:selected="${category == '양서류'}">양서류</option>
-					<option value="조류" th:selected="${category == '조류'}">조류</option>
-					<option value="절지동물-곤충" th:selected="${category == '절지동물-곤충'}">절지동물
-						& 곤충</option>
-					<option value="기타동물" th:selected="${category == '기타동물'}">기타특수생물</option>
-					<option value="기타" th:selected="${category == '기타'}">관련 용품</option>
 				</select>
 			</div>
-			<div class="col-md-2 d-grid">
-				<button type="button"
-					class="btn btn-warning btn-lg fw-bold shadow-sm"
-					onclick="performSearch()">검색</button>
+			<div class="col-md-2 d-grid"><button type="button" class="btn btn-warning btn-lg fw-bold" onclick="performSearch()">검색</button></div>
+		</div>
+
+		<h3 class="fw-bold mb-4">✨ 최신 분양글</h3>
+		<div class="row g-4 mb-5">
+			<div class="col-sm-6 col-lg-4 mb-2" th:each="product : ${latestProducts}">
+				<div class="card shadow-sm h-100">
+					<a th:href="@{/market/detail/{no}(no=${product.productNo})}">
+						<img th:if="${not #lists.isEmpty(product.productImages)}" 
+							 th:src="@{${product.productImages[0].imgUrl}}" class="card-img-top"
+							 style="height: 220px; object-fit: cover;" alt="Animal">
+						<img th:if="${#lists.isEmpty(product.productImages)}" 
+							 src="/img/no_image.jpg" class="card-img-top"
+							 style="height: 220px; object-fit: cover;" alt="No Image">
+					</a>
+
+					<div class="card-body p-4">
+						<div class="mb-2 d-flex align-items-center gap-2">
+							<span class="badge bg-warning text-dark px-2 py-1" th:text="${product.productCategory}">분류</span>
+							<span th:if="${product.productCount > 0}" 
+								  class="badge bg-secondary opacity-75 fw-normal" 
+								  th:text="'수량: ' + ${product.productCount}">
+							</span>
+							<span th:if="${product.productCount == 0}" class="badge bg-danger">품절</span>
+						</div>
+
+						<h5 class="card-title fw-bold mb-2" th:text="${product.productName}">이름</h5>
+						<p class="card-text text-muted small mb-4" 
+						   style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;"
+						   th:text="${product.shortDescription}">설명</p>
+						
+						<hr class="opacity-10">
+						
+						<div class="d-flex justify-content-between align-items-center mt-3">
+							<span class="text-muted small">분양가</span>
+							<div class="price-badge" th:text="${#numbers.formatInteger(product.price, 0, 'COMMA')} + '원'"></div>
+						</div>
+					</div>
+				</div>
 			</div>
 		</div>
 
-		<div class="row g-4">
-			<div th:if="${#lists.isEmpty(products)}"
-				class="col-12 text-center py-5">
-				<div class="display-1 mb-3">🐾</div>
-				<p class="text-muted">현재 등록된 상품이 없습니다.</p>
+		<div class="mt-5 pt-4">
+			<div class="d-flex justify-content-between align-items-center mb-4">
+				<h3 class="fw-bold mb-0">🔥 커뮤니티 인기글</h3>
+				
+				<div class="btn-group btn-group-sm" role="group">
+					<button type="button" class="btn btn-outline-warning active" onclick="loadTrending(1, this)">오늘</button>
+					<button type="button" class="btn btn-outline-warning" onclick="loadTrending(7, this)">이번 주</button>
+					<button type="button" class="btn btn-outline-warning" onclick="loadTrending(30, this)">이번 달</button>
+				</div>
 			</div>
+			
+			<div class="card shadow-sm border-0">
+				<div id="trendingList" class="list-group list-group-flush">
+					<div th:each="board, iterStat : ${dailyTrending}" class="list-group-item trending-item p-3 d-flex align-items-center">
+						<div class="trending-rank text-center me-3" th:text="${iterStat.count}">1</div>
+						<div class="flex-grow-1">
+							<a th:href="@{/board/detail(boardId=${board.boardId})}" class="text-decoration-none text-dark">
+								<h6 class="mb-1 fw-bold text-truncate" style="max-width: 90%;" th:text="${board.boardTitle}">제목</h6>
+							</a>
+							<div class="d-flex gap-3 small text-muted">
+								<span><i class="bi bi-person me-1"></i><span th:text="${board.boardWriterId}">작성자</span></span>
+								<span><i class="bi bi-eye me-1"></i><span th:text="${board.boardViewCount}">0</span></span>
+							</div>
+						</div>
+						<div th:if="${board.imgUrl != null and board.imgUrl != ''}" class="ms-3">
+							<img th:src="${board.imgUrl}" class="rounded" style="width: 45px; height: 45px; object-fit: cover;">
+						</div>
+					</div>
 
-			<div class="col-sm-6 col-lg-4 mb-2" th:each="product : ${products}">
-				<div class="card shadow-sm h-100">
-					<a th:href="@{/market/detail/{no}(no=${product.productNo})}">
-					<img
-						th:if="${#lists.isEmpty(product.productImages) == false}" 
-						th:src="@{${product.productImages[0].imgUrl}}" class="card-img-top"
-						style="height: 220px; object-fit: cover;" alt="Animal">
-					<img th:if="${#lists.isEmpty(product.productImages) == true}" 
-                           src="/img/no_image.jpg" class="card-img-top"
-                           style="height: 220px; object-fit: cover;" alt="Animal">
-					</a>
-					<div class="card-body p-4">
-						<div class="mb-2">
-							<span class="badge bg-warning text-dark px-3 py-2"
-								th:text="${product.productCategory}">분류</span>
-						</div>
-						<div class="mb-2">
-							    <span class="badge bg-danger"
-							          th:if="${product.productCount == 0}">
-							        품절
-							    </span>
-							
-							    <span class="badge bg-secondary"
-							          th:if="${product.productCount > 0}"
-							          th:text="'수량 : ' + ${product.productCount}">
-							    </span>
-						</div>
-						<h5 class="card-title fw-bold mb-3"
-							th:text="${product.productName}">이름</h5>
-						<p class="card-text text-muted small mb-4"
-							th:text="${product.shortDescription}">설명</p>
-						<hr class="opacity-10">
-						<div
-							class="d-flex justify-content-between align-items-center mt-3">
-							<span class="text-muted small">분양가</span>
-							<div class="price-badge"
-								th:text="${#numbers.formatInteger(product.price, 0, 'COMMA')} + '원'"></div>
-						</div>
+					<div th:if="${#lists.isEmpty(dailyTrending)}" class="p-5 text-center">
+						<i class="bi bi-chat-dots-fill text-muted mb-3 d-block" style="font-size: 2.5rem;"></i>
+						<p class="text-muted mb-0">인기글이 아직 없습니다. 🐾</p>
 					</div>
 				</div>
 			</div>
@@ -197,31 +130,57 @@ body {
 	</div>
 
 	<div th:replace="~{fragments/fragment :: footer}"></div>
-	<div th:replace="~{fragments/fragment :: message}"></div>
-
-	
-	<script
-		src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-	<div th:replace="~{fragments/fragment :: message_script}"></div>
 
 	<script>
-		// 검색 실행 함수
 		function performSearch() {
-			const searchVal = $('#searchInput').val();
-			const categoryVal = $('#categorySelect').val();
-
-			// 컨트롤러의 @GetMapping 경로로 파라미터를 담아 보냅니다.
-			location.href = `/home?search=${encodeURIComponent(searchVal)}&category=${encodeURIComponent(categoryVal)}`;
+			location.href = `/home?search=${encodeURIComponent($('#searchInput').val())}&category=${encodeURIComponent($('#categorySelect').val())}`;
 		}
 
-		$(function() {
-			// 입력창에서 엔터 키를 눌렀을 때도 검색이 되게 합니다.
-			$('#searchInput').on('keypress', function(e) {
-				if (e.which == 13) {
-					performSearch();
+		function loadTrending(days, btn) {
+			$(btn).siblings().removeClass('active');
+			$(btn).addClass('active');
+
+			$.ajax({
+				url: '/api/trending',
+				type: 'GET',
+				data: { days: days },
+				success: function(data) {
+					let html = '';
+					if (data && data.length > 0) {
+						data.forEach((board, index) => {
+							// JavaScript에서 사진 유무 체크 로직 포함
+							let imgTag = board.imgUrl ? `
+								<div class="ms-3">
+									<img src="${board.imgUrl}" class="rounded" style="width: 45px; height: 45px; object-fit: cover;">
+								</div>` : '';
+
+							html += `
+								<div class="list-group-item trending-item p-3 d-flex align-items-center">
+									<div class="trending-rank text-center me-3">${index + 1}</div>
+									<div class="flex-grow-1">
+										<a href="/board/detail?boardId=${board.boardId}" class="text-decoration-none text-dark">
+											<h6 class="mb-1 fw-bold text-truncate" style="max-width: 90%;">${board.boardTitle}</h6>
+										</a>
+										<div class="d-flex gap-3 small text-muted">
+											<span><i class="bi bi-person me-1"></i>${board.boardWriterId}</span>
+											<span><i class="bi bi-eye me-1"></i>${board.boardViewCount}</span>
+										</div>
+									</div>
+									${imgTag}
+								</div>
+							`;
+						});
+					} else {
+						html = `
+							<div class="p-5 text-center">
+								<i class="bi bi-chat-dots-fill text-muted mb-3 d-block" style="font-size: 2.5rem;"></i>
+								<p class="text-muted mb-0">해당 기간의 인기글이 아직 없습니다. 🐾</p>
+							</div>`;
+					}
+					$('#trendingList').html(html);
 				}
 			});
-		});
+		}
 	</script>
 </body>
 </html>

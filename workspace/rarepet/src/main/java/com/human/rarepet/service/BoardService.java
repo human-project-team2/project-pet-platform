@@ -147,6 +147,10 @@ public class BoardService {
 	public List<BoardDto> selectAllBoardyId(String id) {
 		return boardMapper.selectAllBoardyId(id);
 	}	
+	// BoardService.java 맨 아래 메서드 수정
+	public List<BoardDto> getTrendingBoards(int days) {
+	    return boardMapper.selectTrendingBoards(days); // ✅ 소문자 boardMapper 사용
+	}
 
 }
 

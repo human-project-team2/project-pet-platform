@@ -31,6 +31,8 @@ public interface BoardMapper {
 	List<QnaBoardDto> showAllQnaBoard();
 
 	List<AdoBoardDto> showAllAdoBoard();	
+	
+	List<BoardDto> selectAllBoardyId(String boardWriterId);
 
 	GenBoardDto showGenBoardById(int boardId);
 
@@ -64,6 +66,6 @@ public interface BoardMapper {
 
 	void updateBoardQnA(QnaBoardDto qnaboard);
 
-	List<BoardDto> selectAllBoardyId(String id);
+	List<BoardDto> selectTrendingBoards(int days);
 	
 }

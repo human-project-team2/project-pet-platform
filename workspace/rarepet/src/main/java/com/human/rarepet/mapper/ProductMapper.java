@@ -94,5 +94,5 @@ public interface ProductMapper {
 	int updateDecreaseProductCount(@Param("productNo") int productNo, @Param("cartQuantity") int cartQuantity);
 	
 	List<ProductDto> findProductsByFilter(@Param("search") String search, @Param("category") String category);
-	
+	List<ProductDto> selectPopularProducts();
 }
