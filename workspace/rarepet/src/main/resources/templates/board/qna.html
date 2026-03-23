@@ -123,10 +123,21 @@
 
         <div class="d-flex align-items-center mb-4 pb-4 border-bottom">
             <img th:src="@{${writer.imgUrl}}" alt="profile" 
-	        				class="rounded-circle me-2" width="40" height="40"/>
+	        				class="rounded-circle me-2" width="40" height="40"
+	        				style="cursor:pointer;"
+			     data-bs-toggle="modal"
+			     data-bs-target="#newMessageModal"
+			     th:attr="data-bs-receiver=${board.boardWriterId}"
+	        				
+	        				/>
             <div class="ms-3">
 	            
-                <div class="fw-bold" th:text="${board.boardWriterId}">작성자 아이디</div>
+                <div class="fw-bold" th:text="${board.boardWriterId}"
+                style="cursor:pointer;"
+			     data-bs-toggle="modal"
+			     data-bs-target="#newMessageModal"
+			     th:attr="data-bs-receiver=${board.boardWriterId}"
+                >작성자 아이디</div>
                 <div class="small text-muted"
                      th:text="${#dates.format(board.boardWriteDate, 'yyyy-MM-dd')}">2024-05-20</div>                
             </div>
@@ -215,7 +226,12 @@
                 <input type="hidden" name="boardId" th:value="${board.boardId}">
                 <div class="d-flex justify-content-between align-items-start mb-3">
                     <div>
-                    	<img th:src="${answer.answerImgUrl != null and answer.answerImgUrl != ''} ? @{${answer.answerImgUrl}} : @{/img/avatardefault.jpg}" class="rounded-circle me-1" width="40" height="40"/>
+                    	<img th:src="${answer.answerImgUrl != null and answer.answerImgUrl != ''} ? @{${answer.answerImgUrl}} : @{/img/avatardefault.jpg}" 
+                    	class="rounded-circle me-1" width="40" height="40"
+                    	style="cursor:pointer;"
+					     data-bs-toggle="modal"
+					     data-bs-target="#newMessageModal"
+                    	th:attr="data-bs-receiver=${answer.id}"/>
                         <span class="fw-bold text-primary" th:text="${answer.id}">신청자 A</span>
                         <small class="text-muted ms-2">1시간 전</small>
                     </div>
