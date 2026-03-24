@@ -1097,7 +1097,20 @@ public class BoardController {
 		BoardDto board = boardService.showBoardById(boardId);
 		GenBoardDto genboard = boardService.showGenBoardById(boardId);
 		if (genboard == null) {
-			return "redirect:/board/boardlist";
+			QnaBoardDto qnaboard = boardService.showQnaBoardById(boardId);
+			if (qnaboard == null) {
+				AdoBoardDto adoboard = boardService.showAdoBoardById(boardId);
+				if (adoboard == null) {
+					return "redirect:/board/boardlist";
+				}
+				else {
+					return "redirect:/board/adoption?boardId=" + boardId;
+				}
+			}
+			else {
+				return "redirect:/board/qna?boardId=" + boardId;
+			}
+			//return "redirect:/board/boardlist";
 		}
 		
 		if(userDetails != null)
