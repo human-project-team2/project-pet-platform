@@ -52,7 +52,7 @@ public interface BoardMapper {
 
 	void insertBoardAdoApply(BoardAdoptionDto adoptapply);
 
-	BoardAdoptionDto showAdoApplyBoardById(int boardId);
+	List<BoardAdoptionDto> showAdoApplyBoardById(int boardId);
 
 	void updateBoardAdo(AdoBoardDto adoapply);
 

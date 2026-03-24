@@ -9,5 +9,6 @@ public class AdoBoardDto extends BoardDto {
     
     private boolean boardAdoptCategory; 
     private int boardAdoptDone; 
+    private String answerImgUrl;
 	
 }

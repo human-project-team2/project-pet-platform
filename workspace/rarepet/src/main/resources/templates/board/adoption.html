@@ -257,6 +257,8 @@
          -->
 
         <div class="card reply-card mb-3 shadow-sm">
+        	<!-- 답변 여러개일때 리스트로 받기 -->
+        	<div th:each="adoapply : ${adoAnswers}" class="card reply-card mb-3 shadow-sm">
             <div class="card-body p-4" th:if="${adoapply}">
               <form id="applyProveForm" th:action="@{/board/adoaprove}" method="post">
                 <input type="hidden" name="boardId" th:value="${board.boardId}">
@@ -282,6 +284,8 @@
                 </p>                
               </form>
             </div>
+            </div>
+            <!-- 답변 여러개일때 리스트로 받기 끝 -->
         </div>
         
         <!--  adoptionApply list show here

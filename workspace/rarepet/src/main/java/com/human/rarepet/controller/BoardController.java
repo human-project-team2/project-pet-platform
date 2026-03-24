@@ -574,6 +574,8 @@ public class BoardController {
 		model.addAttribute("qnaboard", qnaboard);
 		model.addAttribute("qnaAnswers", qnaAnswerList);
 		
+		// TTTTTT
+		
 		
 			
 		return "board/qna"; 
@@ -656,9 +658,6 @@ public class BoardController {
 			System.out.println(qnaapply);
 		
 			boardService.insertQnaApplyBoard(qnaapply);
-			//boardService.insertAdoApplyBoard(adoptapply);
-			//boardService.insertBoardAdo(board);					
-				
 		}
 		
 		return "redirect:/board/qnalist";		
@@ -848,8 +847,14 @@ public class BoardController {
 		
 		System.out.println(adoboard);
 		
-		BoardAdoptionDto adoapply = boardService.showAdoApplyBoardById(boardId);	
-		System.out.println(adoapply);
+		// TTT
+		//BoardAdoptionDto adoapply = boardService.showAdoApplyBoardById(boardId);	
+		//System.out.println(adoapply);
+		List<BoardAdoptionDto> adoAnswerList = boardService.showAdoApplyBoardById(boardId);
+	    for(BoardAdoptionDto answer : adoAnswerList) {
+	    	String imgUrl = memberService.getUserById(answer.getId()).getImgUrl();
+	    	answer.setAnswerImgUrl(imgUrl);
+	    }
 		
 		if (userDetails != null) {
 			MemberDto loginUser = userDetails.getMember();
@@ -860,7 +865,8 @@ public class BoardController {
 		model.addAttribute("board", board);
 		model.addAttribute("pageNo", pageNo);
 		model.addAttribute("adoboard", adoboard);
-		model.addAttribute("adoapply", adoapply);	
+		//model.addAttribute("adoapply", adoapply);	
+		model.addAttribute("adoAnswers", adoAnswerList);
 		System.out.println("Adoption prove Form \n");
 			
 		return "board/adoption"; 
@@ -894,36 +900,44 @@ public class BoardController {
 		System.out.println("Adoption prove");
 		System.out.println(adoboard);
 		
-		BoardAdoptionDto adoapply = boardService.showAdoApplyBoardById(boardId);	
-		System.out.println(adoapply);
-		int adoptDone = adoapply.getBoardAdoptDone();
-		if (adoptDone == 2)
-		{
-			System.out.println("분양완료 상태임 \n");
-			return "redirect:adoptionlist";
-		}
+		// TTT
+		//BoardAdoptionDto adoapply = boardService.showAdoApplyBoardById(boardId);	
+		//System.out.println(adoapply);
 		
-		System.out.println("Adoption prove Done 1");
+		List<BoardAdoptionDto> adoAnswerList = boardService.showAdoApplyBoardById(boardId);
+	    for(BoardAdoptionDto adoapply : adoAnswerList) {
+	    	String imgUrl = memberService.getUserById(adoapply.getId()).getImgUrl();
+	    	adoapply.setAnswerImgUrl(imgUrl);
+	    
+	    	int adoptDone = adoapply.getBoardAdoptDone();
+	    	if (adoptDone == 2)
+	    	{
+	    		System.out.println("분양완료 상태임 \n");
+	    		return "redirect:adoptionlist";
+	    	}
 		
-		if (userDetails != null) {
-			MemberDto loginUser = userDetails.getMember();
-			MemberDto user = memberService.getUserById(loginUser.getId());		
+			System.out.println("Adoption prove Done 1");
 			
-			name = user.getId();
-			writer = board.getBoardWriterId();
-			if(!name.equals(writer))
-			{
-				System.out.println(user.getId());
-				System.out.println(board.getBoardWriterId());
-				System.out.println("name not match \n");
+			if (userDetails != null) {
+				MemberDto loginUser = userDetails.getMember();
+				MemberDto user = memberService.getUserById(loginUser.getId());		
 				
-				return "redirect:adoptionlist";
+				name = user.getId();
+				writer = board.getBoardWriterId();
+				if(!name.equals(writer))
+				{
+					System.out.println(user.getId());
+					System.out.println(board.getBoardWriterId());
+					System.out.println("name not match \n");
+					
+					return "redirect:adoptionlist";
+				}
+				adoapply.setBoardAdoptDone(2);
+				// update api 
+				boardService.updateAdoBoardById(adoapply);
+				System.out.println("Adoption prove Done 2");
 			}
-			adoapply.setBoardAdoptDone(2);
-			// update api 
-			boardService.updateAdoBoardById(adoapply);
-			System.out.println("Adoption prove Done 2");
-		}
+	    }
 		
 		// boardAdoptDone to 2
 		
@@ -952,8 +966,9 @@ public class BoardController {
 		System.out.println("Adoption Ok");
 		System.out.println(adoboard);
 		
-		BoardAdoptionDto adoapply = boardService.showAdoApplyBoardById(boardId);	
-		System.out.println(adoapply);
+		// list TTTTTTT
+		//BoardAdoptionDto adoapply = boardService.showAdoApplyBoardById(boardId);	
+		//System.out.println(adoapply);
 		
 		if (userDetails != null) {
 			MemberDto loginUser = userDetails.getMember();
@@ -961,13 +976,21 @@ public class BoardController {
 			model.addAttribute("user", user);
 		}
 		
+		List<BoardAdoptionDto> adoAnswerList = boardService.showAdoApplyBoardById(boardId);
+	    for(BoardAdoptionDto answer : adoAnswerList) {
+	    	String imgUrl = memberService.getUserById(answer.getId()).getImgUrl();
+	    	answer.setAnswerImgUrl(imgUrl);
+	    }
+		
 		// ★ 조회수 증가
 	    boardService.increaseBoardViewCount(boardId);
 		
 		model.addAttribute("board", board);
 		model.addAttribute("pageNo", pageNo);
 		model.addAttribute("adoboard", adoboard);
-		model.addAttribute("adoapply", adoapply);			
+		//model.addAttribute("adoapply", adoapply);	
+		model.addAttribute("adoAnswers", adoAnswerList);
+		// model.addAttribute("qnaAnswers", adoAnswerList);
 			
 		return "board/adoption"; 
 		
