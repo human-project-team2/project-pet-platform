@@ -3,6 +3,7 @@ package com.human.rarepet.service;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -96,7 +97,7 @@ public class MarketService {
 	            activeProducts.add(product);
 	        }
 	    }
-	    
+	    Collections.shuffle(activeProducts);
 	    return activeProducts; // 품절 상품이 제외된 리스트만 반환
 	}
 
@@ -109,6 +110,7 @@ public class MarketService {
 		for (ProductDto product : myProducts) {
 			product.setProductImages(productMapper.selectProductImagesByProductNo(product.getProductNo()));
 		}
+		
 		return myProducts;
 	}
 

@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AnyZoo Marketplace</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<link rel="stylesheet" th:href="@{/css/floating-chat.css}">
+<style>
+body { font-family: 'Noto Sans KR', sans-serif; background: #fdfaf6; transition: 0.3s; }
+.hero { background: linear-gradient(rgba(230,180,150,0.3), rgba(245,210,185,0.4)), url("https://images.unsplash.com/photo-1508672019048-805c876b67e2?auto=format&fit=crop&w=1600&q=80") center/cover; height: 40vh; }
+.hero-box { background: rgba(255, 255, 255, 0.9); border-radius: 30px; border: 1px solid rgba(255,255,255,0.3); }
+.card { border: none; border-radius: 20px; transition: 0.3s; overflow: hidden; background: #fff; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+.card:hover { transform: translateY(-8px); box-shadow: 0 15px 30px rgba(0,0,0,0.1) !important; }
+.gbif-tag { font-size: 0.75rem; font-weight: bold; padding: 4px 8px; border-radius: 5px; }
+</style>
+</head>
+<body>
+	<div th:replace="~{fragments/fragment :: header}"></div>
+	
+	<section class="hero d-flex align-items-center justify-content-center text-center mt-5">
+		<div class="hero-box p-5 shadow-sm">
+			<h2 class="fw-bold display-6">AnyZoo Marketplace</h2>
+			<p class="text-muted fs-5">소중한 생명과의 특별한 만남</p>
+		</div>
+	</section>
+
+	<div class="container my-5">
+		<div class="row g-3 align-items-end mb-5">
+			<div class="col-md-7">
+				<label class="form-label fw-bold small text-muted">GBIF 생물 도감 검색</label> 
+				<input type="text" id="searchInput" class="form-control form-control-lg border-0 shadow-sm" 
+			       style="border-radius: 15px;" 
+			       placeholder="희귀 동물을 검색해보세요! (예: 아홀로틀, 사막여우, 볼파이톤)">
+			</div>
+			<div class="col-md-3">
+				<label class="form-label fw-bold small text-muted">카테고리</label> 
+				<select id="categorySelect" class="form-select form-select-lg border-0 shadow-sm" style="border-radius: 15px;">
+					<option value="all">전체보기</option>
+					<option value="포유류">포유류</option>
+					<option value="파충류">파충류</option>
+				</select>
+			</div>
+			<div class="col-md-2 d-grid">
+				<button type="button" class="btn btn-warning btn-lg fw-bold shadow-sm" style="border-radius: 15px;" onclick="performSearch()">
+					<i class="bi bi-search me-2"></i>검색
+				</button>
+			</div>
+		</div>
+
+		<div id="gbif-search-section" class="mt-5 pt-4 mb-5" style="display:none;">
+			<div class="d-flex justify-content-between align-items-center mb-4">
+				<h3 class="fw-bold mb-0 text-dark">🔍 외부 생물 도감 검색 결과</h3>
+				<button class="btn btn-sm btn-light rounded-pill" onclick="$('#gbif-search-section').hide()">결과 닫기</button>
+			</div>
+			<div id="gbif-search-results" class="row g-4"></div>
+		</div>
+
+		<div class="mt-5 pt-4 mb-5">
+			<div class="d-flex justify-content-between align-items-center mb-4">
+				<h3 class="fw-bold mb-0">🐾 알고 계셨나요? (GBIF 추천)</h3>
+				<button class="btn btn-sm btn-outline-secondary rounded-pill" onclick="fetchGbifData()">
+					<i class="bi bi-arrow-clockwise me-1"></i>새로고침
+				</button>
+			</div>
+			<div id="gbif-container" class="row g-4">
+				<div class="col-12 text-center p-5">
+					<div class="spinner-border text-warning" role="status"></div>
+					<p class="mt-2 text-muted">생물 데이터를 불러오고 있습니다...</p>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div th:replace="~{fragments/fragment :: footer}"></div>
+	
+	<script src="js/alias.js"></script>
+	
+	<script>
+	// 아이콘 및 학명 매핑 사전
+	
+
+	$(document).ready(function() {
+		fetchGbifData();
+		
+		// 엔터키 검색 이벤트
+		$('#searchInput').on('keypress', function(e) {
+			if(e.which == 13) performSearch();
+		});
+	});
+
+	function performSearch() {
+		let keyword = $('#searchInput').val().trim();
+		if (!keyword) {
+			alert("검색어를 입력해주세요.");
+			return;
+		}
+		// 1. 별칭 확인 (예: '우파루파' -> '아홀로틀')
+	    const realKeyword = (typeof petAlias !== 'undefined' && petAlias[keyword]) ? petAlias[keyword] : keyword;
+	    const info = petDictionary[realKeyword]
+	    const searchTag = petDictionary[keyword] ? petDictionary[keyword].scientific : keyword;
+		searchGbifData(searchTag, keyword);
+	}
+
+	async function searchGbifData(query, originalKeyword) {
+		const container = $('#gbif-search-results');
+		const section = $('#gbif-search-section');
+		
+		section.show();
+		window.scrollTo({ top: section.offset().top - 100, behavior: 'smooth' });
+		container.html('<div class="col-12 text-center p-5"><div class="spinner-border text-warning"></div></div>');
+
+		try {
+			const response = await fetch(`https://api.gbif.org/v1/occurrence/search?q=${encodeURIComponent(query)}&mediaType=StillImage&limit=6`);
+			const data = await response.json();
+			if (data.results && data.results.length > 0) {
+				renderCards(container, data.results, "검색 결과", originalKeyword);
+			} else {
+				container.html(`<div class="col-12 text-center p-5"><p class='text-muted'>'${originalKeyword}' 결과가 없습니다. 영문으로 시도해보세요.</p></div>`);
+			}
+		} catch (error) {
+			container.html('<p class="text-center text-danger">API 로드 중 에러 발생</p>');
+		}
+	}
+
+	async function fetchGbifData() {
+		const container = $('#gbif-container');
+		const speciesList = Object.values(petDictionary).map(p => p.scientific);
+		const randomSpecie = speciesList[Math.floor(Math.random() * speciesList.length)];
+		
+		container.html('<div class="col-12 text-center p-5"><div class="spinner-border text-warning"></div></div>');
+
+		try {
+			const response = await fetch(`https://api.gbif.org/v1/occurrence/search?scientificName=${encodeURIComponent(randomSpecie)}&mediaType=StillImage&limit=3`);
+			const data = await response.json();
+			renderCards(container, data.results, "랜덤 추천");
+		} catch (error) {
+			container.html('<p class="text-center">데이터를 불러오지 못했습니다.</p>');
+		}
+	}
+
+	function renderCards(container, results, typeTag, keyword = "") {
+		let html = '';
+		// 검색어에 맞는 아이콘 정보 가져오기
+		const info = petDictionary[keyword] || { icon: 'bi-info-circle', color: '#6c757d' };
+
+		results.forEach(item => {
+			const imgUrl = (item.media && item.media[0]) ? item.media[0].identifier : 'https://via.placeholder.com/400x300';
+			const sName = item.scientificName.split('(')[0];
+
+			html += `
+				<div class="col-sm-6 col-lg-4">
+					<div class="card h-100 border-0 shadow-sm">
+						<div class="position-relative">
+							<img src="${imgUrl}" class="card-img-top" style="height: 220px; object-fit: cover;" onerror="this.src='https://via.placeholder.com/400x300'">
+							<div class="position-absolute top-0 end-0 m-3 bg-white shadow-sm d-flex align-items-center justify-content-center" 
+								 style="width: 40px; height: 40px; border-radius: 50%; color: ${info.color};">
+								<i class="bi ${info.icon}"></i>
+							</div>
+						</div>
+						<div class="card-body p-4">
+							<span class="badge mb-2 gbif-tag" style="background-color: ${info.color}22; color: ${info.color};">${typeTag}</span>
+							<h5 class="card-title fw-bold text-truncate">${sName}</h5>
+							<p class="card-text text-muted small"><i class="bi bi-geo-alt me-1"></i>${item.country || "Global"}</p>
+							<hr class="my-3 opacity-10">
+							<a href="https://www.gbif.org/occurrence/${item.key}" target="_blank" class="btn btn-outline-dark btn-sm w-100 rounded-pill">원문 보기</a>
+						</div>
+					</div>
+				</div>`;
+		});
+		container.html(html);
+	}
+	</script>
+</body>
+</html>
