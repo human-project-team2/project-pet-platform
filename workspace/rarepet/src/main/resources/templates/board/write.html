@@ -227,44 +227,6 @@ input[name="title"], textarea[name="content"], #priceDisplay {
 		</div>
 	</div>
 
-	<div class="modal fade" id="confirmModal" tabindex="-1"
-		aria-hidden="true">
-		<div class="modal-dialog modal-dialog-centered">
-			<div class="modal-content"
-				style="border-radius: 25px; border: none; overflow: hidden;">
-				<div class="modal-header"
-					style="background: #ffc107; color: #5a3c32; border: none;">
-					<h5 class="modal-title fw-bold">🐾 등록 내용을 확인해주세요!</h5>
-					<button type="button" class="btn-close" data-bs-dismiss="modal"
-						aria-label="Close"></button>
-				</div>
-				<div class="modal-body p-4 text-center">
-					<div id="modalImageGrid"
-						class="mb-3 d-flex justify-content-center gap-2"
-						style="cursor: pointer;"></div>
-					<p class="text-muted small mb-3">그리드를 클릭하면 모든 사진을 볼 수 있습니다.</p>
-					<div class="text-start">
-						<div class="mb-2">
-							<span class="text-muted small">상품명:</span>
-							<p id="confirmTitle" class="fw-bold mb-0"></p>
-						</div>
-						<div class="mb-2">
-							<span class="text-muted small">분양 가격:</span>
-							<p id="confirmPrice" class="fw-bold mb-0 text-danger"
-								style="font-size: 1.2rem;"></p>
-						</div>
-					</div>
-				</div>
-				<div class="modal-footer" style="border: none; background: #fafafa;">
-					<button type="button" class="btn btn-outline-secondary px-4"
-						data-bs-dismiss="modal">수정</button>
-					<button type="button" id="finalSubmitBtn"
-						class="btn btn-submit px-4" style="width: auto;">정말
-						등록할게요!</button>
-				</div>
-			</div>
-		</div>
-	</div>
 
 	<div class="modal fade" id="imageFullViewer" tabindex="-1"
 		aria-hidden="true">
@@ -305,7 +267,9 @@ $(document).ready(function() {
         selectedFiles.forEach((file, index) => {
             const reader = new FileReader();
             reader.onload = (e) => {
-                $('#imageContainer').append(`<div class="image-preview preview-item"><img src="${e.target.result}"><button type="button" class="remove-btn" data-index="${index}">✕</button></div>`);
+                $('#imageContainer').append(`<div class="image-preview preview-item">
+                	<img src="${e.target.result}">
+                	<button type="button" class="remove-btn" data-index="${index}">✕</button></div>`);
             };
             reader.readAsDataURL(file);
         });
@@ -344,50 +308,6 @@ $(document).ready(function() {
         selectedFiles.forEach(f => dt.items.add(f));
         $('#fileInput')[0].files = dt.files;
     }
-
-
-    // 폼 제출 로직 (이미지 요약 그리드 포함)
-    $('#registerForm').on('submit', async function(e) {
-        e.preventDefault();
-        let isValid = true;
-        let firstErr = null;
-
-        // 필수 항목 체크
-        const checks = [ { el: $('#title'), val: $('#title').val().trim() }, { el: $('#priceDisplay'), val: $('#realPrice').val() }, { el: $('#content'), val: $('#content').val().trim() } ];
-        checks.forEach(c => {
-            if (!c.val) { c.el.addClass('is-invalid').parent().find('.error-msg').show(); c.el.siblings('.error-msg').show(); isValid = false; if (!firstErr) firstErr = c.el; }
-        });
-        if (selectedFiles.length === 0) { $('#imageError').show(); isValid = false; if (!firstErr) firstErr = $('#btnUploadTrigger'); }
-
-        if (isValid) {
-            $('#confirmTitle').text($('#title').val());
-            $('#confirmPrice').text($('#priceDisplay').val());
-
-            // 이미지 그리드 생성 (최대 3개 표시)
-            let gridHtml = '';
-            const displayLimit = 3;
-            for (let i = 0; i < Math.min(selectedFiles.length, displayLimit); i++) {
-                const src = await new Promise(r => { const reader = new FileReader(); reader.onload = e => r(e.target.result); reader.readAsDataURL(selectedFiles[i]); });
-                let overlay = (i === 2 && selectedFiles.length > displayLimit) ? `<div class="more-overlay">+${selectedFiles.length - 2}</div>` : '';
-                gridHtml += `<div class="summary-img-box"><img src="${src}">${overlay}</div>`;
-            }
-            $('#modalImageGrid').html(gridHtml);
-            new bootstrap.Modal($('#confirmModal')).show();
-        } else if (firstErr) firstErr.focus();
-    });
-
-    // 전체 사진 뷰어 호출
-    $(document).on('click', '#modalImageGrid', async function() {
-        let fullHtml = '';
-        for (const file of selectedFiles) {
-            const src = await new Promise(r => { const reader = new FileReader(); reader.onload = e => r(e.target.result); reader.readAsDataURL(file); });
-            fullHtml += `<img src="${src}" style="width: 150px; height: 150px; object-fit: cover; border-radius: 10px; border: 2px solid white;">`;
-        }
-        $('#fullImageContainer').html(fullHtml);
-        new bootstrap.Modal($('#imageFullViewer')).show();
-    });
-
-    $('#finalSubmitBtn').on('click', () => document.getElementById('registerForm').submit());
     
     // 에러 클래스 실시간 제거
     $(document).on('input', '.is-invalid', function() { $(this).removeClass('is-invalid').siblings('.error-msg').hide(); });
