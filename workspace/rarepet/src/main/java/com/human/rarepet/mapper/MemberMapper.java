@@ -11,6 +11,7 @@ import org.apache.ibatis.annotations.Update;
 
 import com.human.rarepet.dto.MemberDto;
 import com.human.rarepet.dto.RoleDto;
+import com.human.rarepet.dto.FavoriteListDto;
 
 @Mapper
 public interface MemberMapper {
@@ -41,5 +42,12 @@ public interface MemberMapper {
     
     @Select("select name from member where name = #{name}")
     MemberDto checkName(String name);
+    
+    @Insert("insert into favorite_list (id, product_id) "
+    		+ "values(#{id}, #{productId})")
+    void addFavoriteList(@Param("id") String id, @Param("productId") int productId);
+    
+    @Select("select * from favorite_list where id = #{id} and product_id = #{productId}")
+    FavoriteListDto checkFavoriteList(@Param("id") String id, @Param("productId") int productId);
     
  }

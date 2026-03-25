@@ -70,16 +70,24 @@ public class MarketController {
 	// 제품 상세
 	@GetMapping(path="/market/detail/{productNo}")
 	public String marketDetail(@PathVariable("productNo") int productNo,
-								Model model) {
+								Model model,
+								@AuthenticationPrincipal RarepetUserDetails userDetails) {
+		
 		
 		ProductDto product = marketService.selectProductByNo(productNo);
-		
 		String id = product.getSellerId();
 		MemberDto member = memberService.selectMember(id);
+		boolean favorited = false;
+		if(userDetails != null) {
+			String idLogged = userDetails.getMember().getId();
+			favorited = memberService.checkFavoriteList(idLogged, productNo);
+		}
 		
+		model.addAttribute("isFavorite", favorited);
 		model.addAttribute("phone", member.getPhone());
 		model.addAttribute("email", member.getEmail());
 		model.addAttribute("product", product);
+		model.addAttribute("productId", product.getProductNo());
 		
 		return "market/detail";
 	}
@@ -144,6 +152,28 @@ public class MarketController {
 		
 		model.addAttribute("cartList", cartList);
 		return "market/shoppingCart";
+	}
+	
+	@PostMapping(path = {"/market/favorite"})
+	
+	public String addFavorite(@RequestParam("productId") int productId, Model model,
+							  @AuthenticationPrincipal RarepetUserDetails userDetails) {
+
+		if(userDetails != null) {
+			String id = userDetails.getMember().getId();
+			
+			memberService.addFavoriteList(id, productId);
+			model.addAttribute("isFavorite", true);
+	        
+		} else {
+			model.addAttribute("productId", productId); // Pass ID back so the hidden input still works
+			model.addAttribute("errorMessage", "로그인 한 사용자만 가능합니다.");
+			model.addAttribute("isFavorite", false);
+		}
+		
+		// 형식 : "template_name :: fragment_name"
+		return "market/detail :: favorite-btn-area";
+		
 	}
 	
 	@PostMapping(path = {"/market/shoppingCart"})

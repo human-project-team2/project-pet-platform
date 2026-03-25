@@ -7,6 +7,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import com.human.rarepet.dto.MemberDto;
 import com.human.rarepet.dto.RoleDto;
+import com.human.rarepet.dto.FavoriteListDto;
 import com.human.rarepet.mapper.MemberMapper;
 import com.human.rarepet.security.RarepetPasswordEncoder;
 
@@ -70,8 +71,14 @@ public class MemberService {
 		return member != null;
 	}
 	
+	// 관심 등록된 상품 관련
+	public void addFavoriteList(String id, int productId) {
+		memberMapper.addFavoriteList(id, productId);
+	}
 	
-	
+	public boolean checkFavoriteList(String id, int productId) {
+		return memberMapper.checkFavoriteList(id, productId) != null;
+	}
 	
 	
 }

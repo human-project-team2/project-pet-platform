@@ -19,6 +19,7 @@
 	rel="stylesheet">
 <link rel="stylesheet" th:href="@{/css/floating-chat.css}">
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script th:src="@{/js/htmx.min.js}"></script>
 <style>
 body {
 	font-family: 'Noto Sans KR', sans-serif;
@@ -191,9 +192,27 @@ body {
 					
 
 					<div class="d-flex gap-3 flex-wrap">
+					
+					    <!-- []: css selector, hx는 form과 달리 저절로 input을 못 찾음.-->
+						<div id="favorite-section" th:fragment="favorite-btn-area">
+						
+							<div th:if="${errorMessage}" class="mt-2 small text-danger" th:text="${errorMessage}"></div>
 
-						<button class="btn btn-warning rounded-pill px-4">❤️ 관심등록
-						</button>
+							<th:block th:if="${isFavorite}">
+						        <div class="mt-2 small text-success">관심 목록에 추가되었습니다.</div>
+						        <button class="btn btn-warning rounded-pill px-4" disabled>❤️ 등록완료</button>
+						    </th:block>
+						    <th:block th:if="${!isFavorite}">
+								<input  id="favorite" type="hidden" name="productId" th:value="${productId}">
+								<button hx-post="/market/favorite"
+										hx-target="#favorite-section"
+										hx-swap="innerHTML"
+										hx-include="[name='productId']"
+									class="btn btn-warning rounded-pill px-4">❤️ 관심등록
+								</button>
+							</th:block>
+							
+						</div>
 						
 						<th:block sec:authorize="isAuthenticated()">
 						    <button class="btn btn-danger rounded-pill px-4"
