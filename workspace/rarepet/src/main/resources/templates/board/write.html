@@ -345,52 +345,6 @@ $(document).ready(function() {
         $('#fileInput')[0].files = dt.files;
     }
 
-    // 카테고리 수량 애니메이션
-    $('#categorySelect').on('change', function() {
-        if ($(this).val() === '기타') $('#quantityWrapper').stop().slideDown(400);
-        else $('#quantityWrapper').stop().slideUp(300, () => $('#productCount').val(1));
-    });
-    //수량 제한
-   $('#productCount').on('input', function() {
-    let val = $(this).val();
-    let $el = $(this);
-    let $error = $('#quantityError'); // ID로 직접 선택
-
-    if (val === "") {
-        $el.removeClass('is-invalid');
-        $error.hide();
-        return;
-    }
-
-    let num = parseInt(val);
-
-    if (num > 9999) {
-        $el.addClass('is-invalid'); // 빨간 테두리 부여
-        $error.show();             // 안내 문구 출력
-        $el.val(9999);             // 값 강제 보정
-    } else if (num < 1) {
-        $el.val(1);
-        $el.removeClass('is-invalid');
-        $error.hide();
-    } else {
-        // 정상 범위일 때 스타일 복구
-        $el.removeClass('is-invalid');
-        $error.hide();
-    }
-});
-
-    // 가격 포맷팅
-    $('#priceDisplay').on('input', function() {
-        let raw = $(this).val().replace(/[^0-9]/g, '');
-        if (Number(raw) > 1000000000) raw = "1000000000";
-        $('#realPrice').val(raw);
-        if (raw) {
-            let fmt = raw.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-            $(this).val(fmt + "원");
-            this.setSelectionRange(fmt.length, fmt.length);
-        } else $(this).val("");
-        $(this).removeClass('is-invalid').parent().siblings('.error-msg').hide();
-    });
 
     // 폼 제출 로직 (이미지 요약 그리드 포함)
     $('#registerForm').on('submit', async function(e) {
