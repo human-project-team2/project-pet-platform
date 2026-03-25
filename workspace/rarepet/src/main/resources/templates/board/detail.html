@@ -126,12 +126,24 @@
                 </div>
             </div>
             <div class="col-12 mt-4" style=width:300px>            
-				<div class="card shadow">
+				<div class="card shadow" th:if="${board.imgUrl != null}">
 					<img
 						th:src="@{${board.imgUrl}}"
 						class="card-img-top">
 				</div>
 			</div>
+			<div class="col-12 mt-4" style=width:500px>
+				<div class="card shadow" th:if="${board.videoUrl != null}">
+				<video controls>
+					<source th:src="@{${board.videoUrl}}" type="video/mp4">
+					브라우저가 video 태그를 지원하지 않습니다.
+				</video>
+				<div class="file-info">
+					파일명:
+					<span th:text="${board.originalFileName}">video.mp4</span>
+				</div>
+			</div>
+		
             <div class="col-12 mt-4">
                 <label class="form-label"></label>
                 <div class="view-content shadow-sm" th:utext='${#strings.replace(board.boardContent, "\n", "<br>")}'>

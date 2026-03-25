@@ -68,6 +68,27 @@ public class BoardController {
 		return "board/write";		
 	}	
 	
+	@GetMapping(path = {"/board/vwrite"})
+	public String showVWriteForm(BoardDto board,
+			@AuthenticationPrincipal RarepetUserDetails userDetails ,
+			Model model) {
+		
+		System.out.println("-------------->write form");
+		
+		if(userDetails == null)
+		{
+			return "redirect:/auth/login";		
+		}
+		
+		MemberDto member = userDetails.getMember();
+		if(member != null) {
+			MemberDto user = memberService.getUserById(member.getId());
+			model.addAttribute("user", user);
+		}
+		
+		return "board/vwrite";		
+	}
+	
 	final String UPLOAD_PATH = "d:\\uploaded_images";
 	
 	@PostMapping(path = {"/board/write"})
@@ -110,6 +131,67 @@ public class BoardController {
 					board.setOriginalFileName(picture.getOriginalFilename());
 					board.setSavedFileName(savedFileName);
 					picture.transferTo(file);
+					board.setBoardLikeCount(0);
+					board.setBoardViewCount(0);
+					
+					// board.getBoardWriteDate();
+					boardService.insertBoard(board);
+					boardService.insertBoardGen(board);
+					
+				}   catch (Exception ex) {
+					ex.printStackTrace();
+					
+				}
+			}
+		
+		} else {
+			System.out.println("test ERR\n");
+		}
+		return "redirect:/board/community";		
+	}
+	
+	@PostMapping(path = {"/board/vwrite"})
+	public String writeVBoard(
+			@AuthenticationPrincipal RarepetUserDetails userDetails , 
+			@RequestParam("videoFile") MultipartFile videoFile,
+			GenBoardDto board,
+			Model model) {
+		Date writeDate = new Date();
+		
+		System.out.printf("-------------->Gen writetitle \n" + board.getBoardTitle());
+		
+		if(userDetails == null)
+		{
+			return "redirect:/auth/login";		
+		}	
+		
+		System.out.println(board);
+		
+		if (videoFile != null && videoFile.getOriginalFilename().length() > 0) {
+			
+			String savedFileName = Util.makeUniqueFileName(videoFile.getOriginalFilename());
+			
+			System.out.println("test \n");
+			System.out.println(videoFile.getOriginalFilename());
+			System.out.println(savedFileName);
+			
+			File file = new File(UPLOAD_PATH, savedFileName);
+			String videoUrl = "/images/" + savedFileName;	
+			System.out.println(videoUrl);
+		
+			MemberDto member = userDetails.getMember();
+			if(member != null) {
+				String id = member.getId();
+				System.out.printf("====================write Community ID\n" + id);
+				
+				try {
+								
+					board.setBoardWriteDate(writeDate);
+					//board.setImgUrl(imgUrl);
+					board.setVideoUrl(videoUrl);
+					board.setOriginalFileName(videoFile.getOriginalFilename());
+					board.setSavedFileName(savedFileName);
+					videoFile.transferTo(file);
 					board.setBoardLikeCount(0);
 					board.setBoardViewCount(0);
 					

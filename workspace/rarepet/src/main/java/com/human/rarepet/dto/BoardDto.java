@@ -20,6 +20,7 @@ public class BoardDto {
 	private String originalFileName;
 	private String imgUrl;
 	private int boardType;
+	private String videoUrl;
 	
 	//private String email;
 	//private MemberDto writer;
