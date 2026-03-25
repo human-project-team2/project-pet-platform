@@ -95,13 +95,18 @@
 								
 								    
 								</div>
-
-                                <div class="mb-3">
-                                    <label class="form-label fw-bold" style="color: #777;">이름</label>
-                                    <input type="text" id="name" name="name" class="form-control"
-                                        placeholder="이름을 입력하세요" style="border-radius: 12px; font-size: 15px;">
-                                </div>
-
+								<div class="mb-3">
+	                                <label class="form-label fw-bold" style="color: #777;">닉네임</label>
+	                                <div class="input-group">
+	                                    <input type="text" id="name" name="name" class="form-control"
+	                                        placeholder="이름을 입력하세요" style=" font-size: 15px;">
+	                                    <button class="btn btn-outline-secondary" type="button" id="btn-name-check"
+	                                            style="border-radius: 0 12px 12px 0; font-size: 14px; border-color: #dee2e6;">
+	                                            중복검사
+	                                    </button>
+	                                </div>
+	                                <small id="name-status" style="font-size: 12px; margin-left: 5px;"></small>
+								</div>
                                 <div class="mb-3">
                                     <label class="form-label fw-bold" style="color: #777;">주소</label>
                                     <div class="input-group mb-2">
@@ -149,6 +154,7 @@
     	let isEmailVerified = false;
     	let timeLimit = 120;
     	let timer = null;
+    	let nameUnique = false;
     	const $btn = $("#btn-send-code");
     	const $status = $("#email-status");
     	
@@ -277,10 +283,50 @@
                 loader.classList.add('fadeOut');
             }, 300);
         });
-
+        
+        // 이름(닉네임) 중복 체크
+		$(() => {
+			
+			const $nameStatus = $('#name-status');
+			
+			$('#btn-name-check').on('click', function() {
+	        	const memberName = $('#name').val().trim();
+	        	
+	        	if(!memberName) {alert("닉네임을 입력해 주세요"); return;}
+	        	
+	        	fetch('/auth/name-check?memberName=' + memberName)
+	        	.then(response => response.text()).then(data => {
+	        		
+	        		if(data.trim() === 'valid'){
+	        			nameUnique = true;
+	        			$nameStatus.text("사용 가능한 닉네임입니다").css("color", "green");
+	        			
+	        		} else {
+	        			nameUnique = false; // 만약에를 대비해서?
+	        			$nameStatus.text("이미 사용중인 닉네임입니다").css("color", "red");
+	        			
+	        		}
+	        	})
+	        })
+	        // 이름 중복확인 후에 다시 변경할 경우
+	        
+	        $('#name').on('input', function(){
+	        	if(nameUnique){
+	        		nameUnique = false;
+	        		$nameStatus.text("")
+	        	} else {
+	        		return;
+	        	}
+	        })
+		})
+        
+        
+        
+        
         $(function() {
-            let isIdValid = false; 
-
+            
+        	let isIdValid = false; 
+            
             $('#btn-dup-check').on('click', function() {
                 const memberId = $('#id').val().trim();
                 const $status = $('#id-status');
@@ -307,6 +353,7 @@
             // 회원가입 버튼 클릭 시 주소 합치기 로직 추가
             $('#register').on('click', function() {
                 if (!isIdValid) { alert('아이디 중복검사를 완료해 주세요.'); return; }
+                if (!nameUnique) { alert('닉네임 중복검사를 완료해 주세요'); return ;}
                 if (!$('#id').val()) { alert('아이디를 입력하세요.'); return; }
                 if ($('#passwd').val() !== $('#confirm').val()) { alert('비밀번호가 일치하지 않습니다.'); return; }
 				

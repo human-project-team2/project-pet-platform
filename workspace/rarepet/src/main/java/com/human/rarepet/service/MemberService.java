@@ -65,6 +65,10 @@ public class MemberService {
 		return memberMapper.selectMemberRolesById(id);
 	}
 	
+	public boolean checkName(String memberName) {
+		MemberDto member = memberMapper.checkName(memberName);
+		return member != null;
+	}
 	
 	
 	

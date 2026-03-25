@@ -39,5 +39,7 @@ public interface MemberMapper {
     @Insert("INSERT INTO member_role (id, role_no) VALUES (#{id}, #{roleNo})")
     void insertMemberRole(@Param("id") String id, @Param("roleNo") int roleNo);
     
+    @Select("select name from member where name = #{name}")
+    MemberDto checkName(String name);
     
  }

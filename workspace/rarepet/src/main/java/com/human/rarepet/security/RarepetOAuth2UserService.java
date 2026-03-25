@@ -52,8 +52,8 @@ public class RarepetOAuth2UserService extends DefaultOAuth2UserService {
         String providerId = oAuth2Response.getProviderId();
         String email = oAuth2Response.getEmail();
         String name = oAuth2Response.getName();
-        String id = oAuth2Response.getId();
         String imgUrl = oAuth2Response.getProfileImage();
+        String id = provider + "_" + providerId;
         
         MemberDto member = memberMapper.selectMemberById(id);
         
@@ -63,6 +63,7 @@ public class RarepetOAuth2UserService extends DefaultOAuth2UserService {
         	member.setPasswd("sns password");
         	member.setName(name);
         	member.setId(id);
+        	System.out.println(imgUrl);
         	member.setImgUrl(imgUrl);
         	
         	List<RoleDto> roles = new ArrayList<RoleDto>();
