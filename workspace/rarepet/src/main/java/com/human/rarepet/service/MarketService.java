@@ -169,7 +169,15 @@ public class MarketService {
 	public List<ProductDto> getLatestProducts(int page) {
 	    int limit = 6; // 한 페이지에 6개
 	    int offset = (page - 1) * limit; // 1페이지면 0부터, 2페이지면 6부터 시작
-	    return productMapper.selectLatestProducts(limit, offset);
+	    
+	    List<ProductDto> products = productMapper.selectLatestProducts(limit, offset);
+	    List<ProductDto> products2 = new ArrayList<>();
+	    for(ProductDto product : products) {
+	    	List<ProductImageDto> images = productMapper.selectProductImagesByProductNo(product.getProductNo());
+	    	product.setProductImages(images);
+	    	products2.add(product);
+	    }
+	    return products2;
 	}
 	
 }

@@ -22,6 +22,7 @@ import com.human.rarepet.common.Util;
 import com.human.rarepet.dto.MemberDto;
 import com.human.rarepet.dto.ProductDto;
 import com.human.rarepet.dto.ProductImageDto;
+import com.human.rarepet.dto.ReviewDto;
 import com.human.rarepet.dto.ShopDto;
 import com.human.rarepet.dto.ShoppingCartDto;
 import com.human.rarepet.dto.UpdateCartQuantityDto;
@@ -30,6 +31,7 @@ import com.human.rarepet.exception.ZeroProductException;
 import com.human.rarepet.security.RarepetUserDetails;
 import com.human.rarepet.service.MarketService;
 import com.human.rarepet.service.MemberService;
+import com.human.rarepet.service.ReviewService;
 import com.human.rarepet.service.ShopService;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -42,12 +44,14 @@ public class MarketController {
 	private final MemberService memberService;
 	private final MarketService marketService;
 	private final ShopService shopService;
-	
+	private final ReviewService reviewService;
 	public MarketController(MarketService marketService, MemberService memberService,
-			                ShopService shopService) {
+			                ShopService shopService,
+			                ReviewService reviewService) {
 		this.memberService = memberService;
 		this.marketService = marketService;
 		this.shopService = shopService;
+		this.reviewService = reviewService;
 	}
 	
 	@GetMapping(path={"/market"})
@@ -83,6 +87,9 @@ public class MarketController {
 			favorited = memberService.checkFavoriteList(idLogged, productNo);
 		}
 		
+		List<ReviewDto> reviews = reviewService.selectReviewsByNo(productNo);
+		
+		model.addAttribute("reviews", reviews);
 		model.addAttribute("isFavorite", favorited);
 		model.addAttribute("phone", member.getPhone());
 		model.addAttribute("email", member.getEmail());

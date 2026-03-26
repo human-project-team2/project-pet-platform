@@ -22,7 +22,7 @@ public class ReviewService {
     public List<ReviewDto> getReviewList() {
         return reviewMapper.selectAllReviews();
     }
-
+    
     // --- 아래 메서드들을 추가합니다 ---
 
     // 1. 특정 리뷰 상세 조회 (수정 화면에 기존 내용을 보여주기 위해 필요)
@@ -38,5 +38,10 @@ public class ReviewService {
     // 3. 리뷰 삭제 실행
     public void removeReview(Long reviewNo) {
         reviewMapper.deleteReview(reviewNo);
+    }
+    
+    public List<ReviewDto> selectReviewsByNo(int productNo){
+    	
+    	return reviewMapper.selectReviewsByNo(productNo);
     }
 }
