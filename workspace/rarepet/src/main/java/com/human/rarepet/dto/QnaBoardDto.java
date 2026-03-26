@@ -9,5 +9,6 @@ public class QnaBoardDto extends BoardDto {
     // 문의 게시판 추가 필드
     private String answerSelected; 
     private boolean boardQuestionCategory; 
+    private String answerImgUrl;
 	
 }

@@ -52,8 +52,8 @@ public class RarepetOAuth2UserService extends DefaultOAuth2UserService {
         String providerId = oAuth2Response.getProviderId();
         String email = oAuth2Response.getEmail();
         String name = oAuth2Response.getName();
-        String id = oAuth2Response.getId();
         String imgUrl = oAuth2Response.getProfileImage();
+        String id = provider + "_" + providerId;
         
         MemberDto member = memberMapper.selectMemberById(id);
         
@@ -61,9 +61,18 @@ public class RarepetOAuth2UserService extends DefaultOAuth2UserService {
         	member = new MemberDto();
         	member.setEmail(email);
         	member.setPasswd("sns password");
-        	member.setName(name);
         	member.setId(id);
+        	System.out.println(imgUrl);
         	member.setImgUrl(imgUrl);
+        	
+        	String uniqueName = name;
+        	// 이름 체크하여 이미 존재하는 이름이면 번호 부여.
+        	while(memberMapper.checkName(uniqueName) != null) {
+        		
+        		int number = (int)(Math.random() * 90000) + 10000;
+        		uniqueName = name + "_" + number;
+        	}
+        	member.setName(uniqueName);
         	
         	List<RoleDto> roles = new ArrayList<RoleDto>();
     		RoleDto role = new RoleDto();

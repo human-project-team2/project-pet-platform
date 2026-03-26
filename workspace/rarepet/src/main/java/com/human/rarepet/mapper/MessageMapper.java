@@ -6,6 +6,7 @@ import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 
 import com.human.rarepet.dto.MessageDto;
 @Mapper
@@ -34,4 +35,7 @@ public interface MessageMapper {
 			"order by sent_at")
 	List<MessageDto> messageDetail(@Param("loggedInId")String loggedInId, @Param("partnerId")String partnerId);
 
+	@Update("update message set is_read = 1 where receiver_id = #{id} and sender_id = #{partnerId} and is_read = 0")
+	int markAsRead(@Param("id") String id, @Param("partnerId") String partnerId);
+	
 }

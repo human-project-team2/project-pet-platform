@@ -5,8 +5,8 @@
 
     <insert id="insertBoard" parameterType="BoardDto" 
     		useGeneratedKeys="true" keyColumn="boardId" keyProperty="boardId">
-        INSERT INTO board (board_title, board_content, board_writer_id, board_like_count, board_view_count, board_write_date, saved_file_name, original_file_name, img_url)
-        VALUES (#{boardTitle}, #{boardContent}, #{boardWriterId}, #{boardLikeCount}, #{boardViewCount}, #{boardWriteDate}, #{savedFileName}, #{originalFileName}, #{imgUrl})
+        INSERT INTO board (board_title, board_content, board_writer_id, board_like_count, board_view_count, board_write_date, saved_file_name, original_file_name, img_url, video_url, board_type)
+        VALUES (#{boardTitle}, #{boardContent}, #{boardWriterId}, #{boardLikeCount}, #{boardViewCount}, #{boardWriteDate}, #{savedFileName}, #{originalFileName}, #{imgUrl}, #{videoUrl}, #{boardType})
     </insert>
     
     <update id="increaseBoardLikeCount" parameterType="int">

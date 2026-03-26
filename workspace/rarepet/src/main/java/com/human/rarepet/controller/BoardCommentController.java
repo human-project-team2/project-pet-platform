@@ -19,6 +19,7 @@ import com.human.rarepet.dto.MemberDto;
 import com.human.rarepet.security.RarepetUserDetails;
 import com.human.rarepet.service.BoardCommentService;
 import com.human.rarepet.service.BoardService;
+import com.human.rarepet.service.MemberService;
 
 import jakarta.servlet.http.HttpSession;
 
@@ -27,12 +28,15 @@ import jakarta.servlet.http.HttpSession;
 public class BoardCommentController {
 	
 	private BoardCommentService boardCommentService;
+	private MemberService memberService;
 	
 	@Autowired
 	private BoardService boardService;
 	
-	public BoardCommentController(BoardCommentService boardCommentService) {
+	public BoardCommentController(BoardCommentService boardCommentService,
+								  MemberService memberService) {
 		this.boardCommentService = boardCommentService;
+		this.memberService = memberService;
 		// 자동 주입 이루어짐
 	}
 //	
@@ -100,6 +104,16 @@ public class BoardCommentController {
 		
 		
 		// return "board/boardlist"; //
+		
+		// 추가: 댓글 작성자 프로필 불러오기
+		for(BoardCommentDto comment : comments) {
+			MemberDto writer = memberService.getUserById(comment.getWriter());
+			if(writer != null) {
+				comment.setImgUrl(writer.getImgUrl());
+			}
+		}
+		
+		
 		return "board/comment-list";
 	}
 	
@@ -120,7 +134,7 @@ public class BoardCommentController {
 		MemberDto member = userDetails.getMember();
 		if(member != null) {
 			String id = member.getId();
-			System.out.printf("====================writeCommentId\n" + id);
+			//System.out.printf("====================writeCommentId\n" + id);
 		
 			System.out.println(commentDto);
 			

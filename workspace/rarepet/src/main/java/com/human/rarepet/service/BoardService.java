@@ -114,9 +114,9 @@ public class BoardService {
 		boardMapper.insertBoardAdoApply(adoptapply);
 	}
 
-	public BoardAdoptionDto showAdoApplyBoardById(int boardId) {
-		BoardAdoptionDto dto = boardMapper.showAdoApplyBoardById(boardId);
-		return dto;
+	public List<BoardAdoptionDto> showAdoApplyBoardById(int boardId) {
+		List<BoardAdoptionDto> dtoList = boardMapper.showAdoApplyBoardById(boardId);
+		return dtoList;
 	}
 
 	public void updateAdoBoardById(AdoBoardDto adoapply) {
@@ -135,9 +135,9 @@ public class BoardService {
 		boardMapper.increaseBoardViewCount(boardId);
 	}
 
-	public QnaBoardAnswerDto showQnaAnswerBoardById(int boardId) {
-		QnaBoardAnswerDto dto = boardMapper.showQnaAnswerBoardById(boardId);
-		return dto;
+	public List<QnaBoardAnswerDto> showQnaAnswerBoardById(int boardId) {
+		List<QnaBoardAnswerDto> answerList = boardMapper.showQnaAnswerBoardById(boardId);
+		return answerList;
 	}
 
 	public void updateQnABoardById(QnaBoardDto qnaboard) {

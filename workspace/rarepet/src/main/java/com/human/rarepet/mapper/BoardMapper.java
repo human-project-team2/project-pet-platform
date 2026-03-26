@@ -52,7 +52,7 @@ public interface BoardMapper {
 
 	void insertBoardAdoApply(BoardAdoptionDto adoptapply);
 
-	BoardAdoptionDto showAdoApplyBoardById(int boardId);
+	List<BoardAdoptionDto> showAdoApplyBoardById(int boardId);
 
 	void updateBoardAdo(AdoBoardDto adoapply);
 
@@ -62,7 +62,7 @@ public interface BoardMapper {
 
 	void increaseBoardViewCount(int boardId);
 
-	QnaBoardAnswerDto showQnaAnswerBoardById(int boardId);
+	List<QnaBoardAnswerDto> showQnaAnswerBoardById(int boardId);
 
 	void updateBoardQnA(QnaBoardDto qnaboard);
 

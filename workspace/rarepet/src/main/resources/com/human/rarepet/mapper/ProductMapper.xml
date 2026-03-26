@@ -37,4 +37,10 @@
     SELECT * FROM product_all ORDER BY product_reg_date DESC
 </select>
 
+<select id="selectLatestProducts" resultType="com.human.rarepet.dto.ProductDto">
+    SELECT * FROM product_all 
+    ORDER BY product_reg_date DESC 
+    LIMIT #{limit} OFFSET #{offset}
+</select>
+
 </mapper>

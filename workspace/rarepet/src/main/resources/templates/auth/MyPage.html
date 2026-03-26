@@ -148,6 +148,7 @@ body {
 						<img th:src="@{${userImgUrl}}" alt="Profile Image"
 							class="profile-img shadow-sm">
 						<h3 class="user-name mt-3" th:text="${user.name}">집사님</h3>
+						<h3 class="text-muted small" th:text="'아이디: ' + ${user.id}">집사님</h3>
 						<p class="text-muted small" th:text="${user.email}">user@email.com</p>
 					</div>
 					<div class="row g-2 mb-4">
@@ -374,9 +375,34 @@ body {
 					</div>
 
 					<div class="tab-pane fade" id="tab-wish">
-						<div class="text-center py-5 bg-white rounded-5 shadow-sm">
-							<p class="text-muted">찜한 상품이 없습니다. ❤️</p>
-						</div>
+						<div th:if="${not #lists.isEmpty(myFavorites)}">
+					        <div th:each="fav : ${myFavorites}"
+					             class="content-card d-flex align-items-center justify-content-between">
+					
+					            <div class="d-flex align-items-center gap-3">
+					                <img th:src="${fav.imgUrl}" class="item-img shadow-sm">
+					
+					                <div>
+					                    <h6 class="fw-bold mb-1" th:text="${fav.productName}">상품명</h6>
+					                    <p class="text-danger fw-bold mb-0"
+					                       th:text="${#numbers.formatInteger(fav.price, 0, 'COMMA') + '원'}"></p>
+					                    <p class="text-muted small mb-0"
+					                       th:text="${#dates.format(fav.favoritedDate, 'yyyy-MM-dd')}">
+					                    </p>
+					                </div>
+					            </div>
+					
+					            <a th:href="@{/market/detail/{productNo}(productNo=${fav.productId})}"
+					               class="btn btn-sm btn-outline-warning rounded-pill">
+					               상세보기
+					            </a>
+					        </div>
+					    </div>
+						
+					    <div th:if="${#lists.isEmpty(myFavorites)}"
+					         class="text-center py-5 bg-white rounded-5 shadow-sm">
+					        <p class="text-muted">관심 상품이 없습니다. 💛</p>
+					    </div>
 					</div>
 					
 					<!-- 

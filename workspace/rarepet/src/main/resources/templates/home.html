@@ -40,21 +40,7 @@ body { font-family: 'Noto Sans KR', sans-serif; background: #fdfaf6; transition:
 	</section>
 
 	<div class="container my-5">
-		<div class="row g-3 align-items-end mb-5">
-			<div class="col-md-5">
-				<label class="form-label fw-bold small">검색어</label> 
-				<input type="text" id="searchInput" class="form-control form-control-lg" th:value="${search}" placeholder="생물 검색">
-			</div>
-			<div class="col-md-3">
-				<label class="form-label fw-bold small">카테고리</label> 
-				<select id="categorySelect" class="form-select form-select-lg">
-					<option value="all" th:selected="${category == 'all'}">전체</option>
-					<option value="포유류" th:selected="${category == '포유류'}">포유류</option>
-					<option value="파충류" th:selected="${category == '파충류'}">파충류</option>
-					<option value="양서류" th:selected="${category == '양서류'}">양서류</option>
-				</select>
-			</div>
-			<div class="col-md-2 d-grid"><button type="button" class="btn btn-warning btn-lg fw-bold" onclick="performSearch()">검색</button></div>
+		
 		</div>
 
 		<h3 class="fw-bold mb-4">✨ 최신 분양글</h3>

@@ -1,21 +1,45 @@
 package com.human.rarepet.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import com.human.rarepet.dto.MemberDto;
+import com.human.rarepet.dto.ProductDto;
+import com.human.rarepet.dto.ProductImageDto;
 import com.human.rarepet.dto.RoleDto;
+import com.human.rarepet.dto.FavoriteListDto;
 import com.human.rarepet.mapper.MemberMapper;
+import com.human.rarepet.mapper.ProductMapper;
+import com.human.rarepet.security.RarepetPasswordEncoder;
 
 @Service("memberService")
 public class MemberService {
 	
-	@Autowired
+	
 	private MemberMapper memberMapper;
 	
-	public void insertMember(MemberDto member)
-	{
+	private ProductMapper productMapper;
+	
+	private PasswordEncoder passwordEncoder;
+	
+	public MemberService(MemberMapper memberMapper, 
+			ProductMapper productMapper, 
+			PasswordEncoder passwordEncoder) {
+		this.memberMapper = memberMapper;
+		this.productMapper = productMapper;
+		this.passwordEncoder = passwordEncoder;
+	}
+	
+	
+	
+	public void insertMember(MemberDto member) {
+		
+		String encoded = passwordEncoder.encode(member.getPasswd());
+		member.setPasswd(encoded);
+		
 		// 3. mybatis 사용
 		memberMapper.insertMember(member);
 		for (RoleDto role : member.getRoles()) {
@@ -58,8 +82,41 @@ public class MemberService {
 		return memberMapper.selectMemberRolesById(id);
 	}
 	
+	public boolean checkName(String memberName) {
+		MemberDto member = memberMapper.checkName(memberName);
+		return member != null;
+	}
 	
+	// 관심 등록된 상품 관련
+	public void addFavoriteList(String id, int productId) {
+		memberMapper.addFavoriteList(id, productId);
+	}
 	
+	public boolean checkFavoriteList(String id, int productId) {
+		return memberMapper.checkFavoriteList(id, productId) != null;
+	}
 	
+	public List<FavoriteListDto> selectAllFavorites(String id){
+		
+		List<FavoriteListDto> myFavorites = memberMapper.selectAllFavorites(id);
+		List<FavoriteListDto> myFavorites2 = new ArrayList<>();
+		
+		for(FavoriteListDto favorite : myFavorites ) {
+			int productNo = favorite.getProductId();
+			ProductDto product = productMapper.selectProductByNo(productNo);
+			
+			if(product != null) {
+			List<ProductImageDto> images = product.getProductImages();
+			if(images != null && !images.isEmpty()) {
+				favorite.setImgUrl(images.get(0).getImgUrl());
+			}
+			favorite.setProductName(product.getProductName());
+			favorite.setPrice(product.getPrice());
+			myFavorites2.add(favorite);
+			}
+		}
+		
+		return myFavorites2;
+	}
 	
 }

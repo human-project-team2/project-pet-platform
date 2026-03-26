@@ -89,10 +89,15 @@ public class RarepetSecurityConfig {
 		return new RarepetPasswordEncoder();
 	}
 	
+	
+	
 	@Bean 
 	UserDetailsService userDetailsService(MemberService memberService) {
 		// 사용자 정의 유저 디테일 서비스 사용
 		return new RarepetUserDetailsService(memberService);
 	}
+	
+	
+	
 	
 }

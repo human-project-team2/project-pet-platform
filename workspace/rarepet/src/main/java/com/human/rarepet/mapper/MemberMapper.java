@@ -5,10 +5,13 @@ import java.util.List;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Result;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 
 import com.human.rarepet.dto.MemberDto;
 import com.human.rarepet.dto.RoleDto;
+import com.human.rarepet.dto.FavoriteListDto;
 
 @Mapper
 public interface MemberMapper {
@@ -36,4 +39,17 @@ public interface MemberMapper {
     
     @Insert("INSERT INTO member_role (id, role_no) VALUES (#{id}, #{roleNo})")
     void insertMemberRole(@Param("id") String id, @Param("roleNo") int roleNo);
-}
+    
+    @Select("select name from member where name = #{name}")
+    MemberDto checkName(String name);
+    
+    @Insert("insert into favorite_list (id, product_id) "
+    		+ "values(#{id}, #{productId})")
+    void addFavoriteList(@Param("id") String id, @Param("productId") int productId);
+    
+    @Select("select * from favorite_list where id = #{id} and product_id = #{productId}")
+    FavoriteListDto checkFavoriteList(@Param("id") String id, @Param("productId") int productId);
+    
+    @Select("select * from favorite_list where id = #{id}")
+    List<FavoriteListDto> selectAllFavorites(String id);
+ }

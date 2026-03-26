@@ -19,6 +19,7 @@
 	rel="stylesheet">
 <link rel="stylesheet" th:href="@{/css/floating-chat.css}">
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script th:src="@{/js/htmx.min.js}"></script>
 <style>
 body {
 	font-family: 'Noto Sans KR', sans-serif;
@@ -113,6 +114,46 @@ body {
     transform: scale(1.1);
     transition: 0.2s ease;
 }
+.review-card {
+    border-bottom: 1px solid #eee;
+    padding: 20px;
+    margin-bottom: 10px;
+    background-color: #fff;
+}
+
+.review-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.review-user {
+    font-weight: bold;
+    color: #333;
+}
+
+.review-date {
+    font-size: 0.85rem;
+    color: #888;
+}
+
+.review-rating {
+    color: #ffc107; /* Gold color for stars */
+}
+
+.review-content p {
+    line-height: 1.6;
+    color: #555;
+}
+
+.review-images .thumb {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 4px;
+    margin-top: 10px;
+}
 </style>
 
 </head>
@@ -187,13 +228,36 @@ body {
 						<li><strong>접종여부:</strong></li>
 						<li><strong>지역:</strong></li>
 					</ul>
-					
-					
 
 					<div class="d-flex gap-3 flex-wrap">
-
-						<button class="btn btn-warning rounded-pill px-4">❤️ 관심등록
-						</button>
+					
+					    <!-- []: css selector, hx는 form과 달리 저절로 input을 못 찾음.-->
+						<div id="favorite-section" th:fragment="favorite-btn-area">
+							
+							<th:block sec:authorize="isAuthenticated()">
+								<th:block th:if="${isFavorite}">
+							        <div class="mt-2 small text-success">관심 목록에 추가되었습니다.</div>
+							        <button class="btn btn-warning rounded-pill px-4" disabled>❤️ 등록완료</button>
+							    </th:block>
+							    
+							    <th:block th:if="${!isFavorite}">
+									<input  id="favorite" type="hidden" name="productId" th:value="${productId}">
+									<button hx-post="/market/favorite"
+											hx-target="#favorite-section"
+											hx-swap="innerHTML"
+											hx-include="[name='productId']"
+										class="btn btn-warning rounded-pill px-4">❤️ 관심등록
+									</button>
+								</th:block>
+							</th:block>
+							<th:block sec:authorize="isAnonymous()" >
+							    <button 
+									th:onclick="'window.location.href=\'' + @{/auth/login} + '\''"	
+									class="btn btn-warning rounded-pill px-4">❤️ 관심등록
+								</button>
+							</th:block>
+							
+						</div>
 						
 						<th:block sec:authorize="isAuthenticated()">
 						    <button class="btn btn-danger rounded-pill px-4"
@@ -259,7 +323,53 @@ body {
 				<strong>거래방식:</strong>
 			</p>
 		</div>
+		<div th:if="${not #lists.isEmpty(reviews)}">
+		    <div th:each="review : ${reviews}" class="review-card">
+		
+		        <!-- 헤더 -->
+		        <div class="review-header d-flex justify-content-between align-items-center flex-wrap gap-2">
+		
+		            <div>
+		                <span class="review-user fw-bold" th:text="${review.id}">user123</span>
+		                <span class="review-date text-muted small ms-2"
+		                      th:text="${#temporals.format(review.createdAt, 'yyyy-MM-dd')}">
+		                </span>
+		            </div>
+		
+		            <!-- ⭐ 별점 -->
+		            <div class="review-rating">
+		                <span th:each="i : ${#numbers.sequence(1,5)}">
+		                    <span th:text="${i <= review.rating ? '★' : '☆'}"></span>
+		                </span>
+		            </div>
+		        </div>
+		
+		        <!-- 상품명 (추가 정보) -->
+		        <div class="text-muted small mb-2"
+		             th:text="${review.productName}">
+		        </div>
+		
+		        <!-- 내용 -->
+		        <div class="review-content">
+		            <p th:text="${review.content}">
+		                리뷰 내용
+		            </p>
+		        </div>
+		
+		        <!-- 이미지 (현재 DTO에 없으므로 기본 처리) -->
+		        <div class="review-images">
+		            <img src="/img/no_image.jpg" alt="Review Photo" class="thumb">
+		        </div>
+		
+		    </div>
+		</div>
 
+		<!-- 리뷰 없을 때 -->
+		<div th:if="${#lists.isEmpty(reviews)}"
+		     class="text-center py-5 bg-white rounded-5 shadow-sm">
+		    <p class="text-muted">작성한 리뷰가 없습니다. ✍️</p>
+		</div>
+		
 	</div>
 	<div th:replace="fragments/fragment :: message"></div>
 	<div th:replace="fragments/fragment :: footer"></div>

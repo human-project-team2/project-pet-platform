@@ -97,6 +97,19 @@ public class MemberController {
 			return "valid";  // 사용 가능한 아이디
 		}
 	}
+	
+	@GetMapping(path = {"/name-check"})
+	@ResponseBody
+	public String nameCheck(@RequestParam("memberName") String memberName) {
+		
+		boolean alreadyInUse = memberService.checkName(memberName);
+		if(alreadyInUse) {
+			return "used";
+		} else {
+			return "valid";
+		}
+	}
+	
 
 
 }

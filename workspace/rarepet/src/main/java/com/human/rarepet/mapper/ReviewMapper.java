@@ -1,6 +1,8 @@
 package com.human.rarepet.mapper;
 
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Select;
+
 import com.human.rarepet.dto.ReviewDto;
 import java.util.List;
 
@@ -20,4 +22,7 @@ public interface ReviewMapper {
 
     // 리뷰 삭제 실행
     void deleteReview(Long reviewNo);
+    
+    @Select("select * from review where product_no = #{productNo}")
+    List<ReviewDto> selectReviewsByNo(int productNo);
 }

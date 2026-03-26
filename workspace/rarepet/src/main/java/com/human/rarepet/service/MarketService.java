@@ -3,6 +3,7 @@ package com.human.rarepet.service;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -96,7 +97,7 @@ public class MarketService {
 	            activeProducts.add(product);
 	        }
 	    }
-	    
+	    Collections.shuffle(activeProducts);
 	    return activeProducts; // 품절 상품이 제외된 리스트만 반환
 	}
 
@@ -109,6 +110,7 @@ public class MarketService {
 		for (ProductDto product : myProducts) {
 			product.setProductImages(productMapper.selectProductImagesByProductNo(product.getProductNo()));
 		}
+		
 		return myProducts;
 	}
 
@@ -163,6 +165,19 @@ public class MarketService {
 			session.flushStatements();
 			session.commit();
 		}
+	}
+	public List<ProductDto> getLatestProducts(int page) {
+	    int limit = 6; // 한 페이지에 6개
+	    int offset = (page - 1) * limit; // 1페이지면 0부터, 2페이지면 6부터 시작
+	    
+	    List<ProductDto> products = productMapper.selectLatestProducts(limit, offset);
+	    List<ProductDto> products2 = new ArrayList<>();
+	    for(ProductDto product : products) {
+	    	List<ProductImageDto> images = productMapper.selectProductImagesByProductNo(product.getProductNo());
+	    	product.setProductImages(images);
+	    	products2.add(product);
+	    }
+	    return products2;
 	}
 	
 }

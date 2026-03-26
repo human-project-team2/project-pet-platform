@@ -8,6 +8,10 @@
 <!-- Bootstrap 5 CSS & Icons -->
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+<!-- Bootstrap JS -->
+<script
+	src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <!-- Scripts -->
 <script src="http://code.jquery.com/jquery-3.7.1.js"></script>   
 <!-- Google Font -->
@@ -105,31 +109,83 @@
         
         <div class="row g-3">
             <div class="col-md-8">
-                <label class="form-label">제목</label>
+                <label class="form-label"></label>
                 <input type="text" class="form-control-plaintext fs-4 fw-bold border-bottom mb-3" readonly th:value="${board.boardTitle}">
             </div>            
             <div class="col-md-4">
                 <label class="form-label text-muted">작성자</label>
                 <div class="d-flex align-items-center">
-                    <i class="bi bi-person-circle fs-5 me-2 text-secondary"></i>
+                    <!-- 프로필 이미지 추가 -->
+        			<img th:src="@{${writer.imgUrl}}" alt="profile" 
+        				class="rounded-circle me-2" width="40" height="40"
+        				style="cursor: pointer;"
+					     data-bs-toggle="modal"
+					     data-bs-target="#newMessageModal"
+					     th:attr="data-bs-receiver=${board.boardWriterId}"/>
                     <span class="fw-bold" th:text="${board.boardWriterId}">애니멀러버</span>
                 </div>
             </div>
             <div class="col-12 mt-4" style=width:300px>            
-				<div class="card shadow">
+				<div class="card shadow" th:if="${board.imgUrl != null}">
 					<img
 						th:src="@{${board.imgUrl}}"
 						class="card-img-top">
 				</div>
 			</div>
-            <div class="col-12 mt-4">
-                <label class="form-label">글 내용</label>
-                <div class="view-content shadow-sm" th:utext='${#strings.replace(board.boardContent, "\n", "<br>")}'>
-                    내용이 표시되는 곳입니다.
-                </div>
-            </div>    
-                    
-        </div>
+			
+			<div th:if="${board.boardType == 1}">
+				<div class="col-12 mt-4" style=width:700px>
+					<div class="card shadow" th:if="${board.videoUrl != null}">
+						<div class="ratio ratio-16x9">
+		                <iframe
+		                    th:src="${board.videoUrl}"
+		                    title="YouTube video player"
+		                    frameborder="0"
+		                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+		                    allowfullscreen>
+		                </iframe>
+		            	</div>
+				  	</div>
+				</div>
+	            <div class="col-12 mt-4">
+	                <label class="form-label"></label>
+	                <div class="view-content shadow-sm" th:utext='${#strings.replace(board.boardContent, "\n", "<br>")}'>
+	                    내용이 표시되는 곳입니다.
+	                </div>
+	            </div>
+        	</div> 
+        	<!-- 
+        	유튜드 영상 end 
+        	 -->
+        	
+        	<div th:if="${board.boardType == 0}">
+				<div class="col-12 mt-4" style=width:500px>
+					<div class="card shadow" th:if="${board.videoUrl != null}">
+				  	
+						<video controls>
+							<source th:src="@{${board.videoUrl}}" type="video/mp4">
+							브라우저가 video 태그를 지원하지 않습니다.
+						</video>
+						<div class="file-info">
+							파일명:
+							<span th:text="${board.originalFileName}">video.mp4</span>
+						</div>					
+				  	
+				  	
+					</div>
+		
+		            <div class="col-12 mt-4">
+		                <label class="form-label"></label>
+		                <div class="view-content shadow-sm" th:utext='${#strings.replace(board.boardContent, "\n", "<br>")}'>
+		                    내용이 표시되는 곳입니다.
+		                </div>
+		            </div>
+		        </div>
+        	</div>
+        	<!-- 
+        	일반 동영상 end 
+        	 -->
+        
         <div class="d-flex align-items-center gap-3 mb-4">
 		    <form th:action="@{/board/like}" method="post" class="m-0">
 		        <input type="hidden" name="boardId" th:value="${board.boardId}">
@@ -182,7 +238,7 @@
         <div class="comment-input-wrapper mb-5" sec:authorize="isAuthenticated()">
             <form id="commentform" action="write-comment" method="post">
                 <input type="hidden" name="boardId" th:value="${board.boardId}" />
-                <input type="hidden" name="writer" th:value="${board.boardWriterId}" />
+                <input type="hidden" name="writer" th:value="${#authentication.principal.username}" />
                 <div class="mb-3">
                     <textarea id="comment_content" name="content" class="form-control" rows="4" 
                               placeholder="서로를 배려하는 따뜻한 댓글을 남겨주세요."></textarea>
@@ -234,6 +290,8 @@
 </div>
 
 <div th:replace="fragments/fragment :: footer"></div>
+<div th:replace="fragments/fragment :: message"></div>
+<script th:replace="fragments/fragment :: message_script"></script>
 
 <script th:inline='javascript'>  
     
@@ -241,14 +299,14 @@
 
 		$('#delete-btn').on('click', function() {
             if(confirm('게시글을 삭제하시겠습니까?')) {
-                location.href = 'delete?boardId=' + [[${board.boardId}]];
+                location.href = 'delete?boardId=' + /*[[${board.boardId}]]*/0;
             }
         });
 
 		const btnEdit = document.querySelector('#edit-btn');
 		if (btnEdit) {
 			btnEdit.addEventListener('click', function(event) {
-				location.href = 'edit?boardId=' + [[${ board.boardId }]];
+				location.href = 'edit?boardId=' + /*[[${ board.boardId }]]*/0;
 			});	
 		}
 		
@@ -261,7 +319,7 @@
 		///////////////////////////////////////////////////
 
 		// # id='#comment-list' 요소에 comment-list 요청 결과를 삽입 (비동기 jquery)
-		$('#comment-list').load('comment-list?boardId=' + [[${ board.boardId }]]);
+		$('#comment-list').load('comment-list?boardId=' + /*[[${ board.boardId }]]*/0);
 		// jquery에서 html 정보 조회 후 데이터 저장 -> comment-list 댓글 하나하나 table 
 		
 		/* comment-list 안에서
@@ -300,7 +358,7 @@
 				"success": function(data, status, xhr) {
 					if (data == "success") {
 						//alert('댓글을 등록했습니다.');
-						$('#comment-list').load('comment-list?boardId=' + [[${ board.boardId }]]);
+						$('#comment-list').load('comment-list?boardId=' + /*[[${ board.boardId }]]*/0);
 						$('#commentform textarea').val("");
 					}
 				},
@@ -383,7 +441,7 @@
 					*/
 					// 2. 댓글 목록 전체 갱신
 					//    jQuery의 load 함수 : 지정된 html 요소의 내용을 응답받은 부분 HTML로 (비동기) 갱신
-					$('#comment-list').load('comment-list?boardId=' + [[${ board.boardId }]]);
+					$('#comment-list').load('comment-list?boardId=' + /*[[${ board.boardId }]]*/0);
 				} else {
 					alert('삭제 실패 2');
 				}
@@ -410,7 +468,7 @@
 				"data": editForm.serialize(),
 				"success": function(data) {
 					if (data == "success") {
-						$('#comment-list').load('comment-list?boardId=' + [[${ board.boardId }]]);
+						$('#comment-list').load('comment-list?boardId=' + /*[[${ board.boardId }]]*/'comment-list?boardId=0');
 					}
 				},
 				"error": function(xhr, status, err) {
@@ -450,7 +508,7 @@
 			"data": formData,
 			"success": function(data) {
 				if (data == "success") {
-					$('#comment-list').load('comment-list?boardId=' + [[${ board.boardId }]]);
+					$('#comment-list').load('comment-list?boardId=' + /*[[${ board.boardId }]]*/0);
 					$('#recomment-modal').modal('hide');
 					// 처리 후 숨기기 
 				}

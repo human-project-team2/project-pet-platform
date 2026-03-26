@@ -20,5 +20,8 @@ public class BoardCommentDto extends GenBoardDto {
 //	private int groupNo;	// 그룹 번호
 //	private int step;		// 그룹 내 순서 번호
 //	private int depth;		// 들여쓰기 정도
+	
+	// 추가: 댓글 작성자 프로필 사진 주소 (DB에는 없고 DTO에만 존재)
+	private String imgUrl;
 
 }

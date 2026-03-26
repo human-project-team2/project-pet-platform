@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.human.rarepet.common.Util;
 import com.human.rarepet.dto.AdoBoardDto;
@@ -67,6 +68,49 @@ public class BoardController {
 		
 		return "board/write";		
 	}	
+	
+	@GetMapping(path = {"/board/vwrite"})
+	public String showVWriteForm(BoardDto board,
+			@AuthenticationPrincipal RarepetUserDetails userDetails ,
+			Model model) {
+		
+		System.out.println("-------------->write form");
+		
+		if(userDetails == null)
+		{
+			return "redirect:/auth/login";		
+		}
+		
+		MemberDto member = userDetails.getMember();
+		if(member != null) {
+			MemberDto user = memberService.getUserById(member.getId());
+			model.addAttribute("user", user);
+		}
+		
+		return "board/vwrite";		
+	}
+	
+	@GetMapping(path = {"/board/uwrite"})
+	public String showUWriteForm(BoardDto board,
+			@AuthenticationPrincipal RarepetUserDetails userDetails ,
+			Model model) {
+		
+		System.out.println("-------------->write form");
+		
+		if(userDetails == null)
+		{
+			return "redirect:/auth/login";		
+		}
+		
+		MemberDto member = userDetails.getMember();
+		if(member != null) {
+			MemberDto user = memberService.getUserById(member.getId());
+			model.addAttribute("user", user);
+		}
+		
+		return "board/uwrite";		
+	}
+	
 	
 	final String UPLOAD_PATH = "d:\\uploaded_images";
 	
@@ -129,6 +173,244 @@ public class BoardController {
 		return "redirect:/board/community";		
 	}
 	
+	@PostMapping(path = {"/board/vwrite"})
+	public String writeVBoard(
+			@AuthenticationPrincipal RarepetUserDetails userDetails , 
+			@RequestParam("videoFile") MultipartFile videoFile,
+			GenBoardDto board,
+			Model model) {
+		Date writeDate = new Date();
+		
+		System.out.printf("-------------->Gen writetitle \n" + board.getBoardTitle());
+		
+		if(userDetails == null)
+		{
+			return "redirect:/auth/login";		
+		}	
+		
+		System.out.println(board);
+		
+		if (videoFile != null && videoFile.getOriginalFilename().length() > 0) {
+			
+			String savedFileName = Util.makeUniqueFileName(videoFile.getOriginalFilename());
+			
+			System.out.println("test \n");
+			System.out.println(videoFile.getOriginalFilename());
+			System.out.println(savedFileName);
+			
+			File file = new File(UPLOAD_PATH, savedFileName);
+			String videoUrl = "/images/" + savedFileName;	
+			System.out.println(videoUrl);
+		
+			MemberDto member = userDetails.getMember();
+			if(member != null) {
+				String id = member.getId();
+				System.out.printf("====================write Community ID\n" + id);
+				
+				try {
+								
+					board.setBoardWriteDate(writeDate);
+					//board.setImgUrl(imgUrl);
+					board.setVideoUrl(videoUrl);
+					board.setOriginalFileName(videoFile.getOriginalFilename());
+					board.setSavedFileName(savedFileName);
+					videoFile.transferTo(file);
+					board.setBoardLikeCount(0);
+					board.setBoardViewCount(0);
+					
+					// board.getBoardWriteDate();
+					boardService.insertBoard(board);
+					boardService.insertBoardGen(board);
+					
+				}   catch (Exception ex) {
+					ex.printStackTrace();
+					
+				}
+			}
+		
+		} else {
+			System.out.println("test ERR\n");
+		}
+		return "redirect:/board/community";		
+	}
+	
+	/**
+     * 유튜브 URL을 iframe용 embed URL로 변환
+     * 지원 형식:
+     * - https://www.youtube.com/watch?v=영상ID
+     * - https://youtu.be/영상ID
+     * - https://www.youtube.com/shorts/영상ID
+     * - https://www.youtube.com/embed/영상ID
+     */
+    private String convertYoutubeUrlToEmbed(String url) {
+        if (url == null || url.isBlank()) {
+            return null;
+        }
+
+        String videoId = null;
+
+        // 이미 embed 주소인 경우
+        if (url.contains("youtube.com/embed/")) {
+            int idx = url.indexOf("embed/");
+            if (idx != -1) {
+                videoId = url.substring(idx + 6);
+                int qIdx = videoId.indexOf("?");
+                if (qIdx != -1) {
+                    videoId = videoId.substring(0, qIdx);
+                }
+            }
+        }
+
+        // watch?v=
+        if (videoId == null && url.contains("watch?v=")) {
+            int idx = url.indexOf("watch?v=");
+            videoId = url.substring(idx + 8);
+            int ampIdx = videoId.indexOf("&");
+            if (ampIdx != -1) {
+                videoId = videoId.substring(0, ampIdx);
+            }
+        }
+
+        // youtu.be/
+        if (videoId == null && url.contains("youtu.be/")) {
+            int idx = url.indexOf("youtu.be/");
+            videoId = url.substring(idx + 9);
+            int qIdx = videoId.indexOf("?");
+            if (qIdx != -1) {
+                videoId = videoId.substring(0, qIdx);
+            }
+        }
+
+        // shorts/
+        if (videoId == null && url.contains("youtube.com/shorts/")) {
+            int idx = url.indexOf("shorts/");
+            videoId = url.substring(idx + 7);
+            int qIdx = videoId.indexOf("?");
+            if (qIdx != -1) {
+                videoId = videoId.substring(0, qIdx);
+            }
+        }
+
+        if (videoId == null || videoId.isBlank()) {
+            return null;
+        }
+
+        return "https://www.youtube.com/embed/" + videoId;
+    }
+	
+	 
+	@PostMapping(path = {"/board/uwrite"})
+	public String writeVBoard(
+			@AuthenticationPrincipal RarepetUserDetails userDetails , 
+			@RequestParam("videoUrl") String videoUrl,
+			GenBoardDto board,
+			Model model) {
+		Date writeDate = new Date();
+		
+		System.out.printf("-------------->Gen Uwritetitle \n" + board.getBoardTitle());
+		
+		if(userDetails == null)
+		{
+			return "redirect:/auth/login";		
+		}	
+		
+		// 유튜브 주소 검증 및 정리
+        if (videoUrl != null && !videoUrl.trim().isEmpty()) {
+            String embedUrl = convertYoutubeUrlToEmbed(videoUrl.trim());
+
+            if (embedUrl == null) {
+                model.addAttribute("msg", "올바른 유튜브 주소를 입력해주세요.");
+                model.addAttribute("url", "/board/vwrite");
+                return "fragments/message";
+            }
+
+            board.setVideoUrl(embedUrl);
+     
+            System.out.println(board);
+				
+			System.out.println(embedUrl);
+		
+			MemberDto member = userDetails.getMember();
+			if(member != null) {
+				String id = member.getId();
+				System.out.printf("====================write U Community ID\n" + id);
+				
+				try {
+								
+					board.setBoardWriteDate(writeDate);
+					board.setBoardType(1);
+					board.setVideoUrl(embedUrl);
+					board.setSavedFileName(videoUrl);
+					board.setOriginalFileName(videoUrl);
+					
+					board.setBoardLikeCount(0);
+					board.setBoardViewCount(0);
+					
+					 
+					boardService.insertBoard(board);
+					boardService.insertBoardGen(board);
+					
+				}   catch (Exception ex) {
+					ex.printStackTrace();
+					
+				}
+			}
+	   } 
+		
+		return "redirect:/board/community";		
+	}
+	
+	
+    /*
+	@PostMapping("/board/uwrite")
+    public String uwrite(
+            @RequestParam("title") String title,
+            @RequestParam("content") String content,
+            @RequestParam(value = "videoUrl", required = false) String videoUrl,
+            RedirectAttributes rttr,
+            @AuthenticationPrincipal RarepetUserDetails userDetails
+            ) {
+
+        try {
+            BoardDto board = new BoardDto();
+            board.setBoardTitle(title);
+            board.setBoardContent(content);
+
+            // 로그인 아이디 저장
+            //if (principal != null) {
+                //board.setBoardWriterId(principal.getName());
+            //}
+            MemberDto member = userDetails.getMember();
+			if(member != null) {
+				String id = member.getId();
+				System.out.printf("====================write U Community ID\n" + id);
+				
+			}
+
+            // 유튜브 링크 저장
+            if (videoUrl != null) {
+                videoUrl = videoUrl.trim();
+            }
+            board.setVideoUrl(videoUrl);
+
+            // 일반 게시판 / 유튜브 게시판 구분값이 필요하면 추가
+            // 예: board.setBoardCategory("youtube");
+
+            boardService.insertBoard(board);
+
+            rttr.addFlashAttribute("msg", "유튜브 게시글이 등록되었습니다.");
+            return "redirect:/board/boardlist";
+
+        } catch (Exception e) {
+            e.printStackTrace();
+             rttr.addFlashAttribute("msg", "게시글 등록 중 오류가 발생했습니다.");
+            return "redirect:/board/uwrite";
+        }
+    }
+    */
+
+	
+	
 	@GetMapping (path = {"/board/boardlist"}) 
 	public String list(Model model) {
 		
@@ -181,6 +463,9 @@ public class BoardController {
 					genboard.setBoardViewCount(board.getBoardViewCount());
 					genboard.setBoardLikeCount(board.getBoardLikeCount());
 					genboard.setImgUrl(board.getImgUrl());
+					if(board.getImgUrl() == null) {
+						genboard.setVideoUrl(board.getVideoUrl());
+					}
 					orderedGenBoards.add(genboard);
 					break;
 				}
@@ -443,8 +728,8 @@ public class BoardController {
 		
 		System.out.println(qnaboard);
 		
-		QnaBoardAnswerDto qnaapply = boardService.showQnaAnswerBoardById(boardId);	
-		System.out.println(qnaapply);
+		List<QnaBoardAnswerDto> qnaapplyList = boardService.showQnaAnswerBoardById(boardId);	
+		//System.out.println(qnaapplyList);
 		
 		if (userDetails != null) {
 			MemberDto loginUser = userDetails.getMember();
@@ -454,7 +739,7 @@ public class BoardController {
 		
 		model.addAttribute("board", board);		
 		model.addAttribute("adoboard", qnaboard);
-		model.addAttribute("adoapply", qnaapply);	
+		model.addAttribute("adoapply", qnaapplyList);	
 		System.out.println("QnA prove Form \n");
 			
 		return "board/qna"; 
@@ -488,8 +773,8 @@ public class BoardController {
 		System.out.println("QnA prove");
 		System.out.println(qnaboard);
 		
-		QnaBoardAnswerDto qnaapply = boardService.showQnaAnswerBoardById(boardId);	
-		System.out.println(qnaapply);		
+		List<QnaBoardAnswerDto> qnaapplyList = boardService.showQnaAnswerBoardById(boardId);	
+		//System.out.println(qnaapplyList);		
 		
 		String qnaDone = qnaboard.getAnswerSelected();
 		if (qnaDone.equals(1) == true)
@@ -539,6 +824,8 @@ public class BoardController {
 		 */			
 		
 		BoardDto board = boardService.showBoardById(boardId);
+		MemberDto writer = memberService.getUserById(board.getBoardWriterId());
+		
 		BoardDto qnaboard = boardService.showQnaBoardById(boardId);		
 		if (qnaboard == null) {
 			System.out.println("--------------------Qna NULL--  ");	
@@ -558,14 +845,21 @@ public class BoardController {
 		// ★ 조회수 증가
 	    boardService.increaseBoardViewCount(boardId);
 	    
-	    QnaBoardAnswerDto qnaAnswer = boardService.showQnaAnswerBoardById(boardId);
-	    System.out.println(qnaAnswer);
+	    List<QnaBoardAnswerDto> qnaAnswerList = boardService.showQnaAnswerBoardById(boardId);
+	    for(QnaBoardAnswerDto answer : qnaAnswerList) {
+	    	String imgUrl = memberService.getUserById(answer.getId()).getImgUrl();
+	    	answer.setAnswerImgUrl(imgUrl);
+	    }
+	    
+	    //System.out.println(qnaAnswerList);
 		System.out.println("QnA Ok");
-		
+		model.addAttribute("writer", writer);
 		model.addAttribute("board", board);
 		model.addAttribute("pageNo", pageNo);
 		model.addAttribute("qnaboard", qnaboard);
-		model.addAttribute("qnaAnswer", qnaAnswer);
+		model.addAttribute("qnaAnswers", qnaAnswerList);
+		
+		// TTTTTT
 		
 		
 			
@@ -649,9 +943,6 @@ public class BoardController {
 			System.out.println(qnaapply);
 		
 			boardService.insertQnaApplyBoard(qnaapply);
-			//boardService.insertAdoApplyBoard(adoptapply);
-			//boardService.insertBoardAdo(board);					
-				
 		}
 		
 		return "redirect:/board/qnalist";		
@@ -841,8 +1132,14 @@ public class BoardController {
 		
 		System.out.println(adoboard);
 		
-		BoardAdoptionDto adoapply = boardService.showAdoApplyBoardById(boardId);	
-		System.out.println(adoapply);
+		// TTT
+		//BoardAdoptionDto adoapply = boardService.showAdoApplyBoardById(boardId);	
+		//System.out.println(adoapply);
+		List<BoardAdoptionDto> adoAnswerList = boardService.showAdoApplyBoardById(boardId);
+	    for(BoardAdoptionDto answer : adoAnswerList) {
+	    	String imgUrl = memberService.getUserById(answer.getId()).getImgUrl();
+	    	answer.setAnswerImgUrl(imgUrl);
+	    }
 		
 		if (userDetails != null) {
 			MemberDto loginUser = userDetails.getMember();
@@ -853,7 +1150,8 @@ public class BoardController {
 		model.addAttribute("board", board);
 		model.addAttribute("pageNo", pageNo);
 		model.addAttribute("adoboard", adoboard);
-		model.addAttribute("adoapply", adoapply);	
+		//model.addAttribute("adoapply", adoapply);	
+		model.addAttribute("adoAnswers", adoAnswerList);
 		System.out.println("Adoption prove Form \n");
 			
 		return "board/adoption"; 
@@ -887,36 +1185,44 @@ public class BoardController {
 		System.out.println("Adoption prove");
 		System.out.println(adoboard);
 		
-		BoardAdoptionDto adoapply = boardService.showAdoApplyBoardById(boardId);	
-		System.out.println(adoapply);
-		int adoptDone = adoapply.getBoardAdoptDone();
-		if (adoptDone == 2)
-		{
-			System.out.println("분양완료 상태임 \n");
-			return "redirect:adoptionlist";
-		}
+		// TTT
+		//BoardAdoptionDto adoapply = boardService.showAdoApplyBoardById(boardId);	
+		//System.out.println(adoapply);
 		
-		System.out.println("Adoption prove Done 1");
+		List<BoardAdoptionDto> adoAnswerList = boardService.showAdoApplyBoardById(boardId);
+	    for(BoardAdoptionDto adoapply : adoAnswerList) {
+	    	String imgUrl = memberService.getUserById(adoapply.getId()).getImgUrl();
+	    	adoapply.setAnswerImgUrl(imgUrl);
+	    
+	    	int adoptDone = adoapply.getBoardAdoptDone();
+	    	if (adoptDone == 2)
+	    	{
+	    		System.out.println("분양완료 상태임 \n");
+	    		return "redirect:adoptionlist";
+	    	}
 		
-		if (userDetails != null) {
-			MemberDto loginUser = userDetails.getMember();
-			MemberDto user = memberService.getUserById(loginUser.getId());		
+			System.out.println("Adoption prove Done 1");
 			
-			name = user.getId();
-			writer = board.getBoardWriterId();
-			if(!name.equals(writer))
-			{
-				System.out.println(user.getId());
-				System.out.println(board.getBoardWriterId());
-				System.out.println("name not match \n");
+			if (userDetails != null) {
+				MemberDto loginUser = userDetails.getMember();
+				MemberDto user = memberService.getUserById(loginUser.getId());		
 				
-				return "redirect:adoptionlist";
+				name = user.getId();
+				writer = board.getBoardWriterId();
+				if(!name.equals(writer))
+				{
+					System.out.println(user.getId());
+					System.out.println(board.getBoardWriterId());
+					System.out.println("name not match \n");
+					
+					return "redirect:adoptionlist";
+				}
+				adoapply.setBoardAdoptDone(2);
+				// update api 
+				boardService.updateAdoBoardById(adoapply);
+				System.out.println("Adoption prove Done 2");
 			}
-			adoapply.setBoardAdoptDone(2);
-			// update api 
-			boardService.updateAdoBoardById(adoapply);
-			System.out.println("Adoption prove Done 2");
-		}
+	    }
 		
 		// boardAdoptDone to 2
 		
@@ -945,8 +1251,9 @@ public class BoardController {
 		System.out.println("Adoption Ok");
 		System.out.println(adoboard);
 		
-		BoardAdoptionDto adoapply = boardService.showAdoApplyBoardById(boardId);	
-		System.out.println(adoapply);
+		// list TTTTTTT
+		//BoardAdoptionDto adoapply = boardService.showAdoApplyBoardById(boardId);	
+		//System.out.println(adoapply);
 		
 		if (userDetails != null) {
 			MemberDto loginUser = userDetails.getMember();
@@ -954,13 +1261,21 @@ public class BoardController {
 			model.addAttribute("user", user);
 		}
 		
+		List<BoardAdoptionDto> adoAnswerList = boardService.showAdoApplyBoardById(boardId);
+	    for(BoardAdoptionDto answer : adoAnswerList) {
+	    	String imgUrl = memberService.getUserById(answer.getId()).getImgUrl();
+	    	answer.setAnswerImgUrl(imgUrl);
+	    }
+		
 		// ★ 조회수 증가
 	    boardService.increaseBoardViewCount(boardId);
 		
 		model.addAttribute("board", board);
 		model.addAttribute("pageNo", pageNo);
 		model.addAttribute("adoboard", adoboard);
-		model.addAttribute("adoapply", adoapply);			
+		//model.addAttribute("adoapply", adoapply);	
+		model.addAttribute("adoAnswers", adoAnswerList);
+		// model.addAttribute("qnaAnswers", adoAnswerList);
 			
 		return "board/adoption"; 
 		
@@ -1067,7 +1382,20 @@ public class BoardController {
 		BoardDto board = boardService.showBoardById(boardId);
 		GenBoardDto genboard = boardService.showGenBoardById(boardId);
 		if (genboard == null) {
-			return "redirect:/board/boardlist";
+			QnaBoardDto qnaboard = boardService.showQnaBoardById(boardId);
+			if (qnaboard == null) {
+				AdoBoardDto adoboard = boardService.showAdoBoardById(boardId);
+				if (adoboard == null) {
+					return "redirect:/board/boardlist";
+				}
+				else {
+					return "redirect:/board/adoption?boardId=" + boardId;
+				}
+			}
+			else {
+				return "redirect:/board/qna?boardId=" + boardId;
+			}
+			//return "redirect:/board/boardlist";
 		}
 		
 		if(userDetails != null)
@@ -1084,6 +1412,11 @@ public class BoardController {
 	    
 		//board.setBoardLikeCount(2);
 		
+	    //작성자 프로필 가져오기
+	    MemberDto writer = memberService.getUserById(board.getBoardWriterId());
+	    
+	    System.out.println(board);
+	    model.addAttribute("writer", writer);
 		model.addAttribute("board", board);
 		model.addAttribute("pageNo", pageNo);
 		

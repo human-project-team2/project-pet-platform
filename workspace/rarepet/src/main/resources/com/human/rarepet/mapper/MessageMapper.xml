@@ -3,8 +3,8 @@
 <mapper namespace="com.human.rarepet.mapper.MessageMapper">
 
 	<insert id="sendMessage" parameterType="MessageDto">
-		insert into message (message_content, receiver_id, sender_id, sent_at, received_at)
-		values (#{messageContent}, #{receiverId}, #{senderId}, #{sentAt}, #{receivedAt})
+		insert into message (message_content, receiver_id, sender_id, sent_at, received_at, is_read)
+		values (#{messageContent}, #{receiverId}, #{senderId}, #{sentAt}, #{receivedAt}, false)
 	</insert>
 	
 	<!-- <select id="receiveMessage" parameterType="String" resultType="MessageDto">

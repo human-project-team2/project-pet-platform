@@ -22,6 +22,7 @@ import com.human.rarepet.common.Util;
 import com.human.rarepet.dto.MemberDto;
 import com.human.rarepet.dto.ProductDto;
 import com.human.rarepet.dto.ProductImageDto;
+import com.human.rarepet.dto.ReviewDto;
 import com.human.rarepet.dto.ShopDto;
 import com.human.rarepet.dto.ShoppingCartDto;
 import com.human.rarepet.dto.UpdateCartQuantityDto;
@@ -30,6 +31,7 @@ import com.human.rarepet.exception.ZeroProductException;
 import com.human.rarepet.security.RarepetUserDetails;
 import com.human.rarepet.service.MarketService;
 import com.human.rarepet.service.MemberService;
+import com.human.rarepet.service.ReviewService;
 import com.human.rarepet.service.ShopService;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -42,12 +44,14 @@ public class MarketController {
 	private final MemberService memberService;
 	private final MarketService marketService;
 	private final ShopService shopService;
-	
+	private final ReviewService reviewService;
 	public MarketController(MarketService marketService, MemberService memberService,
-			                ShopService shopService) {
+			                ShopService shopService,
+			                ReviewService reviewService) {
 		this.memberService = memberService;
 		this.marketService = marketService;
 		this.shopService = shopService;
+		this.reviewService = reviewService;
 	}
 	
 	@GetMapping(path={"/market"})
@@ -63,23 +67,34 @@ public class MarketController {
 		model.addAttribute("search", search);
 		model.addAttribute("products", products);
 		model.addAttribute("shops", shops);
-		System.out.println(shops);
+		
 		return "market/list";
 	}
 	
 	// 제품 상세
 	@GetMapping(path="/market/detail/{productNo}")
 	public String marketDetail(@PathVariable("productNo") int productNo,
-								Model model) {
+								Model model,
+								@AuthenticationPrincipal RarepetUserDetails userDetails) {
+		
 		
 		ProductDto product = marketService.selectProductByNo(productNo);
-		
 		String id = product.getSellerId();
 		MemberDto member = memberService.selectMember(id);
+		boolean favorited = false;
+		if(userDetails != null) {
+			String idLogged = userDetails.getMember().getId();
+			favorited = memberService.checkFavoriteList(idLogged, productNo);
+		}
 		
+		List<ReviewDto> reviews = reviewService.selectReviewsByNo(productNo);
+		
+		model.addAttribute("reviews", reviews);
+		model.addAttribute("isFavorite", favorited);
 		model.addAttribute("phone", member.getPhone());
 		model.addAttribute("email", member.getEmail());
 		model.addAttribute("product", product);
+		model.addAttribute("productId", product.getProductNo());
 		
 		return "market/detail";
 	}
@@ -146,6 +161,28 @@ public class MarketController {
 		return "market/shoppingCart";
 	}
 	
+	@PostMapping(path = {"/market/favorite"})
+	
+	public String addFavorite(@RequestParam("productId") int productId, Model model,
+							  @AuthenticationPrincipal RarepetUserDetails userDetails) {
+
+		if(userDetails != null) {
+			String id = userDetails.getMember().getId();
+			
+			memberService.addFavoriteList(id, productId);
+			model.addAttribute("isFavorite", true);
+	        
+		} else {
+			model.addAttribute("productId", productId); // Pass ID back so the hidden input still works
+			model.addAttribute("errorMessage", "로그인 한 사용자만 가능합니다.");
+			model.addAttribute("isFavorite", false);
+		}
+		
+		// 형식 : "template_name :: fragment_name"
+		return "market/detail :: favorite-btn-area";
+		
+	}
+	
 	@PostMapping(path = {"/market/shoppingCart"})
 	public String addShoppingCart(@RequestParam("productNo") int productNo, 
 			@AuthenticationPrincipal RarepetUserDetails userDetails,
@@ -188,5 +225,15 @@ public class MarketController {
 		marketService.updateShoppingCartList(id, updatedList);
 		
 		return "success"; 
+	}
+	
+	@GetMapping(path = {"/market/shop/{id}"})
+	public String getShopPage(@PathVariable("id") String id, Model model) {
+		
+		List<ProductDto> products = marketService.findProductsByUserId(id);
+		ShopDto shop = shopService.showShopInfo(id);
+		model.addAttribute("shop", shop);
+		model.addAttribute("shopProducts", products);
+		return "market/shop";
 	}
 }

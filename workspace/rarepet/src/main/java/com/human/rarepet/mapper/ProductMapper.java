@@ -95,4 +95,5 @@ public interface ProductMapper {
 	
 	List<ProductDto> findProductsByFilter(@Param("search") String search, @Param("category") String category);
 	List<ProductDto> selectPopularProducts();
+	List<ProductDto> selectLatestProducts(@Param("limit") int limit, @Param("offset") int offset);
 }

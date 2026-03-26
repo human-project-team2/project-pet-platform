@@ -30,7 +30,9 @@
 				<div class="collapse navbar-collapse justify-content-end"
 					id="navbarNav">
 					<ul class="navbar-nav">
-
+						<li class="nav-item"><a class="nav-link" th:href="@{/dictionary}">
+								<i class="bi bi-tencent-qq"></i></i>동물사전
+						</a></li>
 						<th:block sec:authorize="hasRole('admin')">
 							<li class="nav-item"><a class="nav-link" th:href="@{/admin}"><i
 									class="bi bi-shield-lock"></i>관리자</a></li>
@@ -51,7 +53,7 @@
 						</a></li>
 						<th:block sec:authorize="isAuthenticated()">
 							<span class="nav-link" style="color: #e91e63; font-weight: 600;">
-								[[${#authentication.principal.name}]] 님 </span>
+								[[${#authentication.principal.member.name}]] 님 </span>
 							<!-- #authentication.name 을 쓰면 null 일때도 오류는 안남 -->
 						</th:block>
 						<th:block sec:authorize="isAuthenticated()">
@@ -190,12 +192,12 @@
 				<div id="chatRoomList">
 
 					<div class="chat-room" data-chat-room-id="testChat">
-						<div class="chat-room-name">Rare Reptile Shop</div>
+						<div class="chat-room-name">Rarepet Community 1</div>
 						<div class="chat-room-preview">Last message preview...</div>
 					</div>
 
 					<div class="chat-room" data-chat-room-id="testChat2">
-						<div class="chat-room-name">Golden Gecko Seller</div>
+						<div class="chat-room-name">Rarepet Community 2</div>
 						<div class="chat-room-preview">Is it still available?</div>
 					</div>
 
@@ -239,239 +241,6 @@
 		    </div>
 		  </div>
 		</div>
-
-		<script th:inline="javascript">
-		
-	    $(function(){
-	    	window.totalUnread = 0;
-	    	
-	    	let sse = null;
-	    	let unreadCount = 0;
-			const header = document.querySelector("#global-header")
-			const isAuthenticated = header && header.getAttribute("data-authenticated") === 'true';
-	    	if(isAuthenticated){
-	    		initializeSse();
-	    	}
-	    	
-	    	function initializeSse(){
-	    		
-	    		sse = new EventSource("/sse/connect");
-	    		
-	    		//ping
-	    		sse.addEventListener("ping", event => {
-	    			console.debug("heartbeat on going")
-	    			//test
-	    		})
-	    		
-	    		//전체 메시지
-	    		sse.addEventListener("broadcast", event => {
-	    			const message = event.data;
-	    			//showNotification()
-	    		})
-	    		
-	    		//개인 메시지
-	    		sse.addEventListener("private", event => {
-	    			const message = event.data;
-	    			updateMessageBadge();
-	    			showNotification("💬", message)
-	    		})
-	    	}
-	    	
-	    	//메시지 알림 뜨는 부츠스트랩
-	    	function showNotification(title, message){
-	    		document.querySelector('#toastTitle').innerText = title;
-	    		document.querySelector('#toastBody').innerText = message;
-	    		const toastElement = document.getElementById('liveToast');
-	    	    const toast = new bootstrap.Toast(toastElement);
-	    	    toast.show();
-	    	}
-	    	
-	    	//메시지 알림 카운트
-	    	function updateMessageBadge() {
-	    		window.totalUnread++;
-			    const badge = document.getElementById('msgBadge');
-			    
-			    if (badge) {
-			    	
-			        // 9보다 클 경우 9+
-			        badge.innerText = window.totalUnread > 9 ? "9+" : window.totalUnread++;;
-			        
-			        // d-none prop 없애기
-			        badge.classList.remove('d-none');
-			        
-			        // Optional: Add a small "pop" animation using Bootstrap classes
-			        badge.classList.add('animate__animated', 'animate__bounceIn'); 
-			    }
-			}
-	    	
-	    	
-	    	
-	    	/*[- 타임리프이용해서 스크립트 안에 주석을 남길 때 쓰는 형식 -]*/
-			
-			/*[- 스프링 시큐리티에서 #authentication.principal 은 로그인할때만 null 이 아니다.
-				따라서 #authentication.principal.username 은 anonymousUser 일 때 오류가 난다. 
-				스크립트상에서 null 처리를 할 수도 없는 이유는 컨트롤러에서 이미 렌더링하기 전에 오류를 발생시키기 때문
-				하지만 #authentication.name 은 anonymousUser 인 경우에도 null 이 아니기 때문에 가능 -]*/
-			
-	    	
-	    	let currentUser = /*[[${#authentication.name}]]*/"null";
-	    	/*[-alert(currentUser);-]*/
-	    	
-	    	let stompClient = null; // STOMP 클라이언트 변수, 전역에서 사용가능하게 하려고
-	    	let subscription = null;
-	    	let chatRoomId = null;
-	    	let senderImgUrl = null;
-	    	
-	    	$("#chatButton").click(function(e){
-				e.preventDefault();
-	    	    if(!stompClient){
-	    	        connect();
-	    	    }
-
-	    	    $("#chatPopup").toggle();
-	    	});
-	
-	        $("#closeChat").click(function(){
-	            $("#chatPopup").hide();
-	        });
-	        
-	        $(".chat-room").click(function(){
-
-	            chatRoomId = $(this).data("chatRoomId");
-	            const roomName = $(this).find(".chat-room-name").text();
-	            $("#chatRoomTitle").text(roomName);
-	            
-	            $("#chatPopup").hide();
-	            $("#chatDetailPopup").css("display","flex");
-
-	            $("#chatBox").empty();
-
-	            subscribeTo(chatRoomId);
-
-	        });
-	        $("#backToList").click(function(){
-
-	            $("#chatDetailPopup").hide();
-	            $("#chatPopup").css("display","flex");
-
-	        });
-	        
-	        // 특정 채팅방 클릭 -> 그 채팅방 메시지 불러오기 + 실시간 듣기 
-	        
-	               
-				
-	        	function connect() {
-	        		
-	        		// Create a SockJS client
-	        		//SockJS is a WebSocket fallback library, 
-	        		//so if the browser or network doesn’t support native WebSockets, 
-	        		//it will use alternative protocols (like XHR streaming or long polling).
-	        		const socket = new SockJS('/ws');
-	        		// Create a STOMP client over the SockJS connection
-	        		//STOMP (Simple Text Oriented Messaging Protocol) sits on top of the WebSocket.
-	        		//This allows you to subscribe to topics and send messages to endpoints on the server.
-	        		stompClient = Stomp.over(socket); 
-	        		
-	        		stompClient.connect({}, function (frame) {
-	        			
-	        				console.log('Connected: ' + frame);
-	        	
-	        		});
-	        	}
-	        	
-	        	function subscribeTo(chatRoomId){
-	        		
-	        		if(!stompClient){
-	        	        connect();
-	        	    }
-	        		
-	        		// 다른 채널 듣고 있는 그 채널 종료
-	        		if(subscription){
-	        			subscription.unsubscribe();
-	        		}
-	        		
-	        		
-	        		// 특정 채널 듣기
-	        		subscription = stompClient.subscribe(`/topic/chatRoom/${chatRoomId}`, function (message) {
-	        			const text = JSON.parse(message.body);
-	        			showMessage(text.sender, text.content, text.timestamp, text.senderImgUrl);
-	        		})
-	        		
-	        		// 특정 채널 메시지 불러오기
-	        		fetch(`/chatRoom/${chatRoomId}`).then(response => response.json())
-	        		.then(messages => {
-	        			messages.forEach(message => showMessage(message.sender, message.content, message.timestamp, message.senderImgUrl));
-	        		})
-	        		
-	        	}
-	        	
-	        	function showMessage(sender, content, timestamp, imgUrl){
-	        		
-	        		const chatBox = document.querySelector("#chatBox")
-	        		const div = document.createElement('div');
-	        		div.style.display = 'flex';
-        		    div.style.alignItems = 'center';
-        		    div.style.gap = '8px';
-        		    div.style.marginBottom = '6px';
-	        		senderImgUrl = imgUrl;
-        		    
-        		    // User image
-        		    const img = document.createElement('img');
-	        		    img.src = senderImgUrl || '/img/avatardefault.jpg';
-	        		    img.style.width = '36px';
-	        		    img.style.height = '36px';
-	        		    img.style.borderRadius = '50%';
-	        		    img.style.objectFit = 'cover';
-	        		    img.classList.add('me-2');
-	        		    
-        		    // text 영역
-        		    const textDiv = document.createElement('div');
-	        		const timeString = new Date(timestamp).toLocaleTimeString();
-	        		textDiv.textContent = `[${timeString}] ${sender}: ${content} `;
-	        		
-	        		div.appendChild(img);
-	        		div.appendChild(textDiv);
-	        		
-	        		chatBox.appendChild(div);
-	        		chatBox.scrollTop = chatBox.scrollHeight;
-	        	}
-	        	
-	        	// 메시지 보내기
-	        	 function sendWsMessage(chatRoomId) {
-	        		
-	        			
-	        			const sender = currentUser;
-	        			const messageInput = document.querySelector('#messageInput')
-	        			const content =	messageInput.value.trim();
-	        			
-	        			if(stompClient) {
-	        				// Send the message to the server
-	        				stompClient.send(`/app/sendWsMessage/${chatRoomId}`, {}, JSON.stringify({
-	        					chatRoomId: chatRoomId,
-	        					sender: sender,
-	        					content: content,
-	        					timestamp: new Date().toISOString()
-	        				}));
-
-	        				// Clear the input field
-	        				messageInput.value = '';	
-	        			}
-	        			
-	        	}
-	        	
-        	// 밑에 이벤트리스너 잘못된 표현
-        	// document.querySelector('#sendBtn').addEventListener('click', sendWsMessage(chatRoomId));
-        	document.querySelector('#sendBtn').addEventListener('click', () => sendWsMessage(chatRoomId));
-        	
-        	document.querySelector('#messageInput').addEventListener('keypress', function(e) {
-                if (e.key === 'Enter') sendWsMessage(chatRoomId);
-            });
-        	
-
-	        
-	    });
-		    
-   		</script>
 
 	</div>
 
@@ -582,8 +351,281 @@
 	</div>
 
 	<div th:fragment="message_script">
-		<script>
+	<script th:inline="javascript">
       $( () => {
+    	  
+    	  function connect() {
+      		
+      		// Create a SockJS client
+      		//SockJS is a WebSocket fallback library, 
+      		//so if the browser or network doesn’t support native WebSockets, 
+      		//it will use alternative protocols (like XHR streaming or long polling).
+      		const socket = new SockJS('/ws');
+      		// Create a STOMP client over the SockJS connection
+      		//STOMP (Simple Text Oriented Messaging Protocol) sits on top of the WebSocket.
+      		//This allows you to subscribe to topics and send messages to endpoints on the server.
+      		stompClient = Stomp.over(socket); 
+      		
+      		stompClient.connect({}, function (frame) {
+      			
+      				console.log('Connected: ' + frame);
+      	
+      		});
+      	}
+      	
+      	function subscribeTo(chatRoomId){
+      		
+      		if(!stompClient){
+      	        connect();
+      	    }
+      		
+      		// 다른 채널 듣고 있는 그 채널 종료
+      		if(subscription){
+      			subscription.unsubscribe();
+      		}
+      		
+      		
+      		// 특정 채널 듣기
+      		subscription = stompClient.subscribe(`/topic/chatRoom/${chatRoomId}`, function (message) {
+      			const text = JSON.parse(message.body);
+      			showMessage(text.sender, text.content, text.timestamp, text.senderImgUrl);
+      		})
+      		
+      		// 특정 채널 메시지 불러오기
+      		fetch(`/chatRoom/${chatRoomId}`).then(response => response.json())
+      		.then(messages => {
+      			messages.forEach(message => showMessage(message.sender, message.content, message.timestamp, message.senderImgUrl));
+      		})
+      		
+      	}
+      	
+      	function showMessage(sender, content, timestamp, imgUrl){
+      		
+      		const chatBox = document.querySelector("#chatBox")
+      		const div = document.createElement('div');
+      		div.style.display = 'flex';
+		    div.style.alignItems = 'center';
+		    div.style.gap = '8px';
+		    div.style.marginBottom = '6px';
+      		senderImgUrl = imgUrl;
+		    
+		    // User image
+		    const img = document.createElement('img');
+      		    img.src = senderImgUrl || '/img/avatardefault.jpg';
+      		    img.style.width = '36px';
+      		    img.style.height = '36px';
+      		    img.style.borderRadius = '50%';
+      		    img.style.objectFit = 'cover';
+      		    img.classList.add('me-2');
+      		    
+		    // text 영역
+		    const textDiv = document.createElement('div');
+      		const timeString = new Date(timestamp).toLocaleTimeString();
+      		textDiv.textContent = `[${timeString}] ${sender}: ${content} `;
+      		
+      		div.appendChild(img);
+      		div.appendChild(textDiv);
+      		
+      		chatBox.appendChild(div);
+      		chatBox.scrollTop = chatBox.scrollHeight;
+      	}
+      	
+      	// 메시지 보내기
+      	 function sendWsMessage(chatRoomId) {
+      		
+      			
+      			const sender = currentUser;
+      			const messageInput = document.querySelector('#messageInput')
+      			const content =	messageInput.value.trim();
+      			
+      			if(!content) return;
+      			
+      			if(stompClient) {
+      				// Send the message to the server
+      				stompClient.send(`/app/sendWsMessage/${chatRoomId}`, {}, JSON.stringify({
+      					chatRoomId: chatRoomId,
+      					sender: sender,
+      					content: content,
+      					timestamp: new Date().toISOString()
+      				}));
+
+      				// Clear the input field
+      				messageInput.value = '';	
+      			}
+      			
+      	}
+    	  
+    	  //////////////////////
+    	  
+    	  function initializeSse(){
+	    		
+	    		sse = new EventSource("/sse/connect");
+	    		
+	    		//ping
+	    		sse.addEventListener("ping", event => {
+	    			console.debug("heartbeat on going")
+	    			//test
+	    		})
+	    		
+	    		//전체 메시지
+	    		sse.addEventListener("broadcast", event => {
+	    			const message = event.data;
+	    			//showNotification()
+	    		})
+	    		
+	    		//개인 메시지
+	    		sse.addEventListener("private", event => {
+	    			const message = event.data;
+	    			updateMessageBadge();
+	    			showNotification("💬 새 메시지", message)
+	    		})
+	    	}
+	    	
+	    	//메시지 알림 뜨는 부츠스트랩
+	    	function showNotification(title, message){
+	    		document.querySelector('#toastTitle').innerText = title;
+	    		document.querySelector('#toastBody').innerText = message;
+	    		const toastElement = document.querySelector('#liveToast');
+	    	    const toast = new bootstrap.Toast(toastElement);
+	    	    toast.show();
+	    	}
+	    	
+	    	//메시지 알림 카운트
+	    	function updateMessageBadge() {
+			    if(isChatModalOpen) {return;}
+	    		const badge = document.querySelector('#msgBadge');
+			    
+			    if (badge) {
+			    	
+	    			window.totalUnread++;
+			        // 9보다 클 경우 9+
+			        badge.innerText = window.totalUnread > 9 ? "9+" : window.totalUnread;
+			        
+			        // d-none prop 없애기
+			        badge.classList.remove('d-none');
+			        
+			        // Optional: Add a small "pop" animation using Bootstrap classes
+			        badge.classList.add('animate__animated', 'animate__bounceIn'); 
+			    }
+			}
+    	  
+	    	
+	    	//////////////////////////////////////////////
+	    	
+	    	function reloadMessageList(){
+	        	 fetch("/messages/list").then(response => response.json())
+	             .then(messages => {
+	                $("#messageListBody").empty();
+	                
+	                messages.forEach( (message) => {
+	                   console.log(message)
+	                   const partnerId = message.direction === "sent" ? message.receiverId : message.senderId;
+	                   const showNew = (!message.isRead) && (message.direction !== "sent");       
+	                   $("#messageListBody").append(
+	                      `
+	                      <tr class="message-row" data-partner-id="${partnerId}">
+	                         <td>
+	                         ${partnerId}
+	                         ${showNew ? '<span class="badge rounded-pill bg-danger ms-2 row-badge-icon">N</span>' : ''}
+	                         </td>
+	                         <td>${message.sentAt}</td>
+	                      </tr>
+	                      `);
+	                });
+	             });
+	         }
+	    	
+	    	///////////////////////////////////////////////
+	    	
+	    	
+	    	
+    	  window.totalUnread = 0;
+	    	
+	    	let sse = null;
+	    	
+			const header = document.querySelector("#global-header")
+			const isAuthenticated = header && header.getAttribute("data-authenticated") === 'true';
+	    	if(isAuthenticated){
+	    		initializeSse();
+	    	}
+	    	
+	    	
+	    	
+	    	
+	    	
+	    	/*[- 타임리프이용해서 스크립트 안에 주석을 남길 때 쓰는 형식 -]*/
+			
+			/*[- 스프링 시큐리티에서 #authentication.principal 은 로그인할때만 null 이 아니다.
+				따라서 #authentication.principal.username 은 anonymousUser 일 때 오류가 난다. 
+				스크립트상에서 null 처리를 할 수도 없는 이유는 컨트롤러에서 이미 렌더링하기 전에 오류를 발생시키기 때문
+				하지만 #authentication.name 은 anonymousUser 인 경우에도 null 이 아니기 때문에 가능 -]*/
+			
+	    	
+	    	let currentUser = /*[[${#authentication.name}]]*/"null";
+	    	/*[-alert(currentUser);-]*/
+	    	
+	    	let stompClient = null; // STOMP 클라이언트 변수, 전역에서 사용가능하게 하려고
+	    	let subscription = null;
+	    	let chatRoomId = null;
+	    	let senderImgUrl = null;
+	    	
+	    	$(document).on('click', '#chatButton', function(e){
+	    		
+				e.preventDefault();
+				
+	    	    if(!stompClient){
+	    	        connect();
+	    	    }
+
+	    	    $("#chatPopup").toggle();
+	    	});
+	
+	        $(document).on('click', '#closeChat', function(e){
+	        	e.preventDefault();
+	            $("#chatPopup").hide();
+	        });
+	        
+	        $(".chat-room").click(function(e){
+				e.preventDefault()
+	            chatRoomId = $(this).data("chatRoomId");
+	            const roomName = $(this).find(".chat-room-name").text();
+	            $("#chatRoomTitle").text(roomName);
+	            
+	            $("#chatPopup").hide();
+	            $("#chatDetailPopup").css("display","flex");
+
+	            $("#chatBox").empty();
+
+	            subscribeTo(chatRoomId);
+
+	        });
+	        $("#backToList").click(function(e){
+				e.preventDefault();
+	            $("#chatDetailPopup").hide();
+	            $("#chatPopup").css("display","flex");
+
+	        });
+	        
+	        // 특정 채팅방 클릭 -> 그 채팅방 메시지 불러오기 + 실시간 듣기 
+	        
+	               
+				
+	        	
+	        	
+      	// 밑에 이벤트리스너 잘못된 표현
+      	// document.querySelector('#sendBtn').addEventListener('click', sendWsMessage(chatRoomId));
+      	document.querySelector('#sendBtn').addEventListener('click', function(e) {
+      		e.preventDefault()
+      		sendWsMessage(chatRoomId);
+      	})
+      	
+      	document.querySelector('#messageInput').addEventListener('keypress', function(e) {
+      			
+              if (e.key === 'Enter') {
+            	  e.preventDefault();
+            	  sendWsMessage(chatRoomId);
+              }
+          });
          
          // 판매자 문의 누를 때 새로 열리는
          $("#newMessageModal").on("show.bs.modal", function(event){
@@ -627,11 +669,14 @@
           });
           
          // 보낸 사람별로 메시지 목록 불러오기
+         let isChatModalOpen = false;
          
          $("#chatListModal").on("shown.bs.modal", () => {
         	 
+        	 isChatModalOpen = true;
         	 window.totalUnread = 0;
-             const badge = document.getElementById('msgBadge');
+             const badge = document.querySelector('#msgBadge');
+             
              if (badge) {
                  badge.classList.add('d-none');
                  badge.innerText = "0";
@@ -642,9 +687,9 @@
                $("#messageListBody").empty();
                
                messages.forEach( (message) => {
-                  
+                  //console.log(message)
                   const partnerId = message.direction === "sent" ? message.receiverId : message.senderId;
-                  const showNew = !(message.direction === "sent");       
+                  const showNew = (!message.isRead) && (message.direction !== "sent");       
                   $("#messageListBody").append(
                      `
                      <tr class="message-row" data-partner-id="${partnerId}">
@@ -659,8 +704,13 @@
             });
             
          })
+         $("#chatListModal").on("hidden.bs.modal", () => {
+		    isChatModalOpen = false;
+		 });
          
-          
+         
+         
+         
          // 메시지 클릭 → 채팅 상세 모달 열기
           $(document).on('click', '.message-row', function () { // $(".message-row").on("click") -> 작동하지 않음
      	  														// $(".message-row").on("click") 는 페이지 로딩 시 존재하는 요소에만 이벤트를 붙임.
@@ -669,6 +719,14 @@
              
      	  	$(this).find('.row-badge-icon').hide();
              const partnerId = $(this).data("partner-id")
+            $(this).find('.row-badge-icon').remove();
+             
+            // 서버 읽음 처리
+		    fetch(`/messages/read?partnerId=${partnerId}`, {
+		        method: "POST"
+		    }).then(() => {
+		    	reloadMessageList();
+		    })
              
              fetch(`/messages/detail?partnerId=${partnerId}`)
              .then(response => response.json())
@@ -715,8 +773,8 @@
           });
 
           // 채팅창 내 전송 버튼
-          $('#btnSendInChat').on('click', function() {
-             
+          $('#btnSendInChat').on('click', function(e) {
+             e.preventDefault()
             const text = $('#chatInput').val().trim();
             if (!text) return;
             const partnerId = $(this).data("partner")
