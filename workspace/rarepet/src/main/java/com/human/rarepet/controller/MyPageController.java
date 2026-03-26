@@ -14,6 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.human.rarepet.common.Util;
 import com.human.rarepet.dto.AdoBoardDto;
 import com.human.rarepet.dto.BoardDto;
+import com.human.rarepet.dto.FavoriteListDto;
 import com.human.rarepet.dto.GenBoardDto;
 import com.human.rarepet.dto.MemberDto;
 import com.human.rarepet.dto.OrderDto;
@@ -136,6 +137,8 @@ public class MyPageController {
 			model.addAttribute("amyPosts", amyPosts);
 		}
         
+		// 관심 목록
+		List<FavoriteListDto> myFavorites = memberService.selectAllFavorites(loginUser.getId());
         // 4. 화면(HTML)으로 데이터 전달
         
         model.addAttribute("user", user);
@@ -143,6 +146,7 @@ public class MyPageController {
         model.addAttribute("productCount", myProducts.size());
         model.addAttribute("shop", shop);
         model.addAttribute("myOrders", myOrders);
+        model.addAttribute("myFavorites", myFavorites);
         
         return "auth/myPage";
     }

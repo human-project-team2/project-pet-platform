@@ -50,4 +50,6 @@ public interface MemberMapper {
     @Select("select * from favorite_list where id = #{id} and product_id = #{productId}")
     FavoriteListDto checkFavoriteList(@Param("id") String id, @Param("productId") int productId);
     
+    @Select("select * from favorite_list where id = #{id}")
+    List<FavoriteListDto> selectAllFavorites(String id);
  }

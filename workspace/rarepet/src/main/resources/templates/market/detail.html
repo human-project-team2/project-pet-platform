@@ -202,6 +202,7 @@ body {
 						        <div class="mt-2 small text-success">관심 목록에 추가되었습니다.</div>
 						        <button class="btn btn-warning rounded-pill px-4" disabled>❤️ 등록완료</button>
 						    </th:block>
+						    
 						    <th:block th:if="${!isFavorite}">
 								<input  id="favorite" type="hidden" name="productId" th:value="${productId}">
 								<button hx-post="/market/favorite"
