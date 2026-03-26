@@ -62,4 +62,6 @@ public interface OrderMapper {
         @Result(property = "productName", column = "productName")
     })
     List<OrderItemDto> selectOrderItemByOrderNo(int orderNo);
+    
+    List<OrderItemDto> selectOrderItems(int orderNo);
 }

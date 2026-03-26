@@ -50,8 +50,9 @@ public class ReviewController {
 	// 리뷰 등록 처리
 	@PostMapping("/write")
 	public String writeForm(ReviewDto review) {
-		reviewService.registerReview(review);
-		return "redirect:/review/list";
+	    reviewService.registerReview(review);
+	    // 마이페이지의 구매기록(#tab-order) 탭으로 리다이렉트
+	    return "redirect:/review/list";
 	}
 
 	// --- 아래 기능을 추가했습니다 ---

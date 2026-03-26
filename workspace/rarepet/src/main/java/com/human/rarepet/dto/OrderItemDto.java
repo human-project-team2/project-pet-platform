@@ -9,4 +9,5 @@ public class OrderItemDto {
     private String productName;
     private int productOrderCount; 
     private int price;
+    private int reviewNo;
 }

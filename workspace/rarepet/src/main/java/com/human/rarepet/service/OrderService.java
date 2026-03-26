@@ -53,6 +53,14 @@ public class OrderService {
     public List<OrderDto> selectAllOrderById(String id){
     	List<OrderDto> orders = orderMapper.selectAllOrderById(id);
     	
+    	if (orders != null) {
+            for (OrderDto order : orders) {
+                // 방금 수정한 XML의 selectOrderItems 쿼리를 여기서 호출합니다.
+                List<OrderItemDto> items = orderMapper.selectOrderItems(order.getOrderNo());
+                order.setOrderItems(items);
+            }
+        }
+    	
     	return orders;
     }
     

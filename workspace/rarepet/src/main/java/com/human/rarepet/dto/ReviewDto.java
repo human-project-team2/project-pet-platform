@@ -17,5 +17,6 @@ public class ReviewDto {
 	private int rating;
 	
 	private String productName; 
+	
     
 }

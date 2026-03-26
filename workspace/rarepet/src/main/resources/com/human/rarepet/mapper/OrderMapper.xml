@@ -48,5 +48,17 @@
         SET product_count = product_count - #{productOrderCount}
         WHERE product_no = #{productNo} and product_count >= #{productOrderCount}
     </update>
+    
+    <select id="selectOrderItems" resultType="com.human.rarepet.dto.OrderItemDto">
+    SELECT 
+        oi.product_no, 
+        p.product_name,        oi.product_order_count, 
+        oi.price,
+        oi.order_no,
+        r.review_no AS reviewNo FROM order_detail oi       JOIN product_all p ON oi.product_no = p.product_no
+    LEFT JOIN review r ON oi.order_no = r.order_no 
+                       AND oi.product_no = r.product_no
+    WHERE oi.order_no = #{orderNo}
+</select>
 
 </mapper>

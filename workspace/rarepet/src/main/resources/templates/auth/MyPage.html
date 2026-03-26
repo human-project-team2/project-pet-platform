@@ -270,10 +270,18 @@ body {
 											</p>
 										</div>
 										
-										<a th:href="@{/review/write(productNo=${item.productNo}, orderNo=${order.orderNo})}" 
-										   class="btn btn-sm btn-outline-warning rounded-pill mt-1">
-										   리뷰 쓰기
-										</a>
+										<th:block th:if="${item.reviewNo == null || item.reviewNo == 0}">
+										    <a th:href="@{/review/write(productNo=${item.productNo}, orderNo=${order.orderNo}, productName=${item.productName})}" 
+										       class="btn btn-sm btn-outline-warning rounded-pill mt-1">
+										       리뷰 쓰기
+										    </a>
+										</th:block>
+										
+										<th:block th:if="${item.reviewNo != null && item.reviewNo > 0}">
+										    <button class="btn btn-sm btn-light rounded-pill mt-1 text-muted" disabled>
+										       리뷰 완료
+										    </button>
+										</th:block>
 
 										<div class="text-end">
 											<p class="fw-bold mb-0"

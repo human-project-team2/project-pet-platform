@@ -36,5 +36,6 @@
         DELETE FROM review 
         WHERE review_no = #{reviewNo}
     </delete>
-
+    
+    
 </mapper>

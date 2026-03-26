@@ -132,7 +132,7 @@ body {
 				<div class="card write-card">
 					<form action="/review/write" method="post"
 						enctype="multipart/form-data">
-						<input type="hidden" id="orderNo" name="orderNo" value="2">
+						<input type="hidden" name="orderNo" th:value="${orderNo}">
 						<input type="hidden" id="id" name="id"
 							th:value="${#authentication.principal.username}">
 						<div class="mb-4">
