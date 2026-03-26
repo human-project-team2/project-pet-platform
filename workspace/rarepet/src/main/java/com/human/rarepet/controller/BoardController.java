@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.human.rarepet.common.Util;
 import com.human.rarepet.dto.AdoBoardDto;
@@ -88,6 +89,28 @@ public class BoardController {
 		
 		return "board/vwrite";		
 	}
+	
+	@GetMapping(path = {"/board/uwrite"})
+	public String showUWriteForm(BoardDto board,
+			@AuthenticationPrincipal RarepetUserDetails userDetails ,
+			Model model) {
+		
+		System.out.println("-------------->write form");
+		
+		if(userDetails == null)
+		{
+			return "redirect:/auth/login";		
+		}
+		
+		MemberDto member = userDetails.getMember();
+		if(member != null) {
+			MemberDto user = memberService.getUserById(member.getId());
+			model.addAttribute("user", user);
+		}
+		
+		return "board/uwrite";		
+	}
+	
 	
 	final String UPLOAD_PATH = "d:\\uploaded_images";
 	
@@ -211,6 +234,183 @@ public class BoardController {
 		return "redirect:/board/community";		
 	}
 	
+	/**
+     * 유튜브 URL을 iframe용 embed URL로 변환
+     * 지원 형식:
+     * - https://www.youtube.com/watch?v=영상ID
+     * - https://youtu.be/영상ID
+     * - https://www.youtube.com/shorts/영상ID
+     * - https://www.youtube.com/embed/영상ID
+     */
+    private String convertYoutubeUrlToEmbed(String url) {
+        if (url == null || url.isBlank()) {
+            return null;
+        }
+
+        String videoId = null;
+
+        // 이미 embed 주소인 경우
+        if (url.contains("youtube.com/embed/")) {
+            int idx = url.indexOf("embed/");
+            if (idx != -1) {
+                videoId = url.substring(idx + 6);
+                int qIdx = videoId.indexOf("?");
+                if (qIdx != -1) {
+                    videoId = videoId.substring(0, qIdx);
+                }
+            }
+        }
+
+        // watch?v=
+        if (videoId == null && url.contains("watch?v=")) {
+            int idx = url.indexOf("watch?v=");
+            videoId = url.substring(idx + 8);
+            int ampIdx = videoId.indexOf("&");
+            if (ampIdx != -1) {
+                videoId = videoId.substring(0, ampIdx);
+            }
+        }
+
+        // youtu.be/
+        if (videoId == null && url.contains("youtu.be/")) {
+            int idx = url.indexOf("youtu.be/");
+            videoId = url.substring(idx + 9);
+            int qIdx = videoId.indexOf("?");
+            if (qIdx != -1) {
+                videoId = videoId.substring(0, qIdx);
+            }
+        }
+
+        // shorts/
+        if (videoId == null && url.contains("youtube.com/shorts/")) {
+            int idx = url.indexOf("shorts/");
+            videoId = url.substring(idx + 7);
+            int qIdx = videoId.indexOf("?");
+            if (qIdx != -1) {
+                videoId = videoId.substring(0, qIdx);
+            }
+        }
+
+        if (videoId == null || videoId.isBlank()) {
+            return null;
+        }
+
+        return "https://www.youtube.com/embed/" + videoId;
+    }
+	
+	 
+	@PostMapping(path = {"/board/uwrite"})
+	public String writeVBoard(
+			@AuthenticationPrincipal RarepetUserDetails userDetails , 
+			@RequestParam("videoUrl") String videoUrl,
+			GenBoardDto board,
+			Model model) {
+		Date writeDate = new Date();
+		
+		System.out.printf("-------------->Gen Uwritetitle \n" + board.getBoardTitle());
+		
+		if(userDetails == null)
+		{
+			return "redirect:/auth/login";		
+		}	
+		
+		// 유튜브 주소 검증 및 정리
+        if (videoUrl != null && !videoUrl.trim().isEmpty()) {
+            String embedUrl = convertYoutubeUrlToEmbed(videoUrl.trim());
+
+            if (embedUrl == null) {
+                model.addAttribute("msg", "올바른 유튜브 주소를 입력해주세요.");
+                model.addAttribute("url", "/board/vwrite");
+                return "fragments/message";
+            }
+
+            board.setVideoUrl(embedUrl);
+     
+            System.out.println(board);
+				
+			System.out.println(embedUrl);
+		
+			MemberDto member = userDetails.getMember();
+			if(member != null) {
+				String id = member.getId();
+				System.out.printf("====================write U Community ID\n" + id);
+				
+				try {
+								
+					board.setBoardWriteDate(writeDate);
+					board.setBoardType(1);
+					board.setVideoUrl(embedUrl);
+					board.setSavedFileName(videoUrl);
+					board.setOriginalFileName(videoUrl);
+					
+					board.setBoardLikeCount(0);
+					board.setBoardViewCount(0);
+					
+					 
+					boardService.insertBoard(board);
+					boardService.insertBoardGen(board);
+					
+				}   catch (Exception ex) {
+					ex.printStackTrace();
+					
+				}
+			}
+	   } 
+		
+		return "redirect:/board/community";		
+	}
+	
+	
+    /*
+	@PostMapping("/board/uwrite")
+    public String uwrite(
+            @RequestParam("title") String title,
+            @RequestParam("content") String content,
+            @RequestParam(value = "videoUrl", required = false) String videoUrl,
+            RedirectAttributes rttr,
+            @AuthenticationPrincipal RarepetUserDetails userDetails
+            ) {
+
+        try {
+            BoardDto board = new BoardDto();
+            board.setBoardTitle(title);
+            board.setBoardContent(content);
+
+            // 로그인 아이디 저장
+            //if (principal != null) {
+                //board.setBoardWriterId(principal.getName());
+            //}
+            MemberDto member = userDetails.getMember();
+			if(member != null) {
+				String id = member.getId();
+				System.out.printf("====================write U Community ID\n" + id);
+				
+			}
+
+            // 유튜브 링크 저장
+            if (videoUrl != null) {
+                videoUrl = videoUrl.trim();
+            }
+            board.setVideoUrl(videoUrl);
+
+            // 일반 게시판 / 유튜브 게시판 구분값이 필요하면 추가
+            // 예: board.setBoardCategory("youtube");
+
+            boardService.insertBoard(board);
+
+            rttr.addFlashAttribute("msg", "유튜브 게시글이 등록되었습니다.");
+            return "redirect:/board/boardlist";
+
+        } catch (Exception e) {
+            e.printStackTrace();
+             rttr.addFlashAttribute("msg", "게시글 등록 중 오류가 발생했습니다.");
+            return "redirect:/board/uwrite";
+        }
+    }
+    */
+
+	
+	
 	@GetMapping (path = {"/board/boardlist"}) 
 	public String list(Model model) {
 		
@@ -263,6 +463,9 @@ public class BoardController {
 					genboard.setBoardViewCount(board.getBoardViewCount());
 					genboard.setBoardLikeCount(board.getBoardLikeCount());
 					genboard.setImgUrl(board.getImgUrl());
+					if(board.getImgUrl() == null) {
+						genboard.setVideoUrl(board.getVideoUrl());
+					}
 					orderedGenBoards.add(genboard);
 					break;
 				}
@@ -1212,6 +1415,7 @@ public class BoardController {
 	    //작성자 프로필 가져오기
 	    MemberDto writer = memberService.getUserById(board.getBoardWriterId());
 	    
+	    System.out.println(board);
 	    model.addAttribute("writer", writer);
 		model.addAttribute("board", board);
 		model.addAttribute("pageNo", pageNo);

@@ -88,6 +88,8 @@ body{
     </div>
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h2 class="fw-bold">커뮤니티 게시글</h2>
+        <a th:href="@{/board/uwrite}" class="text-decoration-none">
+                	<strong>유튜브 영상 글쓰기</strong></a>
         <a th:href="@{/board/vwrite}" class="text-decoration-none">
                 	<strong>동영상 글쓰기</strong></a>
         <a th:href="@{/board/write}" class="text-decoration-none">
@@ -133,6 +135,7 @@ body{
                 th:text="${ board.boardTitle }"></a>
                 
             <span th:if="${boardStat.index == 0}" class="badge bg-danger ms-2">인기글</span>
+            <span th:if="${board.videoUrl != null}" class="badge bg-danger ms-2">동영상</span>
           </td>       
           <td th:text="${ board.boardWriterId }"></td>
           <td th:text="${#dates.format(board.boardWriteDate, 'yyyy-MM-dd')}"></td>
